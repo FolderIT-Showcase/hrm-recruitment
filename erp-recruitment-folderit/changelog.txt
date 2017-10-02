@@ -1,0 +1,31 @@
+= v1.0.2 (22 Nov, 2016) =
+-------------------------
+- [new] Email notification when candidate applied
+- [new] Admin can manually add candidate from wp admin
+- [new] Multiple hireing lead can be selected during job creation
+- [new] Candidate IP address added to job seeker list table
+- [tweak] Filter admin url for Add Recruitment button
+- [tweak] Filter admin sidebar menu items
+- [fix] Update questionnaire sections
+- [fix] Job seeker submission
+- [fix] Candidate form submission
+- [fix] Pagination problem fixed
+
+
+= v1.0.1 (29 Aug, 2016) =
+--------------------------
+- Frontend design fixes
+- Job application form question animation speedup
+- Helptext done for HR-Questionnaire
+- Icons added on job meta
+- Added cover letter field
+- Google docs embed file url fix
+- Change question set design and add question numbering
+- Responsive frontend
+- wpdb prefix fix
+- Added pot file
+
+
+= v1.0.0 (26 July, 2016) =
+--------------------------
+- Initial release

@@ -1,0 +1,1817 @@
+# Copyright (C) 2016 weDevs
+# This file is distributed under the GPL2.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP ERP - Recruitment 1.0.2\n"
+"Report-Msgid-Bugs-To: http://wperp.com/support/\n"
+"POT-Creation-Date: 2016-11-22 08:28:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"X-Generator: grunt-wp-i18n 0.4.9\n"
+
+#: includes/admin/views/view-applicant-details.php:303
+msgid "1"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:304
+msgid "2"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:305
+msgid "3"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:306
+msgid "4"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:307
+msgid "5"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:2 wp-erp-recruitment.php:400
+msgid "Add candidate"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:8
+msgid "Select Job"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:23
+msgid "Show form"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:55
+#: includes/functions-recruitment.php:867
+msgid "Basic information"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:77 includes/class-recruitment.php:379
+#: templates/job-application-form.php:153
+msgid "First Name"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:80 includes/class-recruitment.php:390
+#: templates/job-application-form.php:157
+msgid "Last Name"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:139
+#: includes/admin/views/add-candidate.php:231
+#: includes/admin/views/view-make-employee.php:102
+#: includes/admin/views/view-make-employee.php:199
+#: templates/job-application-form.php:177
+#: templates/job-application-form.php:246
+msgid "- Select -"
+msgstr ""
+
+#: includes/admin/views/add-candidate.php:157
+msgid "Addtional information"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list-email.php:22
+msgid "Send email"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list-email.php:30
+msgid "Subject"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list-email.php:34
+msgid "Message"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list-email.php:55
+msgid "Recipient List"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:3 wp-erp-recruitment.php:373
+msgid "Candidates"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:4 wp-erp-recruitment.php:287
+msgid "Add Candidate"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:25
+#: includes/admin/views/todo-calendar.php:14
+msgid "Overview"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:29
+msgid "Added by me"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:33
+msgid "Short-Listed"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:37
+msgid "Hired"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:40
+msgid "Rejected"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:51
+msgid " Candidates"
+msgstr ""
+
+#: includes/admin/views/jobseeker-list.php:85
+msgid "Search"
+msgstr ""
+
+#: includes/admin/views/js-templates/interview-template.php:6
+msgid "Select type of interview (required)"
+msgstr ""
+
+#: includes/admin/views/js-templates/interview-template.php:18
+msgid "Interview Detail (e.g vanue, phone etc)"
+msgstr ""
+
+#: includes/admin/views/js-templates/interview-template.php:25
+msgid "Interviewers (required)"
+msgstr ""
+
+#: includes/admin/views/js-templates/interview-template.php:40
+msgid "Duration"
+msgstr ""
+
+#: includes/admin/views/js-templates/interview-template.php:53
+msgid "Interview Date"
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template-detail.php:4
+msgid "Description"
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template-detail.php:8
+msgid "Dead Line: "
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template-detail.php:12
+msgid "Assigned User List: "
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template.php:4
+msgid "Title (required)"
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template.php:9
+msgid "Assign user (required)"
+msgstr ""
+
+#: includes/admin/views/js-templates/todo-template.php:22
+msgid "Dead Line"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:2
+#: includes/admin/views/reports/csv-reports.php:2
+#: includes/admin/views/reports/opening-reports.php:2
+#: wp-erp-recruitment.php:391
+msgid "Reports"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:13
+#: includes/admin/views/reports/csv-reports.php:12
+#: includes/admin/views/reports/opening-reports.php:11
+#: includes/admin/views/reports/opening-reports.php:20
+#: includes/emails/class-email-opening-report.php:16
+#: includes/emails/class-email-opening-report.php:19
+#: includes/emails/class-email-opening-report.php:20
+msgid "Opening Report"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:14
+#: includes/admin/views/reports/candidate-reports.php:23
+#: includes/admin/views/reports/csv-reports.php:15
+#: includes/admin/views/reports/opening-reports.php:12
+#: includes/emails/class-email-candidate-report.php:16
+#: includes/emails/class-email-candidate-report.php:19
+#: includes/emails/class-email-candidate-report.php:20
+msgid "Candidate Report"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:15
+#: includes/admin/views/reports/csv-reports.php:18
+#: includes/admin/views/reports/csv-reports.php:26
+#: includes/admin/views/reports/opening-reports.php:13
+msgid "CSV Report"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:38
+#: includes/admin/views/reports/opening-reports.php:33
+msgid "All"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:44
+#: includes/admin/views/reports/csv-reports.php:53
+#: includes/admin/views/reports/opening-reports.php:39
+msgid "Generate"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:50
+#: includes/admin/views/reports/opening-reports.php:45
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:57
+msgid "Candidate Name"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:58
+#: includes/admin/views/step-candidate-basic-information.php:24
+#: includes/admin/views/view-applicant-details.php:154
+#: includes/class-recruitment.php:401 includes/functions-recruitment.php:77
+msgid "Email"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:59
+#: includes/admin/views/view-make-employee.php:273
+#: includes/class-jobseeker-list-table.php:81
+#: includes/functions-recruitment.php:160
+msgid "Phone"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:60
+msgid "Apply date"
+msgstr ""
+
+#: includes/admin/views/reports/candidate-reports.php:61
+msgid "Current candidate status"
+msgstr ""
+
+#: includes/admin/views/reports/csv-reports.php:33
+msgid "Opening report"
+msgstr ""
+
+#: includes/admin/views/reports/csv-reports.php:34
+msgid "Candidate report"
+msgstr ""
+
+#: includes/admin/views/reports/csv-reports.php:61
+msgid "Please Check your email in some time."
+msgstr ""
+
+#: includes/admin/views/reports/csv-reports.php:66
+msgid "Please Check your folder permission, CSV report not created."
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:52
+msgid "Opening"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:53
+msgid "Created"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:54
+msgid "# Candidates Added"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:55
+msgid "How are the candidates distributed"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:58
+msgid "In Process"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:59
+msgid "Archived"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:60
+msgid "Unscreened"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:61
+msgid "Other"
+msgstr ""
+
+#: includes/admin/views/reports/opening-reports.php:75
+msgid "Total :"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:5
+msgid "Candidate basic information"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:10
+msgid ""
+"The first 3 fields (Name, Email and Upload CV) are mandatory and will be "
+"displayed in candidate application form."
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:14
+#: includes/admin/views/view-applicant-details.php:146
+#: includes/class-jobseeker-list-table.php:77
+#: includes/functions-recruitment.php:72
+msgid "Name"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:18
+#: includes/admin/views/step-candidate-basic-information.php:28
+#: includes/admin/views/step-candidate-basic-information.php:38
+#: includes/admin/views/step-candidate-basic-information.php:75
+#: includes/admin/views/step-candidate-basic-information.php:92
+#: includes/class-recruitment.php:384 includes/class-recruitment.php:395
+#: includes/class-recruitment.php:406 includes/class-recruitment.php:417
+#: includes/class-recruitment.php:457
+msgid "This field is required"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:34
+#: includes/class-recruitment.php:412 includes/functions-recruitment.php:84
+msgid "Upload CV"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:49
+#: includes/admin/views/step-candidate-basic-information.php:50
+#: includes/class-recruitment.php:424 includes/class-recruitment.php:425
+msgid "Check All"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:104
+#: includes/admin/views/step-hiring-workflow.php:35
+#: includes/admin/views/step-job-information.php:193
+#: includes/admin/views/step-questionnaire.php:51
+msgid "&larr; Back"
+msgstr ""
+
+#: includes/admin/views/step-candidate-basic-information.php:105
+#: includes/admin/views/step-hiring-workflow.php:36
+#: includes/admin/views/step-job-description.php:30
+#: includes/admin/views/step-job-information.php:194
+msgid "Next &rarr;"
+msgstr ""
+
+#: includes/admin/views/step-hiring-workflow.php:5
+msgid "Hiring stage"
+msgstr ""
+
+#: includes/admin/views/step-hiring-workflow.php:10
+msgid ""
+"Stages below reflect the steps in your hiring process. Coordinator of a "
+"stage typically schedules interviews, collects evaluation from interviewers "
+"and communicates with the candidate."
+msgstr ""
+
+#: includes/admin/views/step-hiring-workflow.php:13
+#: includes/class-recruitment.php:477 includes/class-setup-wizard.php:260
+msgid "Add Stage"
+msgstr ""
+
+#: includes/admin/views/step-job-description.php:16
+#: includes/admin/views/step-job-information.php:5
+#: includes/functions-recruitment.php:866
+msgid "Job information"
+msgstr ""
+
+#: includes/admin/views/step-job-description.php:21
+msgid "Position Title"
+msgstr ""
+
+#: includes/admin/views/step-job-description.php:25
+#: includes/class-setup-wizard.php:217
+msgid "Opening Description"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:13
+#: includes/class-recruitment.php:210
+msgid "Select Hiring Lead"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:42
+msgid "-- Select hiring lead --"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:54
+#: includes/admin/views/view-make-employee.php:37
+#: includes/class-recruitment.php:237
+msgid "Department"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:81
+#: includes/admin/views/view-make-employee.php:75
+#: includes/class-recruitment.php:248
+msgid "Employment Type"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:113
+#: includes/class-recruitment.php:258
+msgid "Remote working is an option for this opening"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:119
+#: includes/class-recruitment.php:265
+msgid "Minimum Experience"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:146
+#: includes/class-recruitment.php:287
+msgid "Submission Deadline"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:163
+#: includes/admin/views/view-make-employee.php:59
+#: includes/class-recruitment.php:274
+msgid "Location"
+msgstr ""
+
+#: includes/admin/views/step-job-information.php:176
+msgid "Number of Vacancy"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:5
+msgid "Questionnaire selection"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:8
+msgid ""
+"You can create question sets for your candidates. During filling the "
+"application form, candidates will have to answer your selected question "
+"sets."
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:11
+msgid "This job requires question set(s)"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:25
+#: includes/class-recruitment.php:632
+msgid "Please Select Question set:"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:33
+#: includes/class-recruitment.php:637
+msgid "Add Question Set"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:35
+msgid "No question set found. Please create a question set first"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:36
+#: includes/admin/views/step-questionnaire.php:44
+msgid "Create question set"
+msgstr ""
+
+#: includes/admin/views/step-questionnaire.php:52
+msgid "Finish"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:3 wp-erp-recruitment.php:376
+msgid "Calendar"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:4
+#: includes/admin/views/view-applicant-details.php:387
+msgid "Add To-Do"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:15
+#: includes/admin/views/view-applicant-details.php:379
+msgid "Overdue"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:16
+msgid "Today"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:17
+msgid "Later"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:18
+msgid "No Due Date"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:19
+msgid "This Month"
+msgstr ""
+
+#: includes/admin/views/todo-calendar.php:29
+msgid "No Date"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:8
+#: includes/admin/views/view-make-employee.php:9
+msgid "Application ID not supplied. Please try again"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:8
+#: includes/admin/views/view-make-employee.php:9
+msgid "Error"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:31
+#: wp-erp-recruitment.php:385
+msgid "Applicant Details"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:54
+msgid "Stage : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:59
+msgid "Rating : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:63
+msgid "Status : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:64
+msgid "No status set"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:71
+#: includes/admin/views/view-applicant-details.php:353
+msgid "New Interview"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:72
+msgid "New To-do"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:77
+msgid "Hire"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:81
+msgid "View CV"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:90
+msgid "&mdash; Change Stage &mdash;"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:95
+msgid "Move"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:101
+msgid "&mdash; Change Status &mdash;"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:106
+#: includes/admin/views/view-applicant-details.php:376
+msgid "Done"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:122
+#: includes/admin/views/view-applicant-details.php:141
+msgid "Personal Information"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:123
+#: includes/admin/views/view-applicant-details.php:180
+msgid "Resume"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:124
+#: includes/admin/views/view-applicant-details.php:202
+msgid "Exam Detail"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:125
+#: includes/admin/views/view-applicant-details.php:217
+msgid "Comments"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:126
+#: includes/admin/views/view-applicant-details.php:263
+#: includes/class-jobseeker-list-table.php:78
+msgid "Rating"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:127
+#: includes/admin/views/view-applicant-details.php:323
+#: includes/functions-recruitment.php:606
+msgid "Interview"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:128
+msgid "Todo"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:137
+msgid "Candidate Profile"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:186
+#: includes/admin/views/view-applicant-details.php:191
+msgid "Your browser does not support iframes."
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:195
+msgid "No Resume Found!"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:207
+msgid "Q"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:208
+msgid "A"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:246
+msgid "says:"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:268
+msgid "Overall Rating"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:274
+msgid "Bad"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:275
+msgid "Average"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:276
+msgid "Good"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:277
+msgid "Super"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:278
+msgid "Excellent"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:298
+msgid " rated "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:325
+msgid "No interview set"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:332
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:336
+#: includes/class-hr-questionnaire.php:86 includes/class-recruitment.php:150
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:340
+msgid "Interviewers : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:342
+msgid "Date and Time : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:344
+msgid "Detail : "
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:361
+msgid "To-Do List"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:363
+msgid "No To-do set"
+msgstr ""
+
+#: includes/admin/views/view-applicant-details.php:372
+msgid "Todo handlers : "
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:19
+msgid "Fill below fields to make him an employee"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:93
+msgid "Source of Hire"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:109
+msgid "Pay Rate"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:117
+msgid "Work Phone"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:125
+msgid "Designation"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:142
+msgid "Reporting To"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:159
+msgid "Employee Status"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:175
+msgid "Date of Hire"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:190
+msgid "Pay Type"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:205
+#: includes/functions-recruitment.php:114
+msgid "Mobile"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:213
+#: includes/functions-recruitment.php:121
+msgid "Other Email"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:221
+#: includes/functions-recruitment.php:128
+msgid "Nationality"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:236
+#: includes/functions-recruitment.php:135
+msgid "Marital Status"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:252
+#: includes/functions-recruitment.php:146
+msgid "Hobbies"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:260
+#: includes/functions-recruitment.php:153
+msgid "Address"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:286
+#: includes/functions-recruitment.php:167
+msgid "Date of Birth"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:300
+#: includes/functions-recruitment.php:174
+msgid "Gender"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:316
+#: includes/functions-recruitment.php:184
+msgid "Driving License"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:329
+#: includes/functions-recruitment.php:191
+msgid "Website"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:343
+#: includes/functions-recruitment.php:198
+msgid "Biography"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:362
+msgid "Send a welcome email"
+msgstr ""
+
+#: includes/admin/views/view-make-employee.php:376
+msgid "Hire employee"
+msgstr ""
+
+#: includes/class-form-handler.php:422 includes/class-form-handler.php:468
+#: includes/class-form-handler.php:506 includes/class-form-handler.php:545
+#: includes/class-form-handler.php:614
+msgid "Cheating?"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:32 includes/class-recruitment.php:28
+msgid "-- Select --"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:33 includes/class-recruitment.php:28
+msgid "All Employees"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:34 includes/class-recruitment.php:28
+msgid "Selected Employee"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:58
+#: includes/class-hr-questionnaire.php:81
+#: includes/class-hr-questionnaire.php:82
+msgid "HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:83
+#: includes/class-hr-questionnaire.php:358
+msgid "HR Recruitment"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:84
+msgid "Add HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:85
+msgid "Add New HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:87
+msgid "Edit HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:88
+msgid "New HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:89
+#: includes/class-hr-questionnaire.php:90
+msgid "View HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:91
+msgid "Search HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:92
+msgid "No HR Questionnaire Found"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:93
+msgid "No HR Questionnaire found in trash"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:94
+msgid "Parent HR Questionnaire"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:109
+msgid "Questionnaire Settings"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:148
+msgid "Add New Question"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:200
+msgid "Question No"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:208
+#: includes/class-hr-questionnaire.php:210
+msgid "Question"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:218
+msgid "This is a required field"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:225
+msgid "Field Type"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:237
+msgid "Remove"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:244
+msgid "Add Option"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:250
+msgid "Help Text"
+msgstr ""
+
+#: includes/class-hr-questionnaire.php:252
+msgid "Enter your helper text"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:41
+msgid "Filter by Status"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:43
+msgid "- Select All -"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:49
+msgid "Filter"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:63
+msgid "No jobseeker found."
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:76
+msgid "Date"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:79
+msgid "Applied Job"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:80
+#: includes/class-setup-wizard.php:62
+msgid "Stage"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:82
+#: includes/class-recruitment.php:653
+msgid "Status"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:83
+msgid "Action"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:115
+msgid ""
+"<a class=\"fa\" href=\"%s\"><span class=\"dashicons "
+"dashicons-visibility\"></span></a> | <a class=\"fa\" href=\"%s\"><span "
+"class=\"dashicons dashicons-email-alt\"></span></a><div>%s</div>"
+msgstr ""
+
+#: includes/class-jobseeker-list-table.php:166
+msgid "Send Email"
+msgstr ""
+
+#: includes/class-rec-ajax.php:205
+msgid "list not found!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:218
+msgid "You are not allowed"
+msgstr ""
+
+#: includes/class-rec-ajax.php:245
+msgid "Comment cannot be empty"
+msgstr ""
+
+#: includes/class-rec-ajax.php:331
+msgid "Status updated successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:347
+msgid "Status posted successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:373
+msgid "Rating updated successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:389
+msgid "Rating posted successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:524 includes/class-rec-ajax.php:720
+msgid "First name is empty"
+msgstr ""
+
+#: includes/class-rec-ajax.php:526 includes/class-rec-ajax.php:722
+msgid "First name must only contain letters and space!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:528 includes/class-rec-ajax.php:724
+msgid "Last name must only contain letters and space!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:530 includes/class-rec-ajax.php:726
+msgid "Last name is empty"
+msgstr ""
+
+#: includes/class-rec-ajax.php:532 includes/class-rec-ajax.php:728
+msgid "Invalid Email"
+msgstr ""
+
+#: includes/class-rec-ajax.php:534 includes/class-rec-ajax.php:730
+msgid "E-mail address already exist"
+msgstr ""
+
+#: includes/class-rec-ajax.php:536
+msgid "Please upload your cv ( .doc, .docx or .pdf file only )"
+msgstr ""
+
+#: includes/class-rec-ajax.php:538
+msgid "Incorrect Captcha"
+msgstr ""
+
+#: includes/class-rec-ajax.php:542
+msgid "File size is greater than 2MB"
+msgstr ""
+
+#: includes/class-rec-ajax.php:544
+msgid "Please upload doc, pdf or docx only"
+msgstr ""
+
+#: includes/class-rec-ajax.php:662
+msgid "A new applicant has been applied"
+msgstr ""
+
+#: includes/class-rec-ajax.php:670
+msgid "Your application has been received successfully. Thank you for applying."
+msgstr ""
+
+#: includes/class-rec-ajax.php:732
+msgid "Please upload your cv ( .doc or .pdf file only )"
+msgstr ""
+
+#: includes/class-rec-ajax.php:804
+msgid "Thank you for applying"
+msgstr ""
+
+#: includes/class-rec-ajax.php:822
+msgid "You did not select any applicant to send email"
+msgstr ""
+
+#: includes/class-rec-ajax.php:824
+msgid "Subject cannot be empty"
+msgstr ""
+
+#: includes/class-rec-ajax.php:826
+msgid "Message cannot be empty"
+msgstr ""
+
+#: includes/class-rec-ajax.php:830
+msgid "Email sent successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:860
+msgid "Title cannot be empty!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:862
+msgid "Please assign user for this todo!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:864
+msgid "invalid deadline - pick today or any next day"
+msgstr ""
+
+#: includes/class-rec-ajax.php:912
+msgid "To-do created successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1032
+msgid "To-Do deleted successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1034
+msgid "To-Do deleted operation failed"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1112 includes/class-rec-ajax.php:1295
+msgid "Please input interviewer for this interview!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1114 includes/class-rec-ajax.php:1297
+msgid "Interview date cannot less than today!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1160
+msgid "Interview created successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1235
+msgid "Wrong move to delete!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1259
+msgid "Interview deleted successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1293
+msgid "Interview ID not available!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1353
+msgid "Interview updated successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1396
+msgid "something went wrong!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1434
+msgid ""
+"This Stage have candidate(s), so you cannot delete it now! You can delete "
+"this stage only after moving them(candidate) to other stage(s)"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1436
+msgid "At-least one stage required"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1449 includes/class-rec-ajax.php:1575
+msgid "Stage deleted successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1478 includes/class-rec-ajax.php:1516
+msgid "Stage title already exist!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1494 includes/class-rec-ajax.php:1545
+msgid "Stage created successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1496 includes/class-rec-ajax.php:1547
+msgid "Stage title error!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1603
+msgid "Stage changed successfully"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1605 includes/class-rec-ajax.php:1632
+msgid "Something went wrong!"
+msgstr ""
+
+#: includes/class-rec-ajax.php:1630
+msgid "status changed successfully"
+msgstr ""
+
+#: includes/class-recruitment.php:119 includes/class-recruitment.php:145
+#: includes/class-recruitment.php:146 includes/class-recruitment.php:147
+#: wp-erp-recruitment.php:364
+msgid "Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:148
+msgid "Add Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:149
+msgid "Add New Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:151
+msgid "Edit Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:152
+msgid "New Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:153 includes/class-recruitment.php:154
+msgid "View Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:155
+msgid "Search Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:156
+msgid "No Recruitment Found"
+msgstr ""
+
+#: includes/class-recruitment.php:157
+msgid "No Recruitment found in trash"
+msgstr ""
+
+#: includes/class-recruitment.php:158
+msgid "Parent Recruitment"
+msgstr ""
+
+#: includes/class-recruitment.php:170
+msgid "Recruitment Settings"
+msgstr ""
+
+#: includes/class-recruitment.php:173
+msgid "Applicant Personal Fields"
+msgstr ""
+
+#: includes/class-recruitment.php:176 includes/functions-recruitment.php:865
+msgid "Hiring workflow"
+msgstr ""
+
+#: includes/class-recruitment.php:179
+msgid "Set Question For This Job"
+msgstr ""
+
+#: includes/class-recruitment.php:294
+msgid "Vacancy"
+msgstr ""
+
+#: includes/class-recruitment.php:649 includes/class-recruitment.php:650
+msgid "Job Title"
+msgstr ""
+
+#: includes/class-recruitment.php:651
+msgid "Applicants"
+msgstr ""
+
+#: includes/class-recruitment.php:652
+msgid "Hiring Lead"
+msgstr ""
+
+#: includes/class-recruitment.php:654
+msgid "Created On"
+msgstr ""
+
+#: includes/class-recruitment.php:655
+msgid "Expire Date"
+msgstr ""
+
+#: includes/class-recruitment.php:693
+msgid "Open"
+msgstr ""
+
+#: includes/class-recruitment.php:695
+msgid "On Hold"
+msgstr ""
+
+#: includes/class-recruitment.php:697
+msgid "Draft"
+msgstr ""
+
+#: includes/class-recruitment.php:716
+msgid "No Lead found"
+msgstr ""
+
+#: includes/class-setup-wizard.php:52
+msgid "Introduction"
+msgstr ""
+
+#: includes/class-setup-wizard.php:57 includes/class-setup-wizard.php:200
+msgid "Job Description"
+msgstr ""
+
+#: includes/class-setup-wizard.php:67
+msgid "Designations"
+msgstr ""
+
+#: includes/class-setup-wizard.php:72
+msgid "Work Days"
+msgstr ""
+
+#: includes/class-setup-wizard.php:77
+msgid "Ready!"
+msgstr ""
+
+#: includes/class-setup-wizard.php:119
+msgid "WP ERP - Recruitment &rsaquo; Setup Wizard"
+msgstr ""
+
+#: includes/class-setup-wizard.php:135
+msgid "Return to the WordPress Dashboard"
+msgstr ""
+
+#: includes/class-setup-wizard.php:176
+msgid "Continue"
+msgstr ""
+
+#: includes/class-setup-wizard.php:177
+msgid "Skip this step"
+msgstr ""
+
+#: includes/class-setup-wizard.php:188
+msgid "Welcome to WP ERP - Recruitment!"
+msgstr ""
+
+#: includes/class-setup-wizard.php:189
+msgid ""
+"Thank you for choosing WP-ERP Recruitment. An easier way to manage or track "
+"your applicant! This quick setup wizard will help you configure the basic "
+"settings of opening. <strong>It’s partially optional and shouldn’t take "
+"longer than two minutes.</strong>"
+msgstr ""
+
+#: includes/class-setup-wizard.php:190
+msgid ""
+"No time right now? If you don’t want to go through the wizard, you can skip "
+"and return to the WordPress dashboard. Come back anytime if you change your "
+"mind!"
+msgstr ""
+
+#: includes/class-setup-wizard.php:192
+msgid "Let's Go!"
+msgstr ""
+
+#: includes/class-setup-wizard.php:193
+msgid "Not right now"
+msgstr ""
+
+#: includes/class-setup-wizard.php:205
+msgid "Opening Title"
+msgstr ""
+
+#: includes/class-setup-wizard.php:249
+msgid "Hiring Workflow"
+msgstr ""
+
+#: includes/class-setup-wizard.php:254
+msgid ""
+"Stages reflect the step in your hiring process for your company. e.g. "
+"Screening, Phone Interview, Face to face Interview, etc. "
+msgstr ""
+
+#: includes/class-setup-wizard.php:318
+msgid "Designation Setup"
+msgstr ""
+
+#: includes/class-setup-wizard.php:323
+msgid ""
+"Create some designations for your company. e.g. Manager, Senior Developer, "
+"Marketing Manager, Support Executive, etc. "
+msgstr ""
+
+#: includes/class-setup-wizard.php:324
+msgid "Leave empty for not to create any designations."
+msgstr ""
+
+#: includes/class-setup-wizard.php:330 includes/class-setup-wizard.php:333
+msgid "Designation name"
+msgstr ""
+
+#: includes/class-setup-wizard.php:335
+msgid "Add New"
+msgstr ""
+
+#: includes/class-setup-wizard.php:369
+msgid "Full Day"
+msgstr ""
+
+#: includes/class-setup-wizard.php:370
+msgid "Half Day"
+msgstr ""
+
+#: includes/class-setup-wizard.php:371
+msgid "Non-working Day"
+msgstr ""
+
+#: includes/class-setup-wizard.php:374
+msgid "Monday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:375
+msgid "Tuesday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:376
+msgid "Wednesday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:377
+msgid "Thursday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:378
+msgid "Friday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:379
+msgid "Saturday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:380
+msgid "Sunday"
+msgstr ""
+
+#: includes/class-setup-wizard.php:383
+msgid "Workdays Setup"
+msgstr ""
+
+#: includes/class-setup-wizard.php:429
+msgid "Your Site is Ready!"
+msgstr ""
+
+#: includes/class-setup-wizard.php:433
+msgid "Next Steps &rarr;"
+msgstr ""
+
+#: includes/class-setup-wizard.php:435
+msgid "Add your employees!"
+msgstr ""
+
+#: includes/emails/class-email-candidate-report.php:17
+msgid "Candidate Repost."
+msgstr ""
+
+#: includes/emails/class-email-new-interview.php:16
+msgid "New interview Assigned"
+msgstr ""
+
+#: includes/emails/class-email-new-interview.php:17
+msgid "New interview notification."
+msgstr ""
+
+#: includes/emails/class-email-new-interview.php:19
+msgid "Interview notification"
+msgstr ""
+
+#: includes/emails/class-email-new-interview.php:20
+msgid "Interview Notification"
+msgstr ""
+
+#: includes/emails/class-email-new-todo.php:16
+msgid "New To-do Assigned"
+msgstr ""
+
+#: includes/emails/class-email-new-todo.php:17
+msgid "New To-do notification."
+msgstr ""
+
+#: includes/emails/class-email-new-todo.php:19
+msgid "To-do notification"
+msgstr ""
+
+#: includes/emails/class-email-new-todo.php:20
+msgid "To-do Notification"
+msgstr ""
+
+#: includes/emails/class-email-opening-report.php:17
+msgid "Opening Repost."
+msgstr ""
+
+#: includes/functions-recruitment.php:9
+msgid "Schedule Interview"
+msgstr ""
+
+#: includes/functions-recruitment.php:10
+msgid "Put on Hold"
+msgstr ""
+
+#: includes/functions-recruitment.php:11
+msgid "Checking Reference"
+msgstr ""
+
+#: includes/functions-recruitment.php:12
+msgid "Not a Fit"
+msgstr ""
+
+#: includes/functions-recruitment.php:13
+msgid "Decline Offer"
+msgstr ""
+
+#: includes/functions-recruitment.php:14
+msgid "Not Qualified"
+msgstr ""
+
+#: includes/functions-recruitment.php:15
+msgid "Over Qualified"
+msgstr ""
+
+#: includes/functions-recruitment.php:16
+msgid "Archive"
+msgstr ""
+
+#: includes/functions-recruitment.php:17
+msgid "Short Listed"
+msgstr ""
+
+#: includes/functions-recruitment.php:18
+msgid "Reject"
+msgstr ""
+
+#: includes/functions-recruitment.php:52
+msgid "Fresher"
+msgstr ""
+
+#: includes/functions-recruitment.php:53
+msgid "1 - 3 Year"
+msgstr ""
+
+#: includes/functions-recruitment.php:54
+msgid "3 - 5 Years"
+msgstr ""
+
+#: includes/functions-recruitment.php:55
+msgid "5 - 7 Years"
+msgstr ""
+
+#: includes/functions-recruitment.php:56
+msgid "7 - 10 Years"
+msgstr ""
+
+#: includes/functions-recruitment.php:57
+msgid "Above 10 Years"
+msgstr ""
+
+#: includes/functions-recruitment.php:80
+msgid "enter email address"
+msgstr ""
+
+#: includes/functions-recruitment.php:87
+msgid "only doc, pdf or docx file allowed and file size will be less than 2MB"
+msgstr ""
+
+#: includes/functions-recruitment.php:106
+msgid "Cover Letter"
+msgstr ""
+
+#: includes/functions-recruitment.php:111
+msgid "Why do you think you are a good fit for this job?"
+msgstr ""
+
+#: includes/functions-recruitment.php:139
+msgid "Single"
+msgstr ""
+
+#: includes/functions-recruitment.php:140
+msgid "Married"
+msgstr ""
+
+#: includes/functions-recruitment.php:141
+msgid "Widowed"
+msgstr ""
+
+#: includes/functions-recruitment.php:178
+msgid "Male"
+msgstr ""
+
+#: includes/functions-recruitment.php:179
+msgid "Female"
+msgstr ""
+
+#: includes/functions-recruitment.php:187
+msgid "enter driving license"
+msgstr ""
+
+#: includes/functions-recruitment.php:203
+msgid "Let us know a little bit about yourself"
+msgstr ""
+
+#: includes/functions-recruitment.php:400
+msgid "- Select Stage -"
+msgstr ""
+
+#: includes/functions-recruitment.php:431
+msgid "15 minutes"
+msgstr ""
+
+#: includes/functions-recruitment.php:432
+msgid "30 minutes"
+msgstr ""
+
+#: includes/functions-recruitment.php:433
+msgid "45 minutes"
+msgstr ""
+
+#: includes/functions-recruitment.php:434
+msgid "1 hour"
+msgstr ""
+
+#: includes/functions-recruitment.php:435
+msgid "1 hour 30 minutes"
+msgstr ""
+
+#: includes/functions-recruitment.php:436
+msgid "2 hours"
+msgstr ""
+
+#: includes/functions-recruitment.php:605
+msgid "Screening"
+msgstr ""
+
+#: includes/functions-recruitment.php:607
+msgid "Face to Face Interview"
+msgstr ""
+
+#: includes/functions-recruitment.php:608
+msgid "Made an Offer"
+msgstr ""
+
+#: includes/functions-recruitment.php:837
+msgid "Congrats! New employee has been created successfully"
+msgstr ""
+
+#: includes/functions-recruitment.php:851
+msgid "Hiring lead cannot be empty!"
+msgstr ""
+
+#: includes/functions-recruitment.php:864
+msgid "Job description"
+msgstr ""
+
+#: includes/functions-recruitment.php:868
+msgid "Question set"
+msgstr ""
+
+#: templates/job-application-form.php:49
+msgid "Please answer the questions below first"
+msgstr ""
+
+#: templates/job-application-form.php:121
+msgid "Please enter your personal information"
+msgstr ""
+
+#: templates/job-application-form.php:280
+msgid "What's %d + %d = ?"
+msgstr ""
+
+#: templates/shortcode-job-list.php:14
+msgid "Job List"
+msgstr ""
+
+#: templates/shortcode-job-list.php:16
+msgid "&mdash; Show all &mdash;"
+msgstr ""
+
+#: templates/shortcode-job-list.php:55
+msgid "Experience"
+msgstr ""
+
+#: templates/shortcode-job-list.php:59
+msgid "Deadline: "
+msgstr ""
+
+#: templates/shortcode-job-list.php:60
+msgid "days left"
+msgstr ""
+
+#: templates/single-template.php:25
+msgid "(allows remote)"
+msgstr ""
+
+#: templates/single-template.php:38
+msgid "No. of Vacancies: %s"
+msgstr ""
+
+#: templates/single-template.php:43
+msgid "Experience: %s"
+msgstr ""
+
+#: templates/single-template.php:49
+msgid "Posted %s ago"
+msgstr ""
+
+#: templates/single-template.php:60
+msgid "<strong><em>Application Deadline</em></strong>: %s"
+msgstr ""
+
+#: templates/social-sharing.php:2
+msgid "Share this job"
+msgstr ""
+
+#: wp-erp-recruitment.php:270
+msgid "Create a new To-do"
+msgstr ""
+
+#: wp-erp-recruitment.php:271
+msgid "Are you sure you want to delete this to-do?"
+msgstr ""
+
+#: wp-erp-recruitment.php:272 wp-erp-recruitment.php:282
+#: wp-erp-recruitment.php:288
+msgid "Create"
+msgstr ""
+
+#: wp-erp-recruitment.php:275
+msgid "To-do Detail"
+msgstr ""
+
+#: wp-erp-recruitment.php:276
+msgid "Close"
+msgstr ""
+
+#: wp-erp-recruitment.php:279
+msgid "Create a new Interview"
+msgstr ""
+
+#: wp-erp-recruitment.php:280
+msgid "Update Interview"
+msgstr ""
+
+#: wp-erp-recruitment.php:281
+msgid "Are you sure you want to delete this interview?"
+msgstr ""
+
+#: wp-erp-recruitment.php:283
+msgid "Update"
+msgstr ""
+
+#: wp-erp-recruitment.php:285
+msgid "Are you sure you want to delete this stage?"
+msgstr ""
+
+#: wp-erp-recruitment.php:291
+msgid "Candidate added successfully"
+msgstr ""
+
+#: wp-erp-recruitment.php:295
+msgid "Given stage name already exist!"
+msgstr ""
+
+#: wp-erp-recruitment.php:296
+msgid "You cannot uncheck it because this stage has candidate!"
+msgstr ""
+
+#: wp-erp-recruitment.php:297
+msgid "Please enter stage title"
+msgstr ""
+
+#: wp-erp-recruitment.php:298
+msgid "Please select at least one stage (A stage has been auto-selected)"
+msgstr ""
+
+#: wp-erp-recruitment.php:301
+msgid "Hiring lead cannot be empty. Please select a hiring lead."
+msgstr ""
+
+#: wp-erp-recruitment.php:302
+msgid "Department cannot be empty. Please select a department name."
+msgstr ""
+
+#: wp-erp-recruitment.php:303
+msgid "Employment type cannot be empty. Please select an employment type."
+msgstr ""
+
+#: wp-erp-recruitment.php:304
+msgid "Minimum experience cannot be empty. Please select minimum experience."
+msgstr ""
+
+#: wp-erp-recruitment.php:305
+msgid "Expire date cannot be empty. Please select expire date."
+msgstr ""
+
+#: wp-erp-recruitment.php:306
+msgid "Location cannot be empty. Please enter location."
+msgstr ""
+
+#: wp-erp-recruitment.php:307
+msgid "Vacancy cannot be empty. Please enter vacancy number."
+msgstr ""
+
+#: wp-erp-recruitment.php:340
+msgid "New JobSeeker"
+msgstr ""
+
+#: wp-erp-recruitment.php:341
+msgid "Submit"
+msgstr ""
+
+#: wp-erp-recruitment.php:344
+msgid "Are you sure?"
+msgstr ""
+
+#: wp-erp-recruitment.php:367
+msgid "Job Opening"
+msgstr ""
+
+#: wp-erp-recruitment.php:370
+msgid "Add Opening"
+msgstr ""
+
+#: wp-erp-recruitment.php:379
+msgid "Question Sets"
+msgstr ""
+
+#: wp-erp-recruitment.php:382
+msgid "Jobseeker List"
+msgstr ""
+
+#: wp-erp-recruitment.php:382
+msgid "Job Seeker List"
+msgstr ""
+
+#: wp-erp-recruitment.php:388
+msgid "Jobseeker List to email"
+msgstr ""
+
+#: wp-erp-recruitment.php:388
+msgid "Job Seeker List to email"
+msgstr ""
+
+#: wp-erp-recruitment.php:394
+msgid "Candidate Reports"
+msgstr ""
+
+#: wp-erp-recruitment.php:397
+msgid "CSV Reports"
+msgstr ""
+
+#: wp-erp-recruitment.php:403
+msgid "Make Employee"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WP ERP - Recruitment"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://wperp.com/downloads/recruitment/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Recruitment solution for WP-ERP. Create job posting and hire employee for "
+"your company."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "weDevs"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://wedevs.com"
+msgstr ""
