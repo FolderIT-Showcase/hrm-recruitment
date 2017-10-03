@@ -11,6 +11,7 @@ function erp_rec_get_hiring_status() {
 
     $query = "SELECT status.id, status.code, status.title, status.description
       FROM {$wpdb->prefix}erp_application_status as status
+      WHERE internal = 0
       ORDER BY status_order, title";
   
     $status = $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
