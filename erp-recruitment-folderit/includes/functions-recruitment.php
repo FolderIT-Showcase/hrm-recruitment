@@ -4,19 +4,22 @@
  * get the hiring status
  * @return array
  */
-function erp_rec_get_hiring_status() {
-    $hr_status = array(
-        'schedule_interview' => __( 'Schedule Interview', 'wp-erp-rec' ),
-        'put_on_hold'        => __( 'Put on Hold', 'wp-erp-rec' ),
-        'checking_reference' => __( 'Checking Reference', 'wp-erp-rec' ),
-        'not_a_fit'          => __( 'Not a Fit', 'wp-erp-rec' ),
-        'decline_offer'      => __( 'Decline Offer', 'wp-erp-rec' ),
-        'not_qualified'      => __( 'Not Qualified', 'wp-erp-rec' ),
-        'over_qualified'     => __( 'Over Qualified', 'wp-erp-rec' ),
-        'archive'            => __( 'Archive', 'wp-erp-rec' ),
-        'shortlisted'        => __( 'Short Listed', 'wp-erp-rec' ),
-        'rejected'           => __( 'Reject', 'wp-erp-rec' )
-    );
+function erp_rec_get_hiring_status() {  
+    $hr_status = array();
+  
+    global $wpdb;
+
+    $query = "SELECT status.id, status.code, status.title, status.description
+      FROM {$wpdb->prefix}erp_application_status as status
+      ORDER BY status_order, title";
+  
+    $status = $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
+  
+    foreach( $status as $row) {
+    
+      $hr_status[$row['code']] = $row['title'];
+    
+    }
 
     return apply_filters( 'erp_hiring_status', $hr_status );
 }
@@ -909,9 +912,12 @@ function erp_rec_show_notice() {
     if ( isset( $_REQUEST['page'] ) == 'erp-hr-employee' && isset( $_REQUEST['action'] ) == 'view' && isset( $_REQUEST['id'] ) ) {
         if ( $_REQUEST['page'] == 'erp-hr-employee' && $_REQUEST['action'] == 'view' && is_numeric( $_REQUEST['id'] ) && $_REQUEST['id'] > 0 && isset( $_REQUEST['message'] ) ) {
             if ( $_REQUEST['message'] == 1 ) { ?>
-                <div class="notice notice-success is-dismissible">
-                <p><?php _e( 'Congrats! New employee has been created successfully', 'wp-erp-rec' ); ?></p>
-                </div><?php }
+  <div class="notice notice-success is-dismissible">
+    <p>
+      <?php _e( 'Congrats! New employee has been created successfully', 'wp-erp-rec' ); ?>
+    </p>
+  </div>
+  <?php }
         }
     }
 }
@@ -923,10 +929,12 @@ function erp_rec_show_notice() {
  */
 function erp_rec_show_post_error_notice() {
     if ( isset( $_REQUEST['action'] ) == 'edit' && isset( $_REQUEST['post_error_message'] ) == 1 ) { ?>
-        <div class="notice notice-error is-dismissible">
-            <p><?php _e( 'Hiring lead cannot be empty!', 'wp-erp-rec' ); ?></p>
-        </div>
-    <?php }
+  <div class="notice notice-error is-dismissible">
+    <p>
+      <?php _e( 'Hiring lead cannot be empty!', 'wp-erp-rec' ); ?>
+    </p>
+  </div>
+  <?php }
 }
 
 /*

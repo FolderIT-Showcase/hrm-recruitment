@@ -191,6 +191,18 @@ class WeDevs_ERP_Recruitment_Installer {
                  PRIMARY KEY (`id`),
                  UNIQUE (`title`)
              ) $collate;",
+          
+            "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_status` (
+                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                 `code` varchar(50) DEFAULT NULL,
+                 `title` varchar(50) DEFAULT NULL,
+                 `description` text DEFAULT NULL,
+                 `status_order` int(11) DEFAULT 0,				 
+                 `created_by` int(11) DEFAULT NULL,
+                 `created_at` datetime DEFAULT NULL,
+                 `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                 PRIMARY KEY (`id`)
+             ) $collate;",
 
             "INSERT INTO `{$wpdb->prefix}erp_application_stage` (`id`, `title`, `created_by`, `created_at`)
              VALUES (NULL, 'Screening', $current_user_id, NOW()),
