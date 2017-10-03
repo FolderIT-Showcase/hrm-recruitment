@@ -36,7 +36,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
         $jobid = (isset($_REQUEST['jobid'])) ? $_REQUEST['jobid'] : 0;
 
 ?>
-<div class="alignleft actions">
+  <div class="alignleft actions">
 
     <label class="screen-reader-text" for="new_role"><?php _e('Filter by Status', 'wp-erp-rec') ?></label>
     <select name="filter_status" id="filter_status_select">
@@ -109,6 +109,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
                         ON app_iv.interview_internal_type_id = types.id
                         WHERE app_iv.application_id='%d'";
         $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['id'] ), ARRAY_A );
+      
+        $status = erp_rec_get_hiring_status();
 
         $interview_rrhh = "";
         $interview_tech = "";
@@ -149,7 +151,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
                 $email_action_url = 'mailto:' . $item['email'];
                 return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $email_action_url, erp_people_get_meta($item['id'], 'ip', true ) );
             case 'status':
-                return ucwords(str_replace('_',' ',$item['status']));
+                return ucwords(str_replace('_',' ',$status[$item['status']]));
             default:
         }
         return $item[$column_name];
@@ -255,12 +257,12 @@ class Jobseeker_List_Table extends \WP_List_Table {
         }
 
     ?>
-    <p class="search-box">
+      <p class="search-box">
         <label class="screen-reader-text" for="<?php echo $input_id ?>"><?php echo $text; ?>:</label>
-        <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>"/>
+        <input type="search" id="<?php echo $input_id ?>" name="s" value="<?php _admin_search_query(); ?>" />
         <?php submit_button($text, 'button', 'recruitment_search', false, array('id' => 'search-submit')); ?>
-    </p>
-    <?php
+      </p>
+      <?php
     }
 
     /**
