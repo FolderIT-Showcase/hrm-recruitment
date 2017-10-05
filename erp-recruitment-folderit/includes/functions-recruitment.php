@@ -14,7 +14,7 @@ function erp_rec_get_hiring_status() {
       WHERE internal = 0
       ORDER BY status_order, title";
   
-    $status = $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
+    $status = $wpdb->get_results( $query, ARRAY_A );
   
     foreach( $status as $row) {
     
@@ -462,7 +462,8 @@ function erp_rec_get_app_stage( $application_id ) {
                 FROM {$wpdb->prefix}erp_application as app
                 LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
                 ON app.stage=base_stage.id
-                WHERE app.id='%d'";
+                WHERE app.id='%d'
+                ORDER BY base_stage.stage_order";
     return $wpdb->get_var( $wpdb->prepare( $query, $application_id ) );
 }
 
@@ -615,7 +616,7 @@ function erp_rec_has_status( $applicant_id ) {
 */
 function erp_rec_check_duplicate_stage( $stage_title ) {
     global $wpdb;
-    $query = "SELECT id FROM {$wpdb->prefix}erp_application_stage WHERE title='%s'";
+    $query = "SELECT id FROM {$wpdb->prefix}erp_application_stage WHERE title='%s' ORDER BY stage_order";
 
     if ( count( $wpdb->get_results( $wpdb->prepare( $query, $stage_title ), ARRAY_A ) ) > 0 ) {
         return true;
@@ -705,7 +706,8 @@ function erp_rec_get_application_stages( $application_id ) {
                 ON stage.jobid = application.job_id
                 LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
                 ON base_stage.id = stage.stageid
-                WHERE application.id=%d";
+                WHERE application.id=%d
+                ORDER BY base_stage.stage_order";
     return $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
 }
 
@@ -721,7 +723,8 @@ function erp_rec_get_this_job_stages( $job_id ) {
                 FROM {$wpdb->prefix}erp_application_job_stage_relation as stage
                 LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
                 ON stage.stageid=base_stage.id
-                WHERE stage.jobid=%d";
+                WHERE stage.jobid=%d
+                ORDER BY base_stage.stage_order";
     return $wpdb->get_results( $wpdb->prepare( $query, $job_id ), ARRAY_A );
 }
 
@@ -806,13 +809,14 @@ function erp_rec_get_stage( $jobid ) {
                           ( SELECT COUNT(id)
                             FROM {$wpdb->prefix}erp_application
                             WHERE job_id={$jobid} AND stage=sid ) as candidate_number
-                          FROM {$wpdb->prefix}erp_application_stage as stage ORDER BY stage.id";
+                          FROM {$wpdb->prefix}erp_application_stage as stage ORDER BY stage.stage_order";
             return $wpdb->get_results( $query, ARRAY_A );
         } else {
             $query = "SELECT stage.id as sid, stage.title
                 FROM {$wpdb->prefix}erp_application_stage as stage
                 LEFT JOIN {$wpdb->base_prefix}users as user
-                ON stage.created_by = user.ID";
+                ON stage.created_by = user.ID
+                ORDER BY stage.stage_order";
 
             return $wpdb->get_results( $query, ARRAY_A );
         }
@@ -829,7 +833,7 @@ function erp_rec_get_stage( $jobid ) {
 function erp_rec_get_stages( $jobid ) {
     global $wpdb;
     if ( isset( $jobid ) ) {
-        $query      = "SELECT stage.id as sid, stage.title as title FROM {$wpdb->prefix}erp_application_stage as stage ORDER BY sid";
+        $query      = "SELECT stage.id as sid, stage.title as title FROM {$wpdb->prefix}erp_application_stage as stage ORDER BY stage.stage_order";
         $stages     = $wpdb->get_results( $query, ARRAY_A );
 
         $query  = "SELECT st_rel.stageid as sid, stage.title as title
@@ -837,7 +841,7 @@ function erp_rec_get_stages( $jobid ) {
                   LEFT JOIN {$wpdb->prefix}erp_application_job_stage_relation as st_rel
                   ON stage.id=st_rel.stageid
                   WHERE st_rel.jobid=%d
-                  ORDER BY sid";
+                  ORDER BY stage.stage_order";
         $st_rel = $wpdb->get_results( $wpdb->prepare( $query, $jobid ), ARRAY_A );
 
         $final_selected_stage = [ ];
