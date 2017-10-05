@@ -255,6 +255,10 @@ class WeDevs_ERP_Recruitment {
                 'submit'       => __( 'Create', 'wp-erp-rec' ),
                 'update'       => __( 'Update', 'wp-erp-rec' )
             ],
+            'cv_upload_popup'                => [
+                'title'        => __( 'Attach CV', 'wp-erp-rec' ),
+                'submit'       => __( 'Upload', 'wp-erp-rec' )
+            ],
             'stage_del_confirm'              => __( 'Are you sure you want to delete this stage?', 'wp-erp-rec' ),
             'add_candidate_popup'            => [
                 'title'  => __( 'Add Candidate', 'wp-erp-rec' ),
@@ -546,6 +550,7 @@ class WeDevs_ERP_Recruitment {
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/interview-template.php', 'erp-rec-interview-template' );
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/feedback-template.php', 'erp-rec-feedback-template' );
+                erp_get_js_template( WPERP_REC_JS_TMPL . '/cv-upload-template.php', 'erp-rec-cv-upload-template' );
                 break;
             case 'job-openings_page_todo-calendar':
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );

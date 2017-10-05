@@ -48,6 +48,9 @@ class Ajax_Handler {
         $this->action( 'wp_ajax_erp-rec-del-interview', 'delete_interview' );
         $this->action( 'wp_ajax_erp-rec-update-interview', 'update_interview' );
         $this->action( 'wp_ajax_erp-rec-update-feedback', 'update_feedback' );
+      
+        // cv
+        $this->action( 'wp_ajax_erp-rec-upload-cv', 'upload_cv' );
 
         // stage
         $this->action( 'wp_ajax_erp-rec-get-stage', 'rec_get_stage' );
@@ -1451,6 +1454,62 @@ class Ajax_Handler {
             $this->send_success( __( 'Interview updated successfully', 'wp-erp-rec' ) );
         }
     }
+  
+    /**
+     * Upload a CV
+     *
+     * @since  1.0.2
+     *
+     * @return void
+     */
+    public function upload_cv() {
+        global $wpdb;
+        $this->verify_nonce( 'recruitment_form_builder_nonce' );
+
+        $params = [ ];
+        parse_str( $_POST['fdata'], $params );
+
+        $jobseeker_id = $params['attachment_applicant_id'];
+      
+        if ( isset( $_FILES['erp_rec_file']['name'] ) ) {
+          $file_name             = $_FILES['erp_rec_file']['name'];
+          $file_size             = $_FILES['erp_rec_file']['size']; //size in killobites
+          $file_type             = $_FILES['erp_rec_file']['type'];
+          $file_tmp_name         = $_FILES['erp_rec_file']['tmp_name'];
+          $file_error            = $_FILES['erp_rec_file']['error'];
+          
+          $attach_info['attach_id'] = '';
+
+          // wp way file upload
+          $upload      = array(
+            'name'     => $file_name,
+            'type'     => $file_type,
+            'tmp_name' => $file_tmp_name,
+            'error'    => $file_error,
+            'size'     => $file_size
+          );
+          $attach_info = erp_rec_handle_upload( $upload );
+          
+          //insert applicant attach cv id
+          $data = array(
+            'erp_people_id' => $jobseeker_id,
+            'meta_key'      => 'attach_id',
+            'meta_value'    => $attach_info['attach_id']
+          );
+          
+          $format = array(
+            '%d',
+            '%s',
+            '%s'
+          );
+          
+          $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+          
+          $this->send_success( [ 'message' => __( 'CV Uploaded', 'wp-erp-rec' ) ] );
+        } else {
+          $this->send_error( __( 'No file to upload sent', 'wp-erp-rec' ) );
+        }
+    }
     
     /**
      * Update a feedback
@@ -1869,49 +1928,51 @@ class Ajax_Handler {
         }
 
         ?>
-        <script>
-            ;
-            jQuery( document ).ready( function ( $ ) {
+  <script>
+    ;
+    jQuery(document).ready(function($) {
 
-                $( '#todo-calendar-overview' ).fullCalendar( {
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    editable: false,
-                    eventLimit: true,
-                    events: <?php echo json_encode( $events ); ?>,
-                    eventRender: function ( event, element, calEvent ) {
-                        if ( event.holiday ) {
-                            element.find( '.fc-content' ).find( '.fc-title' ).css( {
-                                'top': '0px',
-                                'left': '3px',
-                                'fontSize': '13px',
-                                'padding': '2px'
-                            } );
-                        }
-                    },
-                    eventClick: function ( event, jsEvent, view ) {
-                        $.erpPopup( {
-                            title: wpErpRec.todo_description_popup.title,
-                            button: wpErpRec.todo_description_popup.close,
-                            id: 'new-todo-popup',
-                            content: wp.template( 'erp-rec-todo-description-template' )().trim(),
-                            extraClass: 'medium',
-                            onReady: function ( modal ) {
-                                $( '#todo-description' ).text( event.title );
-                                $( '#todo-deadline' ).text( event.deadline );
-                                $( '#todo-assigned-user-list' ).text( event.assigned_user_list );
-                            },
-                            onSubmit: function ( modal ) {
-                                modal.closeModal();
-                            }
-                        } );
-                    }
-                } );
-            } );
-        </script><?php
+      $('#todo-calendar-overview').fullCalendar({
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        editable: false,
+        eventLimit: true,
+        events: <?php echo json_encode( $events ); ?>,
+        eventRender: function(event, element, calEvent) {
+          if (event.holiday) {
+            element.find('.fc-content').find('.fc-title').css({
+              'top': '0px',
+              'left': '3px',
+              'fontSize': '13px',
+              'padding': '2px'
+            });
+          }
+        },
+        eventClick: function(event, jsEvent, view) {
+          $.erpPopup({
+            title: wpErpRec.todo_description_popup.title,
+            button: wpErpRec.todo_description_popup.close,
+            id: 'new-todo-popup',
+            content: wp.template('erp-rec-todo-description-template')().trim(),
+            extraClass: 'medium',
+            onReady: function(modal) {
+              $('#todo-description').text(event.title);
+              $('#todo-deadline').text(event.deadline);
+              $('#todo-assigned-user-list').text(event.assigned_user_list);
+            },
+            onSubmit: function(modal) {
+              modal.closeModal();
+            }
+          });
+        }
+      });
+    });
+
+  </script>
+  <?php
         exit;
     }
 
@@ -1951,49 +2012,51 @@ class Ajax_Handler {
         }
 
         ?>
-        <script>
-            ;
-            jQuery( document ).ready( function ( $ ) {
+    <script>
+      ;
+      jQuery(document).ready(function($) {
 
-                $( '#todo-calendar-overdue' ).fullCalendar( {
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    editable: false,
-                    eventLimit: true,
-                    events: <?php echo json_encode( $events ); ?>,
-                    eventRender: function ( event, element, calEvent ) {
-                        if ( event.holiday ) {
-                            element.find( '.fc-content' ).find( '.fc-title' ).css( {
-                                'top': '0px',
-                                'left': '3px',
-                                'fontSize': '13px',
-                                'padding': '2px'
-                            } );
-                        }
-                    },
-                    eventClick: function ( event, jsEvent, view ) {
-                        $.erpPopup( {
-                            title: wpErpRec.todo_description_popup.title,
-                            button: wpErpRec.todo_description_popup.close,
-                            id: 'new-todo-popup',
-                            content: wp.template( 'erp-rec-todo-description-template' )().trim(),
-                            extraClass: 'medium',
-                            onReady: function ( modal ) {
-                                $( '#todo-description' ).text( event.title );
-                                $( '#todo-deadline' ).text( event.deadline );
-                                $( '#todo-assigned-user-list' ).text( event.assigned_user_list );
-                            },
-                            onSubmit: function ( modal ) {
-                                modal.closeModal();
-                            }
-                        } );
-                    }
-                } );
-            } );
-        </script><?php
+        $('#todo-calendar-overdue').fullCalendar({
+          header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+          },
+          editable: false,
+          eventLimit: true,
+          events: <?php echo json_encode( $events ); ?>,
+          eventRender: function(event, element, calEvent) {
+            if (event.holiday) {
+              element.find('.fc-content').find('.fc-title').css({
+                'top': '0px',
+                'left': '3px',
+                'fontSize': '13px',
+                'padding': '2px'
+              });
+            }
+          },
+          eventClick: function(event, jsEvent, view) {
+            $.erpPopup({
+              title: wpErpRec.todo_description_popup.title,
+              button: wpErpRec.todo_description_popup.close,
+              id: 'new-todo-popup',
+              content: wp.template('erp-rec-todo-description-template')().trim(),
+              extraClass: 'medium',
+              onReady: function(modal) {
+                $('#todo-description').text(event.title);
+                $('#todo-deadline').text(event.deadline);
+                $('#todo-assigned-user-list').text(event.assigned_user_list);
+              },
+              onSubmit: function(modal) {
+                modal.closeModal();
+              }
+            });
+          }
+        });
+      });
+
+    </script>
+    <?php
         exit;
     }
 
@@ -2033,49 +2096,51 @@ class Ajax_Handler {
         }
 
         ?>
-        <script>
-            ;
-            jQuery( document ).ready( function ( $ ) {
+      <script>
+        ;
+        jQuery(document).ready(function($) {
 
-                $( '#todo-calendar-today' ).fullCalendar( {
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    editable: false,
-                    eventLimit: true,
-                    events: <?php echo json_encode( $events ); ?>,
-                    eventRender: function ( event, element, calEvent ) {
-                        if ( event.holiday ) {
-                            element.find( '.fc-content' ).find( '.fc-title' ).css( {
-                                'top': '0px',
-                                'left': '3px',
-                                'fontSize': '13px',
-                                'padding': '2px'
-                            } );
-                        }
-                    },
-                    eventClick: function ( event, jsEvent, view ) {
-                        $.erpPopup( {
-                            title: wpErpRec.todo_description_popup.title,
-                            button: wpErpRec.todo_description_popup.close,
-                            id: 'new-todo-popup',
-                            content: wp.template( 'erp-rec-todo-description-template' )().trim(),
-                            extraClass: 'medium',
-                            onReady: function ( modal ) {
-                                $( '#todo-description' ).text( event.title );
-                                $( '#todo-deadline' ).text( event.deadline );
-                                $( '#todo-assigned-user-list' ).text( event.assigned_user_list );
-                            },
-                            onSubmit: function ( modal ) {
-                                modal.closeModal();
-                            }
-                        } );
-                    }
-                } );
-            } );
-        </script><?php
+          $('#todo-calendar-today').fullCalendar({
+            header: {
+              left: 'prev,next today',
+              center: 'title',
+              right: 'month,agendaWeek,agendaDay'
+            },
+            editable: false,
+            eventLimit: true,
+            events: <?php echo json_encode( $events ); ?>,
+            eventRender: function(event, element, calEvent) {
+              if (event.holiday) {
+                element.find('.fc-content').find('.fc-title').css({
+                  'top': '0px',
+                  'left': '3px',
+                  'fontSize': '13px',
+                  'padding': '2px'
+                });
+              }
+            },
+            eventClick: function(event, jsEvent, view) {
+              $.erpPopup({
+                title: wpErpRec.todo_description_popup.title,
+                button: wpErpRec.todo_description_popup.close,
+                id: 'new-todo-popup',
+                content: wp.template('erp-rec-todo-description-template')().trim(),
+                extraClass: 'medium',
+                onReady: function(modal) {
+                  $('#todo-description').text(event.title);
+                  $('#todo-deadline').text(event.deadline);
+                  $('#todo-assigned-user-list').text(event.assigned_user_list);
+                },
+                onSubmit: function(modal) {
+                  modal.closeModal();
+                }
+              });
+            }
+          });
+        });
+
+      </script>
+      <?php
         exit;
     }
 
@@ -2116,48 +2181,50 @@ class Ajax_Handler {
 
         ?>
         <script>
-            ;
-            jQuery( document ).ready( function ( $ ) {
+          ;
+          jQuery(document).ready(function($) {
 
-                $( '#todo-calendar-later' ).fullCalendar( {
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
-                    },
-                    editable: false,
-                    eventLimit: true,
-                    events: <?php echo json_encode( $events ); ?>,
-                    eventRender: function ( event, element, calEvent ) {
-                        if ( event.holiday ) {
-                            element.find( '.fc-content' ).find( '.fc-title' ).css( {
-                                'top': '0px',
-                                'left': '3px',
-                                'fontSize': '13px',
-                                'padding': '2px'
-                            } );
-                        }
-                    },
-                    eventClick: function ( event, jsEvent, view ) {
-                        $.erpPopup( {
-                            title: wpErpRec.todo_description_popup.title,
-                            button: wpErpRec.todo_description_popup.close,
-                            id: 'new-todo-popup',
-                            content: wp.template( 'erp-rec-todo-description-template' )().trim(),
-                            extraClass: 'medium',
-                            onReady: function ( modal ) {
-                                $( '#todo-description' ).text( event.title );
-                                $( '#todo-deadline' ).text( event.deadline );
-                                $( '#todo-assigned-user-list' ).text( event.assigned_user_list );
-                            },
-                            onSubmit: function ( modal ) {
-                                modal.closeModal();
-                            }
-                        } );
-                    }
-                } );
-            } );
-        </script><?php
+            $('#todo-calendar-later').fullCalendar({
+              header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+              },
+              editable: false,
+              eventLimit: true,
+              events: <?php echo json_encode( $events ); ?>,
+              eventRender: function(event, element, calEvent) {
+                if (event.holiday) {
+                  element.find('.fc-content').find('.fc-title').css({
+                    'top': '0px',
+                    'left': '3px',
+                    'fontSize': '13px',
+                    'padding': '2px'
+                  });
+                }
+              },
+              eventClick: function(event, jsEvent, view) {
+                $.erpPopup({
+                  title: wpErpRec.todo_description_popup.title,
+                  button: wpErpRec.todo_description_popup.close,
+                  id: 'new-todo-popup',
+                  content: wp.template('erp-rec-todo-description-template')().trim(),
+                  extraClass: 'medium',
+                  onReady: function(modal) {
+                    $('#todo-description').text(event.title);
+                    $('#todo-deadline').text(event.deadline);
+                    $('#todo-assigned-user-list').text(event.assigned_user_list);
+                  },
+                  onSubmit: function(modal) {
+                    modal.closeModal();
+                  }
+                });
+              }
+            });
+          });
+
+        </script>
+        <?php
         exit;
     }
 
@@ -2227,49 +2294,51 @@ class Ajax_Handler {
             );
         }
         ?>
-        <script>
+          <script>
             ;
-            jQuery( document ).ready( function ( $ ) {
+            jQuery(document).ready(function($) {
 
-                $( '#todo-calendar-this-month' ).fullCalendar( {
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'month,agendaWeek,agendaDay'
+              $('#todo-calendar-this-month').fullCalendar({
+                header: {
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'month,agendaWeek,agendaDay'
+                },
+                editable: false,
+                eventLimit: true,
+                events: <?php echo json_encode( $events ); ?>,
+                eventRender: function(event, element, calEvent) {
+                  if (event.holiday) {
+                    element.find('.fc-content').find('.fc-title').css({
+                      'top': '0px',
+                      'left': '3px',
+                      'fontSize': '13px',
+                      'padding': '2px'
+                    });
+                  }
+                },
+                eventClick: function(event, jsEvent, view) {
+                  $.erpPopup({
+                    title: wpErpRec.todo_description_popup.title,
+                    button: wpErpRec.todo_description_popup.close,
+                    id: 'new-todo-popup',
+                    content: wp.template('erp-rec-todo-description-template')().trim(),
+                    extraClass: 'medium',
+                    onReady: function(modal) {
+                      $('#todo-description').text(event.title);
+                      $('#todo-deadline').text(event.deadline);
+                      $('#todo-assigned-user-list').text(event.assigned_user_list);
                     },
-                    editable: false,
-                    eventLimit: true,
-                    events: <?php echo json_encode( $events ); ?>,
-                    eventRender: function ( event, element, calEvent ) {
-                        if ( event.holiday ) {
-                            element.find( '.fc-content' ).find( '.fc-title' ).css( {
-                                'top': '0px',
-                                'left': '3px',
-                                'fontSize': '13px',
-                                'padding': '2px'
-                            } );
-                        }
-                    },
-                    eventClick: function ( event, jsEvent, view ) {
-                        $.erpPopup( {
-                            title: wpErpRec.todo_description_popup.title,
-                            button: wpErpRec.todo_description_popup.close,
-                            id: 'new-todo-popup',
-                            content: wp.template( 'erp-rec-todo-description-template' )().trim(),
-                            extraClass: 'medium',
-                            onReady: function ( modal ) {
-                                $( '#todo-description' ).text( event.title );
-                                $( '#todo-deadline' ).text( event.deadline );
-                                $( '#todo-assigned-user-list' ).text( event.assigned_user_list );
-                            },
-                            onSubmit: function ( modal ) {
-                                modal.closeModal();
-                            }
-                        } );
+                    onSubmit: function(modal) {
+                      modal.closeModal();
                     }
-                } );
-            } );
-        </script><?php
+                  });
+                }
+              });
+            });
+
+          </script>
+          <?php
         exit;
     }
 
