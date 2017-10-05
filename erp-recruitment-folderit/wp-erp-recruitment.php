@@ -3,7 +3,7 @@
 Plugin Name: WP ERP - Recruitment - Folder IT
 Plugin URI: https://wperp.com/downloads/recruitment/
 Description: Recruitment solution for WP-ERP. Create job posting and hire employee for your company.
-Version: 1.0.2
+Version: 1.0.3
 Author: weDevs, Folder IT
 Author URI: https://wedevs.com
 Text Domain: wp-erp-rec
