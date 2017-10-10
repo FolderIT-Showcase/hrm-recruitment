@@ -1157,16 +1157,15 @@ class Ajax_Handler {
         $interview_tech                  = $params['interview_tech'];
         $interviewers                    = $params['interviewers'];
         $duration                        = $params['duration'];
-        $interview_date                  = $params['interview_date'];
-        $interview_time                  = $params['interview_time'];
+        $interview_datetime              = $params['interview_datetime'];
 
         $current_date = date_create( date( 'Y-m-d' ) );
-        $given_date   = date_create( $interview_date );
+        $given_date   = date_create( $interview_datetime );
         $diff         = date_diff( $current_date, $given_date );
 
         if ( count( $type_of_interview ) == 0 ) {
             $this->send_error( __( 'Please input interviewer for this interview!', 'wp-erp-rec' ) );
-        } elseif ( isset( $interview_date ) && $diff->format( "%r%a" ) < 0 ) {
+        } elseif ( isset( $interview_datetime ) && $diff->format( "%r%a" ) < 0 ) {
             $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
         } else {
             //insert interview
@@ -1176,7 +1175,7 @@ class Ajax_Handler {
                 'application_id'             => $application_id,
                 'interview_detail'           => $interview_detail,
                 'interview_tech'             => $interview_tech,
-                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_date $interview_time" ) ),
+                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_datetime" ) ),
                 'duration_minutes'           => $duration,
                 'created_by'                 => get_current_user_id(),
                 'created_at'                 => date( 'Y-m-d H:i:s', time() )
@@ -1379,18 +1378,17 @@ class Ajax_Handler {
         $interview_tech                  = $params['interview_tech'];
         $interviewers                    = $params['interviewers'];
         $duration                        = $params['duration'];
-        $interview_date                  = $params['interview_date'];
-        $interview_time                  = $params['interview_time'];
+        $interview_datetime              = $params['interview_datetime'];
 
         $current_date = date_create( date( 'Y-m-d' ) );
-        $given_date   = date_create( $interview_date );
+        $given_date   = date_create( $interview_datetime );
         $diff         = date_diff( $current_date, $given_date );
 
         if ( !isset( $interviewid ) ) {
             $this->send_error( __( 'Interview ID not available!', 'wp-erp-rec' ) );
         } elseif ( count( $type_of_interview ) == 0 ) {
             $this->send_error( __( 'Please input interviewer for this interview!', 'wp-erp-rec' ) );
-        } elseif ( isset( $interview_date ) && $diff->format( "%r%a" ) < 0 ) {
+        } elseif ( isset( $interview_datetime ) && $diff->format( "%r%a" ) < 0 ) {
             $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
         } else {
             //update interview
@@ -1400,7 +1398,7 @@ class Ajax_Handler {
                 'application_id'             => $application_id,
                 'interview_detail'           => $interview_detail,
                 'interview_tech'             => $interview_tech,
-                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_date $interview_time" ) ),
+                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_datetime" ) ),
                 'duration_minutes'           => $duration,
                 'created_by'                 => get_current_user_id(),
                 'created_at'                 => date( 'Y-m-d H:i:s', time() )
