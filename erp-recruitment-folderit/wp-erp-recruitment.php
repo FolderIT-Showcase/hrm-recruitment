@@ -210,7 +210,7 @@ class WeDevs_ERP_Recruitment {
         /**
          * All styles goes here
          */
-        wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css' );
+        wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
         wp_enqueue_style( 'erp-recruitment-barrating-star-style', WPERP_REC_ASSETS . '/css/fontawesome-stars.css' );
         wp_enqueue_style( 'erp-recruitment-extra-fields-style', WPERP_REC_ASSETS . '/css/extra-fields-style.css' );
         wp_enqueue_style( 'alertify-core-style', WPERP_REC_ASSETS . '/css/alertify.core.css' );
@@ -232,6 +232,8 @@ class WeDevs_ERP_Recruitment {
         wp_enqueue_script( 'erp-google-map-script-api', 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBkI1ZYg131g_O4YfbCc7eCmIen8omKFC4', [ ], false, true );
         wp_enqueue_script( 'erp-timepicker' );
         wp_enqueue_script( 'erp-fullcalendar' );
+        wp_enqueue_script( 'bootstrap-js', WPERP_REC_ASSETS . '/js/bootstrap.min.js', array( 'jquery' ), false, true );
+        wp_enqueue_script( 'bootstrap-datetimepicker-js', WPERP_REC_ASSETS . '/js/bootstrap-datetimepicker.min.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'multi-step-form-script', WPERP_REC_ASSETS . '/js/openingFormToWizard.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'alertify-lib', WPERP_REC_ASSETS . '/js/alertify.min.js', array( 'jquery' ), false, true );
 
@@ -287,13 +289,14 @@ class WeDevs_ERP_Recruitment {
 
         wp_localize_script( 'erp-recruitment-app-script', 'wpErpRec', $localize_scripts );
     }
+  
 
     /**
      * Enqueue front-end scripts
      *
      * @return void
      */
-    public function front_end_scripts() {
+    public function front_end_scripts() {      
         wp_register_style( 'erp-recruitment-front-end-style', WPERP_REC_ASSETS . '/css/frontend.css' );
         // wp_register_style( 'multi-step-form-style', WPERP_REC_ASSETS . '/css/multi-form-style.css' );
         wp_enqueue_style( 'erp-sweetalert' );
@@ -551,6 +554,10 @@ class WeDevs_ERP_Recruitment {
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/interview-template.php', 'erp-rec-interview-template' );
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/feedback-template.php', 'erp-rec-feedback-template' );
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/cv-upload-template.php', 'erp-rec-cv-upload-template' );
+            
+                wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
+                wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
+            
                 break;
             case 'job-openings_page_todo-calendar':
                 erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );

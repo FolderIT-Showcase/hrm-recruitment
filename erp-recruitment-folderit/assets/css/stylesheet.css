@@ -621,6 +621,12 @@ span.value-pre {
   width: 48%;
 }
 
+/*modal css*/
+
+.erp-modal .content .row select {
+  max-width: inherit;
+}
+
 /*interview css*/
 
 .interview-template-container .popuplside {
@@ -639,16 +645,6 @@ span.value-pre {
 .interview-template-container .select2,
 .interview-template-container .select {
   width: 100% !important;
-}
-
-.interview-template-container #interview_date {
-  float: left;
-  width: 50%;
-}
-
-.interview-template-container #interview_time {
-  float: left;
-  width: 48%;
 }
 
 .no-interview-todo-caption {
