@@ -440,9 +440,10 @@ function erp_rec_get_application_type_intvw_popup( $application_id ) {
     global $wpdb;
     $query    = "SELECT types.id, types.type_detail
                 FROM {$wpdb->prefix}erp_application_interview_types as types
-                ORDER BY types.type_detail";
+                ORDER BY types.type_order";
     $types   = $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
-    $dropdown = array( 0 => __( '- Select Internal Type -', 'wp-erp-rec' ) );
+    //$dropdown = array( 0 => __( '- Select Internal Type -', 'wp-erp-rec' ) );
+    $dropdown = array();
     if ( count( $types ) > 0 ) {
         foreach ( $types as $value ) {
             $dropdown[$value['id']] = $value['type_detail'];
@@ -474,7 +475,7 @@ function erp_rec_get_app_stage( $application_id ) {
  */
 function erp_rec_get_interview_time_duration() {
     $interview_time_duration = array(
-        '15'  => __( '15 minutes', 'wp-erp-rec' ),
+        //'15'  => __( '15 minutes', 'wp-erp-rec' ),
         '30'  => __( '30 minutes', 'wp-erp-rec' ),
         '45'  => __( '45 minutes', 'wp-erp-rec' ),
         '60'  => __( '1 hour', 'wp-erp-rec' ),

@@ -124,6 +124,7 @@ class WeDevs_ERP_Recruitment_Installer {
                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                  `type_detail` varchar(255) DEFAULT NULL,
                  `type_identifier` varchar(255) DEFAULT NULL,
+                 `type_order` int(11) DEFAULT NULL,
                  PRIMARY KEY (`id`)
              ) $collate;",
 
