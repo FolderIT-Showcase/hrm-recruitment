@@ -371,6 +371,8 @@ function erp_rec_get_applicant_information( $application_id ) {
                 FROM {$wpdb->prefix}erp_peoples as people
                 LEFT JOIN {$wpdb->prefix}erp_application as app
                 ON people.id = app.applicant_id
+                LEFT JOIN {$wpdb->prefix}erp_application_stage as stage
+                ON app.stage = stage.id
                 WHERE app.id=%d";
     return $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
 }
@@ -466,6 +468,20 @@ function erp_rec_get_app_stage( $application_id ) {
                 WHERE app.id='%d'
                 ORDER BY base_stage.stage_order";
     return $wpdb->get_var( $wpdb->prepare( $query, $application_id ) );
+}
+
+/*
+ * function get app stage id
+ * para int
+ * return array
+ */
+function erp_rec_get_app_interview_type_default( ) {
+    global $wpdb;
+    $query   = "SELECT types.id
+                FROM {$wpdb->prefix}erp_application_interview_types as types
+                ORDER BY types.type_order";
+  
+    return $wpdb->get_var( $query );
 }
 
 /**
@@ -969,4 +985,15 @@ function erp_rec_opening_admin_progressbar( $selected ) {
     $html .= '</ul>';
 
     return $html;
+}
+
+/**
+ * Include required HTML form erp-popup-bs
+ *
+ * @since 1.1.12
+ *
+ * @return void
+ */
+function erp_rec_include_popup_markup() {
+    include_once WPERP_REC_VIEWS . '/erp-modal-bs.php';
 }

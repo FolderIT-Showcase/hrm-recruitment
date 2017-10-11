@@ -1160,7 +1160,7 @@ class Ajax_Handler {
         $interview_datetime              = $params['interview_datetime'];
 
         $current_date = date_create( date( 'Y-m-d' ) );
-        $given_date   = date_create( $interview_datetime );
+        $given_date   = date_create_from_format('d/m/Y g:i A', $interview_datetime);
         $diff         = date_diff( $current_date, $given_date );
 
         if ( count( $type_of_interview ) == 0 ) {
@@ -1175,7 +1175,7 @@ class Ajax_Handler {
                 'application_id'             => $application_id,
                 'interview_detail'           => $interview_detail,
                 'interview_tech'             => $interview_tech,
-                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_datetime" ) ),
+                'start_date_time'            => date_format($given_date, 'Y-m-d H:i:s'),
                 'duration_minutes'           => $duration,
                 'created_by'                 => get_current_user_id(),
                 'created_at'                 => date( 'Y-m-d H:i:s', time() )
@@ -1252,7 +1252,7 @@ class Ajax_Handler {
         if ( isset( $_GET['application_id'] ) ) {
             global $wpdb;
 
-            $query = "SELECT app_inv.id, app_inv.interview_detail, app_inv.interview_tech, types.type_detail, app_inv.start_date_time, app_inv.duration_minutes, stage.title, app_inv.feedback_comment, app_inv.feedback_english_level, app_inv.feedback_english_conversation
+            $query = "SELECT app_inv.id, app_inv.interview_detail, app_inv.interview_tech, types.id type_id, types.type_detail, app_inv.start_date_time, app_inv.duration_minutes, stage.title, app_inv.feedback_comment, app_inv.feedback_english_level, app_inv.feedback_english_conversation
                         FROM {$wpdb->prefix}erp_application_interview as app_inv
                         LEFT JOIN {$wpdb->prefix}erp_application_stage as stage
                         ON app_inv.interview_type_id=stage.id
@@ -1264,7 +1264,7 @@ class Ajax_Handler {
             $user_data = [ ];
             foreach ( $udata as $ud ) {
 
-                $query_interviewer_user = "SELECT user.display_name
+                $query_interviewer_user = "SELECT user.display_name, user.id
                                         FROM {$wpdb->prefix}erp_application_interviewer_relation as app_inv_relation
                                         LEFT JOIN {$wpdb->base_prefix}users as user
                                         ON app_inv_relation.interviewer_id=user.ID
@@ -1272,6 +1272,7 @@ class Ajax_Handler {
                 $urelationdata          = $wpdb->get_results( $wpdb->prepare( $query_interviewer_user, $ud['id'] ), ARRAY_A );
 
                 $interviewers_name = '';
+                $interviewers_ids = array();
 				$isFirst = true;
                 foreach ( $urelationdata as $interviewer_dname ) {
 					if (!$isFirst) {
@@ -1280,6 +1281,7 @@ class Ajax_Handler {
 	
 					$isFirst = false;
                     $interviewers_name .= $interviewer_dname['display_name'];
+                    array_push($interviewers_ids, $interviewer_dname['id']);
                 }
 
                 // make end time
@@ -1292,16 +1294,19 @@ class Ajax_Handler {
                     'id'                            => $ud['id'],
                     'title'                         => $ud['title'],
                     'type_detail'                   => $ud['type_detail'],
+                    'type_id'                       => $ud['type_id'],
                     'interview_detail'              => $ud['interview_detail'],
                     'interview_tech'                => $ud['interview_tech'],
                     'feedback_comment'              => $ud['feedback_comment'],
                     'feedback_english_level'        => $ud['feedback_english_level'],
                     'feedback_english_conversation' => $ud['feedback_english_conversation'],
-                    'interview_time'                => date( 'Y-m-d g:i A', strtotime( $ud['start_date_time'] ) ) . ' - ' . $stamp,
+                    'interview_datetime'            => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ),
+                    'interview_time'                => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ) . ' - ' . $stamp,
                     'interview_date'                => date( 'Y-m-d', strtotime( $ud['start_date_time'] ) ),
                     'interview_timee'               => date( 'g:i A', strtotime( $ud['start_date_time'] ) ),
                     'duration'                      => $minutes_to_add,
-                    'display_name'                  => $interviewers_name
+                    'display_name'                  => $interviewers_name,
+                    'interviewers_ids'              => $interviewers_ids
                 );
 
             }
@@ -1381,14 +1386,14 @@ class Ajax_Handler {
         $interview_datetime              = $params['interview_datetime'];
 
         $current_date = date_create( date( 'Y-m-d' ) );
-        $given_date   = date_create( $interview_datetime );
+        $given_date   = date_create_from_format('d/m/Y g:i A', $interview_datetime);
         $diff         = date_diff( $current_date, $given_date );
 
         if ( !isset( $interviewid ) ) {
             $this->send_error( __( 'Interview ID not available!', 'wp-erp-rec' ) );
         } elseif ( count( $type_of_interview ) == 0 ) {
             $this->send_error( __( 'Please input interviewer for this interview!', 'wp-erp-rec' ) );
-        } elseif ( isset( $interview_datetime ) && $diff->format( "%r%a" ) < 0 ) {
+        } elseif ( isset( $interview_datetime ) && $diff->invert ) {
             $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
         } else {
             //update interview
@@ -1398,7 +1403,7 @@ class Ajax_Handler {
                 'application_id'             => $application_id,
                 'interview_detail'           => $interview_detail,
                 'interview_tech'             => $interview_tech,
-                'start_date_time'            => date( 'Y-m-d H:i:s', strtotime( "$interview_datetime" ) ),
+                'start_date_time'            => date_format($given_date, 'Y-m-d H:i:s'),
                 'duration_minutes'           => $duration,
                 'created_by'                 => get_current_user_id(),
                 'created_at'                 => date( 'Y-m-d H:i:s', time() )
