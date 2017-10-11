@@ -38,6 +38,49 @@
   background-color: #F0F8FB;
 }
 
+/*description list*/
+
+dl.dl-custom {
+  border: 1px solid #CCCCCC;
+}
+
+dl.dl-custom:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+dl.dl-custom h5 {
+  margin: 0;
+  padding: 10px;
+  border-bottom: 1px solid #CCCCCC;
+  background-color: #F5F5F5;
+}
+
+.dl-custom dt {
+  text-align: left !important;
+  margin-left: 0 !important;
+  padding-left: 5px;
+  background-color: #F5F5F5;
+}
+
+.dl-custom dt {
+  margin-right: 5px !important;
+  border-right: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
+  line-height: 2em;
+  margin-bottom: -1px;
+}
+
+.dl-custom dd {
+  margin-left: 0 !important;
+  padding-left: 5px !important;
+  margin-bottom: 0px;
+  line-height: 2em;
+}
+
+.dl-custom dd:not(:last-child) {
+  border-bottom: 1px solid #CCCCCC;
+}
+
 /*applicant detail page*/
 
 .erp-applicant-detail section .hndle {
@@ -55,6 +98,11 @@
 
 .erp-applicant-detail .activity-block {
   border-bottom: 0;
+}
+
+#navbar dd,
+#navbar li {
+  margin-bottom: 0px;
 }
 
 #rating_status_form_wrapper {
