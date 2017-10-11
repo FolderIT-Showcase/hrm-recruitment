@@ -295,7 +295,7 @@
       });
 
       $('.btn-todo').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.todo_popup.title,
           button: wpErpRec.todo_popup.submit,
           id: 'new-todo-top',
@@ -331,7 +331,7 @@
       });
 
       $('#new-todo').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.todo_popup.title,
           button: wpErpRec.todo_popup.submit,
           id: 'new-todo-low',
@@ -367,7 +367,7 @@
       });
 
       $('.btn-interview').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.interview_popup.title,
           button: wpErpRec.interview_popup.submit,
           id: 'new-interview-top',
@@ -376,14 +376,17 @@
           onReady: function (modal) {
             modal.enableButton();
             $('#interviewers').select2();
-            $('#type_of_interview').change(function () {
-              var selected_interview_name = $(this).find("option:selected").text();
-              $('#type_of_interview_text').val(selected_interview_name);
+            $("input:radio[name='internal_type_of_interview']").change(function () {
+              var selected_interview_name = $(this).parent('label').text();
+              $('#internal_type_of_interview_text').val(selected_interview_name);
             });
             var application_id = WeDevs_ERP_Recruitment.getApplicationId();
             $('#interview_application_id').val(application_id);
-            WeDevs_ERP_Recruitment.initTimePicker();
-            WeDevs_ERP_Recruitment.initDateField();
+            $('#type_of_interview').val($('#application_stage_id').val());
+            $('#type_of_interview_text').val($('#application_stage_title').val());
+            $('input:radio[name=internal_type_of_interview]').filter('[value=' + $('#default_internal_type_id').val() + ']').prop('checked', true).change();
+            var now = new Date();
+            $('#interview_datetime').val(now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear() + " 10:00 AM");
           },
           onSubmit: function (modal) {
             modal.disableButton();
@@ -407,7 +410,7 @@
       });
 
       $('.btn-attach-cv:not(:disabled)').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.cv_upload_popup.title,
           button: wpErpRec.cv_upload_popup.submit,
           id: 'upload-cv-top',
@@ -447,51 +450,11 @@
         });
       });
 
-      $('#new-interview').click(function () {
-        $.erpPopup({
-          title: wpErpRec.interview_popup.title,
-          button: wpErpRec.interview_popup.submit,
-          id: 'new-interview-low',
-          content: wp.template('erp-rec-interview-template')().trim(),
-          extraClass: 'medium',
-          onReady: function (modal) {
-            modal.enableButton();
-            $('#interviewers').select2();
-            $('#type_of_interview').change(function () {
-              var selected_interview_name = $(this).find("option:selected").text();
-              $('#type_of_interview_text').val(selected_interview_name);
-            });
-            var application_id = WeDevs_ERP_Recruitment.getApplicationId();
-            $('#interview_application_id').val(application_id);
-            WeDevs_ERP_Recruitment.initTimePicker();
-            WeDevs_ERP_Recruitment.initDateField();
-          },
-          onSubmit: function (modal) {
-            modal.disableButton();
-            wp.ajax.send('erp-rec-create-interview', {
-              data: {
-                fdata: this.serialize(),
-                _wpnonce: wpErpRec.nonce
-              },
-              success: function (res) {
-                alertify.success(res);
-                modal.closeModal();
-                interviewModel.getInterview();
-              },
-              error: function (error) {
-                modal.enableButton();
-                alert(error);
-              }
-            });
-          }
-        });
-      });
-
       // to-do or calendar page
       $(document).ready(function () {});
 
       $('#add-todo').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.todo_popup.title,
           button: wpErpRec.todo_popup.submit,
           id: 'new-todo-template',
@@ -711,7 +674,7 @@
         }, 1000);
       });
       $('#add-candidate').click(function () {
-        $.erpPopup({
+        $.erpPopupBs({
           title: wpErpRec.add_candidate_popup.title,
           button: wpErpRec.add_candidate_popup.submit,
           id: 'new-candidate-popup-template',
