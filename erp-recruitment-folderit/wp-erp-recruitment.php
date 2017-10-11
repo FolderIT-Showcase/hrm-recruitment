@@ -176,6 +176,7 @@ class WeDevs_ERP_Recruitment {
         add_action( 'wp_enqueue_scripts', array( $this, 'front_end_scripts' ) );
         add_action( 'admin_menu', array( $this, 'set_recruitment_menu' ) );
         add_action( 'admin_footer', array( $this, 'admin_rec_js_templates' ) );
+        add_action( 'admin_footer', 'erp_rec_include_popup_markup' );
         add_action( 'admin_menu', [ $this, 'hide_add_opening_menu_item' ] );
     }
 
@@ -236,6 +237,7 @@ class WeDevs_ERP_Recruitment {
         wp_enqueue_script( 'bootstrap-datetimepicker-js', WPERP_REC_ASSETS . '/js/bootstrap-datetimepicker.min.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'multi-step-form-script', WPERP_REC_ASSETS . '/js/openingFormToWizard.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'alertify-lib', WPERP_REC_ASSETS . '/js/alertify.min.js', array( 'jquery' ), false, true );
+        wp_enqueue_script( 'erp-popup-bootstrap', WPERP_REC_ASSETS . '/js/jquery-popup-bootstrap.js', array( 'jquery' ), false, true );
 
         $localize_scripts = [
             'nonce'                          => wp_create_nonce( 'recruitment_form_builder_nonce' ),
