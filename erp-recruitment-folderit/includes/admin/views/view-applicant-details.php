@@ -37,15 +37,17 @@ if ( isset($applicant_information[0]) ) {
 }
 ?>
     <nav class="navbar navbar-default navbar-static-top" style="margin-left:-20px;padding-left:10px;margin-bottom:-10px;z-index:99;">
-      <div class="container">
+      <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
+            <span class="sr-only"><?php _e('Toggle Navigation', 'wp-erp-rec'); ?></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Secciones</a>
+          <a class="navbar-brand pull-left" href="#">
+            <?php _e('Sections', 'wp-erp-rec'); ?>
+          </a>
         </div>
         <div id="navbar" class="navbar-right navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
           <ul class="nav navbar-nav">
@@ -89,97 +91,135 @@ if ( isset($applicant_information[0]) ) {
       </div>
     </nav>
 
-    <div id="candidate-detail" class="wrap erp erp-applicant-detail wp-erp-wrap">
-      <h1>
-        <?php _e('Applicant Details', 'wp-erp-rec'); ?>
-      </h1>
-
+    <div id="candidate-detail" class="wrap erp erp-applicant-detail wp-erp-wrap" style="margin-top:20px;">
       <div id="dashboard-widgets-wrap" class="">
         <div class="row">
           <div class="col-lg-12">
-            <div class="postbox">
-              <input type="hidden" id="application_stage_id" name="application_stage_id" value="<?php echo $application_stage_id; ?>" />
-              <input type="hidden" id="application_stage_title" name="application_stage_title" value="<?php echo $application_stage_title; ?>" />
-              <input type="hidden" id="default_internal_type_id" name="default_internal_type_id" value="<?php echo $default_internal_type_id; ?>" />
+            <input type="hidden" id="application_stage_id" name="application_stage_id" value="<?php echo $application_stage_id; ?>" />
+            <input type="hidden" id="application_stage_title" name="application_stage_title" value="<?php echo $application_stage_title; ?>" />
+            <input type="hidden" id="default_internal_type_id" name="default_internal_type_id" value="<?php echo $default_internal_type_id; ?>" />
 
-              <div class="inside" style="overflow-y: hidden; margin-bottom: 0; padding-bottom: 0;">
-                <div id="gravater_image">
-                  <?php
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="panel panel-default">
+
+                  <div class="panel-heading">
+                    <h4>
+                      <?php _e('Applicant Details', 'wp-erp-rec'); ?>
+                    </h4>
+                  </div>
+
+                  <div class="panel-body">
+                    <div class="col-md-2 col-xs-12 col-sm-6 col-lg-2">
+                      <!--                    <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">-->
+                      <?php
                         $email_address = isset($applicant_information[0]['email']) ? $applicant_information[0]['email'] : '';
-                        echo get_avatar($email_address);
+                        echo get_avatar($email_address, 500, '', false, ['class' => 'img-circle img-responsive']);
                         ?>
-                </div>
-                <div id="name_and_position">
-                  <span id="candidate_name">
-                            <?php echo isset($applicant_information[0]['first_name']) ? ucfirst($applicant_information[0]['first_name']) : ''; ?>
-                            <?php echo isset($applicant_information[0]['last_name']) ? ucfirst($applicant_information[0]['last_name']) : ''; ?>
-                        </span>
-                  <span id="job_title"><?php echo "( " . strtoupper( get_the_title( $applicant_information[0]['job_id'] ) ) . " )"; ?></span>
-                </div>
-                <div id="stage_and_rating">
-                  <span id="stage_name">
-                            <i class="fa fa-flag"></i>&nbsp;
-                            <?php _e('Stage : ', 'wp-erp-rec'); ?>
-                            <span id="change_stage_name"><?php echo erp_rec_get_app_stage($application_id);?></span>
-                  </span>
-                  <span id="rating">
-                            <i class="fa fa-star"></i>&nbsp;
-                            <?php _e('Rating : ', 'wp-erp-rec'); ?>{{ avgRating }}/5
-                        </span>
-                  <span id="status">
-                            <i class="fa fa-info-circle"></i>&nbsp;
-                            <span id="change_status_name"><?php _e('Status : ', 'wp-erp-rec'); ?>
+                    </div>
+                    <div class="col-md-10 col-xs-12 col-sm-6 col-lg-10">
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <h2>
+                              <?php echo isset($applicant_information[0]['first_name']) ? ucfirst($applicant_information[0]['first_name']) : ''; ?>
+                              <?php echo isset($applicant_information[0]['last_name']) ? ucfirst($applicant_information[0]['last_name']) : ''; ?>
+                            </h2>
+                            <p>
+                              <?php _e('Opening', 'wp-erp-rec'); ?>: <b><?php echo strtoupper( get_the_title( $applicant_information[0]['job_id'] ) ); ?></b></p>
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="container">
+                        <div class="row">
+                          <ul class="details">
+                            <li>
+                              <p><span class="glyphicon glyphicon-flag one" style="width:30px;"></span>
+                                <?php _e('Stage : ', 'wp-erp-rec'); ?>
+                                <?php echo erp_rec_get_app_stage($application_id);?>
+                              </p>
+                            </li>
+                            <li>
+                              <p><span class="glyphicon glyphicon-star one" style="width:30px;"></span>
+                                <?php _e('Rating : ', 'wp-erp-rec'); ?>{{ avgRating }}/5</p>
+                            </li>
+                            <li>
+                              <p><span class="glyphicon glyphicon-info-sign one" style="width:30px;"></span>
+                                <?php _e('Status : ', 'wp-erp-rec'); ?>
                                 <?php echo ( erp_people_get_meta($applicant_id, 'status', true) != "" ) ? ucfirst( str_replace( "_", " ", $status[erp_people_get_meta($applicant_id, 'status', true )] ) ) : __('No status set', 'wp-erp-rec') ; ?>
-                            </span>
-                  </span>
-                </div>
-                <div id="button-actions" class="<?php echo ( $hire_status == 1 || $application_status == 'rejected' ) ? 'button-actions-hired' : '';?>">
-                  <div class="button-controls alignright">
-                    <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-                    <button class="button btn-interview"><i class="fa fa-lg fa-calendar"></i>&nbsp;<?php _e('New Interview', 'wp-erp-rec'); ?></button>
-                    <button class="button btn-todo"><i class="fa fa-lg fa-list-alt"></i>&nbsp;<?php _e('New To-do', 'wp-erp-rec'); ?></button>
-                    <button class="button btn-attach-cv"><i class="fa fa-lg fa-paperclip"></i>&nbsp;<?php _e('Attach CV', 'wp-erp-rec'); ?></button>
-                    <?php endif;?>
-                    <?php
+                              </p>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div class="btn-group <?php echo ( $hire_status == 1 || $application_status == 'rejected' ) ? 'button-actions-hired' : '';?>">
+                              <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
+                              <button class="btn btn-default btn-interview"><i class="fa fa-lg fa-calendar"></i>&nbsp;<?php _e('New Interview', 'wp-erp-rec'); ?></button>
+                              <button class="btn btn-default btn-todo"><i class="fa fa-lg fa-list-alt"></i>&nbsp;<?php _e('New To-do', 'wp-erp-rec'); ?></button>
+                              <button class="btn btn-default btn-attach-cv"><i class="fa fa-lg fa-paperclip"></i>&nbsp;<?php _e('Attach CV', 'wp-erp-rec'); ?></button>
+                              <?php endif;?>
+                              <?php
                             if ( $hire_status == 0 && $application_status != 'rejected' ) {
                                 $make_employee_url = admin_url('admin.php?page=make_employee&application_id=' . $application_id);
-                                echo sprintf( '<a id="make_him_employee" class="btn button alignright" href="%s"><i class="fa fa-lg fa-user-plus"></i>%s</a>', $make_employee_url, __( 'Hire', 'wp-erp-rec' ) );
+                                echo sprintf( '<button id="make_him_employee" class="btn btn-default" href="%s"><i class="fa fa-lg fa-user-plus"></i>%s</button>', $make_employee_url, __( 'Hire', 'wp-erp-rec' ) );
                             }
                             ?>
-                      <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
-                      <a class="alignright btn button" href="<?php echo wp_get_attachment_url($attach_id); ?>"><i class="fa fa-lg fa-file"></i>&nbsp;<?php _e('View CV', 'wp-erp-rec'); ?></a>
-                      <?php endif; ?>
+                                <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
+                                <button class="btn btn-default" href="<?php echo wp_get_attachment_url($attach_id); ?>"><i class="fa fa-lg fa-file"></i>&nbsp;<?php _e('View CV', 'wp-erp-rec'); ?></button>
+                                <?php endif; ?>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="container">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <?php if ( $hire_status == 0 ) : ?>
+                            <form class="form-inline">
+                              <span class="spinner"></span>
+                              <div class="input-group">
+                                <?php $stages = erp_rec_get_application_stages($application_id); ?>
+                                <select class="form-control" id="change_stage" name="change_stage" v-model="stage_id">
+                              <option value="none" selected><?php _e('&mdash; Change Stage &mdash;', 'wp-erp-rec');?></option>
+                              <?php foreach ( $stages as $value ) : ?>
+                              <option value="<?php echo $value['stageid']; ?>"><?php echo $value['title']; ?></option>
+                              <?php endforeach; ?>
+                            </select>
+                                <span class="input-group-btn">
+                            <button class="btn btn-default" style="padding-top:3px;padding-bottom:3px;" v-on:click="changeStage"><?php _e('Move', 'wp-erp-rec'); ?></button>
+                            </span>
+                              </div>
+                              <div class="input-group">
+                                <?php $status = erp_rec_get_hiring_status(); ?>
+                                <select class="form-control" id="change_status" name="change_status" v-model="status_name">
+                              <option value="none" selected><?php _e('&mdash; Change Status &mdash;', 'wp-erp-rec');?></option>
+                              <?php foreach ( $status as $key => $value ) : ?>
+                              <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                              <?php endforeach; ?>
+                            </select>
+                                <span class="input-group-btn">
+                            <button class="btn btn-default" style="padding-top:3px;padding-bottom:3px;" v-on:click="changeStaus"><?php _e('Done', 'wp-erp-rec'); ?></button>
+                            </span>
+                              </div>
+                            </form>
+                            <?php endif;?>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <?php if ( $hire_status == 0 ) : ?>
-                <div id="dropdown-actions">
-                  <div id="stage_action">
-                    <?php $stages = erp_rec_get_application_stages($application_id); ?>
-                    <select id="change_stage" name="change_stage" v-model="stage_id">
-                                <option value="none" selected><?php _e('&mdash; Change Stage &mdash;', 'wp-erp-rec');?></option>
-                                <?php foreach ( $stages as $value ) : ?>
-                                <option value="<?php echo $value['stageid']; ?>"><?php echo $value['title']; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                    <button class="button button-primary" v-on:click="changeStage"><?php _e('Move', 'wp-erp-rec'); ?></button>
-                    <span class="spinner"></span>
-                  </div>
-                  <div id="decision_action">
-                    <?php $status = erp_rec_get_hiring_status(); ?>
-                    <select id="change_status" name="change_status" v-model="status_name">
-                                <option value="none" selected><?php _e('&mdash; Change Status &mdash;', 'wp-erp-rec');?></option>
-                                <?php foreach ( $status as $key => $value ) : ?>
-                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                    <button class="button button-primary" v-on:click="changeStaus"><?php _e('Done', 'wp-erp-rec'); ?></button>
-                  </div>
-                </div>
-                <?php endif;?>
               </div>
             </div>
           </div>
-
+        </div>
+        <div class="row">
           <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
             <section id="section-personal-info" class="postbox section-personal-info">
               <span class="hndle-toogle-button"></span>
@@ -187,41 +227,34 @@ if ( isset($applicant_information[0]) ) {
                 <h2 class="hndle"><span><?php _e('Candidate Profile', 'wp-erp-rec'); ?></span></h2>
               </div>
               <div class="section-content toggle-metabox-show">
-                <div class="hndle-title">
-                  <label><?php _e('Personal Information', 'wp-erp-rec'); ?></label>
-                </div>
-                <div class="content-body">
-                  <ul class="erp-list list-table-like separated">
-                    <li>
-                      <label><?php _e('Name', 'wp-erp-rec'); ?></label>
-                      <span class="sep"> : </span>
-                      <span class="value">
-                                                            <?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
-                                                            <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>
-                                                        </span>
-                    </li>
-                    <li>
-                      <label><?php _e('Email', 'wp-erp-rec'); ?></label>
-                      <span class="sep"> : </span>
-                      <span class="value"><?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?></span>
-                    </li>
-                    <?php $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );?>
-                    <?php foreach ( $db_personal_fields as $personal_data ) : ?>
-                    <?php $field_name = json_decode($personal_data)->field;?>
-                    <li>
-                      <label><?php echo ucfirst(str_replace("_"," ",$field_name));?></label>
-                      <span class="sep"> : </span>
-                      <span class="value">
-                                                            <?php
-                                                            $value = erp_people_get_meta($applicant_id, $field_name, true);
-                                                            $value = stripslashes( $value );
-                                                            echo '<span class="value-pre">' . esc_html( $value ) . '</pre>';
-                                                            ?>
-                                                        </span>
-                    </li>
-                    <?php endforeach;?>
-                  </ul>
-                </div>
+                <dl class="dl-custom dl-horizontal">
+                  <h5>
+                    <?php _e('Personal Information', 'wp-erp-rec'); ?>
+                  </h5>
+                  <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
+                  <dd>
+                    <?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
+                    <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>
+                  </dd>
+
+                  <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
+                  <dd>
+                    <?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?>
+                  </dd>
+
+                  <?php $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );?>
+                  <?php foreach ( $db_personal_fields as $personal_data ) : ?>
+                  <?php $field_name = json_decode($personal_data)->field;?>
+                  <dt><?php echo ucfirst(str_replace("_"," ",$field_name));?></dt>
+                  <dd>
+                    <?php
+                        $value = erp_people_get_meta($applicant_id, $field_name, true);
+                        $value = stripslashes( $value );
+                        echo esc_html( $value );
+                      ?>
+                  </dd>
+                  <?php endforeach;?>
+                </dl>
               </div>
             </section>
           </div>
