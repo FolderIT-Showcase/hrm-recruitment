@@ -1165,8 +1165,8 @@ class Ajax_Handler {
 
         if ( count( $type_of_interview ) == 0 ) {
             $this->send_error( __( 'Please input interviewer for this interview!', 'wp-erp-rec' ) );
-        } elseif ( isset( $interview_datetime ) && $diff->format( "%r%a" ) < 0 ) {
-            $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
+//        } elseif ( isset( $interview_datetime ) && $diff->format( "%r%a" ) < 0 ) {
+//            $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
         } else {
             //insert interview
             $data = array(
@@ -1393,8 +1393,8 @@ class Ajax_Handler {
             $this->send_error( __( 'Interview ID not available!', 'wp-erp-rec' ) );
         } elseif ( count( $type_of_interview ) == 0 ) {
             $this->send_error( __( 'Please input interviewer for this interview!', 'wp-erp-rec' ) );
-        } elseif ( isset( $interview_datetime ) && $diff->invert ) {
-            $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
+//        } elseif ( isset( $interview_datetime ) && $diff->invert ) {
+//            $this->send_error( __( 'Interview date cannot less than today!', 'wp-erp-rec' ) );
         } else {
             //update interview
             $data = array(
