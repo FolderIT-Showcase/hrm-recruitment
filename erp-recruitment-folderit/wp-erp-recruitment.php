@@ -130,6 +130,7 @@ class WeDevs_ERP_Recruitment {
         require_once WPERP_REC_INCLUDES . '/class-rec-ajax.php';
         require_once WPERP_REC_INCLUDES . '/class-form-handler.php';
         require_once WPERP_REC_INCLUDES . '/rec-actions-filters.php';
+        require_once WPERP_REC_INCLUDES . '/class-icalendar.php';
         require_once WPERP_REC_INCLUDES . '/emails/class-email-new-interview.php';
         require_once WPERP_REC_INCLUDES . '/emails/class-email-new-todo.php';
         require_once WPERP_REC_INCLUDES . '/emails/class-email-opening-report.php';
