@@ -3,6 +3,8 @@ namespace WeDevs\ERP\ERP_Recruitment;
 
 use WeDevs\ERP\Framework\Traits\Ajax;
 use WeDevs\ERP\Framework\Traits\Hooker;
+use \DateTime;
+use \DateTimeZone;
 
 /**
  * Ajax handler
@@ -1235,9 +1237,45 @@ class Ajax_Handler {
             $data['interviewer_id']         = $interviewer_ids;
             $data['type_of_interview_text'] = $type_of_interview_text;
             $data['internal_type_of_interview_text'] = $internal_type_of_interview_text;
-            $email                          = new Emails\New_Interview();
+          
+            // Obtener datos de empresa
+            $company = get_option("_erp_company");
+            $address = $company['address'];
+          
+            // Crear iCalendar
+            $start_date = new DateTime();
+            $start_date = DateTime::createFromFormat('Y-m-d H:i:s', date_format($given_date, 'Y-m-d H:i:s'), new DateTimeZone(get_option('timezone_string')));
+            $start_date->setTimezone(new DateTimeZone('UTC'));
+            $end_date = clone $start_date;
+            $end_date->modify("+" . $duration . " minutes");
+          
+            $ics = new ICS(array(
+              'location' => $address['address_1'] . ' ' . $address['address_2'] . ', ' . $address['city'] . ' ' . $address['zip'] . ', ' . $address['country'],
+              'description' => $interview_detail,
+              'dtstart' => date_format($start_date, 'Y-m-d h:i A T'),
+              'dtend' => date_format($end_date, 'Y-m-d h:i A T'),
+              'summary' => __('Interview: ', 'wp-erp-rec') . $internal_type_of_interview_text,
+              'url' => $company['website']
+            ));
+          
+            $email = new Emails\New_Interview();
+          
+            // Adjuntar ical
+            $filename = $internal_type_of_interview_text. '_' . $data['first_name'] . '-' . $data['last_name'] . '.ics';
+            $filename = preg_replace('/\s+/', '-', $filename);
+            $temp_dir = get_home_path() . 'wp-content/temp/';
+            $filepath = $temp_dir . $filename;
+          
+            $fh = fopen($filepath, "w");
+            fwrite($fh, $ics->to_string());
+            fclose($fh);
+          
+            $email->attach($filepath);
             $email->trigger( $data );
-            $this->send_success( __( 'Interview created successfully', 'wp-erp-rec' ) );
+          
+            unlink($filepath);          
+          
+            $this->send_success( __( 'Interview created successfully', 'wp-erp-rec' ) );            
         }
     }
 

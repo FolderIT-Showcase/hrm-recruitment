@@ -10,6 +10,8 @@ use WeDevs\ERP\Framework\Traits\Hooker;
 class New_Interview extends Email {
 
     use Hooker;
+  
+    public $attachments;
 
     function __construct() {
         $this->id          = 'new-interview';
@@ -18,6 +20,8 @@ class New_Interview extends Email {
 
         $this->subject     = __( 'Interview notification', 'wp-erp-rec');
         $this->heading     = __( 'Interview Notification', 'wp-erp-rec');
+      
+        $this->attachments = array();
 
         $this->action( 'erp_admin_field_' . $this->id . '_help_texts', 'replace_keys' );
 
@@ -29,6 +33,14 @@ class New_Interview extends Email {
             'email_heading' => $this->heading,
             'email_body'    => wpautop( $this->get_option( 'body' ) ),
         ];
+    }
+  
+    function get_attachments() {
+        return apply_filters( 'erp_email_attachments', $this->attachments, $this->id, $this->object );
+    }
+  
+    public function attach($filename = '') {
+        array_push($this->attachments, $filename);
     }
 
     public function trigger( $data = [] ) {
@@ -51,8 +63,8 @@ class New_Interview extends Email {
         $html .= __('Interview Internal Type: ', 'wp-erp-rec').$data['internal_type_of_interview_text'].'<br/>';
         $html .= __('Interview Description (place/phone): ', 'wp-erp-rec').$data['interview_detail'].'<br/>';
         $html .= __('Interview Techs: ', 'wp-erp-rec').$data['interview_tech'].'<br/>';
-        $html .= __('Interview DateTime: ', 'wp-erp-rec').$data['start_date_time'].'<br/>';
-        $html .= __('Interview Duration: ', 'wp-erp-rec').$data['duration_minutes'].' Minutes'.'<br/>';
+        $html .= __('Interview DateTime: ', 'wp-erp-rec'). date( 'd/m/Y h:i A', strtotime($data['start_date_time'])) .'<br/>';
+        $html .= __('Interview Duration: ', 'wp-erp-rec').$data['duration_minutes'].__(' Minutes', 'wp-erp-rec').'<br/>';
 		$html .= '<br />';
 		$html .= '<a href="'.$data['link'].'">Link</a>';
 
