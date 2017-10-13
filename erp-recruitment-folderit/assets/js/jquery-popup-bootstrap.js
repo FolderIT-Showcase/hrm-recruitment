@@ -74,6 +74,7 @@
      * @return {void}
      */
     show_modal: function () {
+      $('body').addClass('modal-open');
 
       if (this.id === '') {
         return;
@@ -158,6 +159,8 @@
      * @return {void}
      */
     closeModal: function (e) {
+      $('body').removeClass('modal-open');
+
       if (typeof e !== 'undefined') {
         e.preventDefault();
       }

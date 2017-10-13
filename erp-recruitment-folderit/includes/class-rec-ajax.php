@@ -1254,7 +1254,7 @@ class Ajax_Handler {
               'description' => $interview_detail,
               'dtstart' => date_format($start_date, 'Y-m-d h:i A T'),
               'dtend' => date_format($end_date, 'Y-m-d h:i A T'),
-              'summary' => __('Interview: ', 'wp-erp-rec') . $internal_type_of_interview_text,
+              'summary' => __('Interview: ', 'wp-erp-rec') . $data['first_name'] . ' ' . $data['last_name'] . ' (' . $internal_type_of_interview_text . ')',
               'url' => $company['website']
             ));
           
