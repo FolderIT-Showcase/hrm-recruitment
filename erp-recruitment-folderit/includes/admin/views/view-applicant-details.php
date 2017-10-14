@@ -304,23 +304,6 @@ if ( isset($applicant_information[0]) ) {
                                 </div>
                                 <hr>
                               </article>
-
-                              <!--
-                              <article class="comment-body">
-                                <div class="comment-meta">
-                                  <div class="comment-author vcard">
-                                    <?php //echo get_avatar( "{{ cmnt.ID }}", 64 );?> {{{ cmnt.user_pic }}}
-                                    <b class="fn">{{ cmnt.display_name }}</b>
-                                    <span class="says">&nbsp;<?php _e('says:', 'wp-erp-rec'); ?></span>
-
-                                    <div class="ctime">{{ cmnt.comment_date }}</div>
-                                    <div class="comment-content">
-                                      <p style="white-space:pre-wrap;">{{ cmnt.comment }}</p>
-                                    </div>
-                                  </div>
-                                </div>
-                              </article>
--->
                             </li>
                           </ul>
                         </div>

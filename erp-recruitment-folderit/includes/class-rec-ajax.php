@@ -826,16 +826,6 @@ class Ajax_Handler {
             }
         }
 
-        if ( isset( $_FILES['erp_rec_file']['name'] ) ) {
-            $file_name             = $_FILES['erp_rec_file']['name'];
-            $file_size             = ceil( $_FILES['erp_rec_file']['size'] / 2048 ); //size in killobites
-            $file_type             = $_FILES['erp_rec_file']['type'];
-            $file_tmp_name         = $_FILES['erp_rec_file']['tmp_name'];
-            $file_extension_holder = explode( '.', $file_name );
-            $file_extension        = end( $file_extension_holder );
-        }
-        $attach_info['attach_id'] = '';
-
         //personal data validation
         foreach ( $db_personal_fields_array as $db_data ) {
             if ( $db_data['req'] == true ) {
@@ -940,7 +930,7 @@ class Ajax_Handler {
               
               $comment = __('Candidate also applied to position: ', 'wp-erp-rec') . $job_title;
               $comment .= "\n" . __('Name: ', 'wp-erp-rec') . $first_name . ' ' . $last_name;
-              $comment .= "\n" . __('CV: ', 'wp-erp-rec') . $file_name;
+              $comment .= "\n" . __('CV: ', 'wp-erp-rec') . basename(get_attached_file($attach_id));
               
               $all_personal_fields = erp_rec_get_personal_fields();
               
@@ -987,19 +977,29 @@ class Ajax_Handler {
             }
 
             //insert applicant attach cv id
-            $data = array(
-                'erp_people_id' => $jobseeker_id,
-                'meta_key'      => 'attach_id',
-                'meta_value'    => $attach_id
+            $attach_metadata_id = $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT meta_id FROM " . $wpdb->prefix . "erp_peoplemeta
+                    WHERE erp_people_id = %d AND meta_key = 'attach_id' AND meta_value = '%d' LIMIT 1",
+                    $jobseeker_id, $attach_id
+                )
             );
 
-            $format = array(
-                '%d',
-                '%s',
-                '%s'
-            );
+            if ( $attach_metadata_id == 0 ) {
+              $data = array(
+                  'erp_people_id' => $jobseeker_id,
+                  'meta_key'      => 'attach_id',
+                  'meta_value'    => $attach_id
+              );
 
-            $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+              $format = array(
+                  '%d',
+                  '%s',
+                  '%s'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+            }
 
             // personal fields that is coming dynamically
             foreach ( $personal_field_data as $db_data ) {
