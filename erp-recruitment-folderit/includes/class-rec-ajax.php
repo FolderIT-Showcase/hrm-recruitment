@@ -791,6 +791,7 @@ class Ajax_Handler {
 
     /**
      * Candidate create from admin side
+     * same as frontend, with less validations and notifications
      *
      * @since 1.0.0
      *
@@ -798,7 +799,6 @@ class Ajax_Handler {
      */
     public function admin_create_candidate() {
         global $wpdb;
-
         $this->verify_nonce( 'wp-erp-rec-job-seeker-nonce' );
 
         // default fields
@@ -808,7 +808,6 @@ class Ajax_Handler {
         $captcha_result         = isset( $_POST['captcha_result'] ) ? $_POST['captcha_result'] : '';
         $captcha_correct_result = isset( $_POST['captcha_correct_result'] ) ? $_POST['captcha_correct_result'] : 0;
         $job_id                 = isset( $_POST['job_id'] ) ? $_POST['job_id'] : 0;
-        $attach_id              = isset( $_POST['attach_id'] ) ? $_POST['attach_id'] : 0;
 
         $db_personal_fields  = get_post_meta( $job_id, '_personal_fields' );
         $meta_key            = '_personal_fields';
@@ -817,6 +816,7 @@ class Ajax_Handler {
                                     FROM {$wpdb->prefix}postmeta
                                     WHERE meta_key = %s AND post_id = %d", $meta_key, $job_id ) );
         $personal_field_data = maybe_unserialize( $personal_field_data );
+
         // convert object to array
         $db_personal_fields_array = [ ];
         if ( isset( $db_personal_fields ) ) {
@@ -825,6 +825,16 @@ class Ajax_Handler {
             }
         }
 
+        if ( isset( $_FILES['erp_rec_file']['name'] ) ) {
+            $file_name             = $_FILES['erp_rec_file']['name'];
+            $file_size             = ceil( $_FILES['erp_rec_file']['size'] / 2048 ); //size in killobites
+            $file_type             = $_FILES['erp_rec_file']['type'];
+            $file_tmp_name         = $_FILES['erp_rec_file']['tmp_name'];
+            $file_extension_holder = explode( '.', $file_name );
+            $file_extension        = end( $file_extension_holder );
+        }
+        $attach_info['attach_id'] = '';
+
         //personal data validation
         foreach ( $db_personal_fields_array as $db_data ) {
             if ( $db_data['req'] == true ) {
@@ -832,6 +842,13 @@ class Ajax_Handler {
                     $this->send_error( __( 'please enter ' . str_replace( '_', ' ', $db_data['field'] ), 'wp-erp-rec' ) );
                 }
             }
+        }
+
+        $question_answer = [ ];
+        if ( isset( $_POST['question'] ) ) {
+            $qset            = $_POST['question'];
+            $aset            = isset( $_POST['answer'] ) ? $_POST['answer'] : [ ];
+            $question_answer = array_combine( $qset, $aset );
         }
 
         if ( !isset( $first_name ) || $first_name == '' ) {
@@ -846,30 +863,153 @@ class Ajax_Handler {
             $this->send_error( [ 'type' => 'invalid-email', 'message' => __( 'Invalid Email', 'wp-erp-rec' ) ] );
         } elseif ( erp_rec_is_duplicate_email( $email, $job_id ) ) {
             $this->send_error( [ 'type' => 'duplicate-email', 'message' => __( 'E-mail address already exist', 'wp-erp-rec' ) ] );
-        } elseif ( !isset( $attach_id ) || $attach_id == "" ) {
+        } elseif ( !isset( $file_name ) || $file_name == "" ) {
             $this->send_error( [ 'type' => 'file-error', 'message' => __( 'Please upload your cv ( .doc, .docx or .pdf file only )', 'wp-erp-rec' ) ] );
         } else {
+            if ( isset( $file_name ) && $file_name != "" ) { // user upload cv so check file validation now
+                if ( $file_size > 2048 ) {
+                    $this->send_error( [ 'type' => 'file-error', 'message' => __( 'File size is greater than 2MB', 'wp-erp-rec' ) ] );
+                //} elseif ( $file_type != "application/msword" && $file_type != "application/pdf" && $file_extension != "pdf" && $file_type != "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
+				} elseif ( $file_extension != "doc" && $file_extension != "pdf" && $file_extension != "docx" ) {
+				//} elseif ( $file_type != "application/msword" && $file_type != "application/pdf" && $file_type != "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
+                    $this->send_error( [ 'type' => $file_type, 'message' => __( 'Please upload doc, pdf or docx only', 'wp-erp-rec' ) ] );
+                } else {
+                    // wp way file upload
+                    $upload      = array(
+                        'name'     => $_FILES['erp_rec_file']['name'],
+                        'type'     => $_FILES['erp_rec_file']['type'],
+                        'tmp_name' => $_FILES['erp_rec_file']['tmp_name'],
+                        'error'    => $_FILES['erp_rec_file']['error'],
+                        'size'     => $_FILES['erp_rec_file']['size']
+                    );
+                    $attach_info = erp_rec_handle_upload( $upload );
+                }
+            }
+          
+            // get the first or default stage for this applicant
+            $stage_id = $wpdb->get_var( "SELECT stageid FROM {$wpdb->prefix}erp_application_job_stage_relation WHERE jobid='" . $job_id . "' ORDER BY id LIMIT 1" );
+          
+            if ( !erp_rec_is_existing_email( $email, $job_id ) ) {
+              $data = array(
+                  'first_name' => strip_tags( $first_name ),
+                  'last_name'  => strip_tags( $last_name ),
+                  'email'      => $email
+              );
 
-            $data = array(
-                'first_name' => strip_tags( $first_name ),
-                'last_name'  => strip_tags( $last_name ),
-                'email'      => $email
-            );
+              $format = array(
+                  '%s',
+                  '%s',
+                  '%s'
+              );
 
-            $format = array(
-                '%s',
-                '%s',
-                '%s'
-            );
+              $wpdb->insert( $wpdb->prefix . 'erp_peoples', $data, $format );
+              $jobseeker_id = $wpdb->insert_id;
+              
+              //insert applicant IP Address
+              $data = array(
+                  'erp_people_id' => $jobseeker_id,
+                  'meta_key'      => 'ip',
+                  'meta_value'    => $_SERVER['REMOTE_ADDR']
+              );
 
-            $wpdb->insert( $wpdb->prefix . 'erp_peoples', $data, $format );
-            $jobseeker_id = $wpdb->insert_id;
+              $format = array(
+                  '%d',
+                  '%s',
+                  '%s'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+              
+              //insert job id and applicant id to application table
+              $data = array(
+                  'job_id'       => $job_id,
+                  'applicant_id' => $jobseeker_id,
+                  'stage'        => ( $stage_id == NULL ) ? 1 : $stage_id,
+                  'exam_detail'  => json_encode( $question_answer )
+              );
+
+              $format = array(
+                  '%d',
+                  '%d',
+                  '%s',
+                  '%s'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_application', $data, $format );
+
+              do_action( 'erp_rec_applied_job', $data );
+            } else {              
+              $query = "SELECT people.id
+                        FROM {$wpdb->prefix}erp_peoples as people
+                        WHERE people.email='{$email}' ORDER BY people.id DESC LIMIT 1";
+              
+              $jobseeker_id = $wpdb->get_var( $query );
+              
+              // Buscar postulación existente
+              $query = "SELECT app.id
+                        FROM {$wpdb->prefix}erp_application as app
+                        WHERE app.applicant_id='{$jobseeker_id}' ORDER BY app.id DESC LIMIT 1";
+              
+              $application_id = $wpdb->get_var( $query );
+              
+              // Agregar comentario sobre nueva postulación a nueva posición
+              $job_title = get_the_title($job_id);
+              
+              $admin_user_id = 0;
+              
+              $comment = __('Candidate also applied to position: ', 'wp-erp-rec') . $job_title;
+              $comment .= "\n" . __('Name: ', 'wp-erp-rec') . $first_name . ' ' . $last_name;
+              $comment .= "\n" . __('CV: ', 'wp-erp-rec') . $file_name;
+              
+              $all_personal_fields = erp_rec_get_personal_fields();
+              
+              foreach ( $personal_field_data as $db_data ) {
+                if ( json_decode( $db_data )->showfr == true
+                    && isset( $_POST[json_decode($db_data)->field] )
+                    && !empty( $_POST[json_decode($db_data)->field] ) ) {
+                  
+                  $field = json_decode( $db_data )->field;
+
+                  if ( json_decode( $db_data )->type == 'checkbox' ) {
+                    $value = implode( ",", $_POST[$field] );
+                  } else {
+                    $value = $_POST[$field];
+                  }
+                  
+                  if( !empty($all_personal_fields[$field]) ) {
+                    $field_label = $all_personal_fields[$field]['label'];
+                    
+                    if( isset($all_personal_fields[$field]['options']) ) {
+                      $value = $all_personal_fields[$field]['options'][$value];
+                    }
+                  } else {
+                    $field_label = $field;
+                  }
+                  
+                  $comment .= "\n" . $field_label . ": " . $value;
+                }
+              }
+              
+              $data = array(
+                'application_id' => $application_id,
+                'comment'        => $comment,
+                'user_id'        => $admin_user_id
+              );
+
+              $format = array(
+                  '%d',
+                  '%s',
+                  '%d'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_application_comment', $data, $format );
+            }
 
             //insert applicant attach cv id
             $data = array(
                 'erp_people_id' => $jobseeker_id,
                 'meta_key'      => 'attach_id',
-                'meta_value'    => $attach_id
+                'meta_value'    => $attach_info['attach_id']
             );
 
             $format = array(
@@ -880,46 +1020,44 @@ class Ajax_Handler {
 
             $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
 
-            // get the first or default stage for this applicant
-            $stage_id = $wpdb->get_var( "SELECT stageid FROM {$wpdb->prefix}erp_application_job_stage_relation WHERE jobid='" . $job_id . "' ORDER BY id LIMIT 1" );
-
             // personal fields that is coming dynamically
             foreach ( $personal_field_data as $db_data ) {
                 if ( json_decode( $db_data )->showfr == true ) {
-                    $data   = array(
-                        'erp_people_id' => $jobseeker_id,
-                        'meta_key'      => json_decode( $db_data )->field,
-                        'meta_value'    => isset( $_POST[json_decode( $db_data )->field] ) ? $_POST[json_decode( $db_data )->field] : ''
-                    );
-                    $format = array(
-                        '%d',
-                        '%s',
-                        '%s'
-                    );
-                    $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+                    if ( json_decode( $db_data )->type == 'checkbox' ) {
+                        if ( isset( $_POST[json_decode( $db_data )->field] ) ) {
+                            $data   = array(
+                                'erp_people_id' => $jobseeker_id,
+                                'meta_key'      => json_decode( $db_data )->field,
+                                'meta_value'    => implode( ",", $_POST[json_decode( $db_data )->field] )
+                            );
+                            $format = array(
+                                '%d',
+                                '%s',
+                                '%s'
+                            );
+                            $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+                        }
+                    } else {
+                        $data   = array(
+                            'erp_people_id' => $jobseeker_id,
+                            'meta_key'      => json_decode( $db_data )->field,
+                            'meta_value'    => isset( $_POST[json_decode( $db_data )->field] ) ? $_POST[json_decode( $db_data )->field] : ''
+                        );
+                        $format = array(
+                            '%d',
+                            '%s',
+                            '%s'
+                        );
+                        $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+                    }
+					
+					if (json_decode( $db_data )->field == 'mobile') {
+						$mobile = isset( $_POST[json_decode( $db_data )->field] ) ? $_POST[json_decode( $db_data )->field] : '';
+					}
                 }
             }
 
-            //insert job id and applicant id to application table
-            $data = array(
-                'job_id'       => $job_id,
-                'applicant_id' => $jobseeker_id,
-                'stage'        => ( $stage_id == NULL ) ? 1 : $stage_id,
-                'exam_detail'  => json_encode( [ ] ),
-                'added_by'     => get_current_user_id()
-            );
-
-            $format = array(
-                '%d',
-                '%d',
-                '%s',
-                '%s',
-                '%d'
-            );
-
-            $wpdb->insert( $wpdb->prefix . 'erp_application', $data, $format );
-
-            $this->send_success( [ 'message' => __( 'Thank you for applying', 'wp-erp-rec' ) ] );
+            $this->send_success( [ 'message' => __( 'Your application has been received successfully. Thank you for applying.', 'wp-erp-rec' ) ] );
         }
     }
 
