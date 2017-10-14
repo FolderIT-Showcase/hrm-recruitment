@@ -133,9 +133,12 @@ dl.dl-custom h5 {
   border: 3px solid #ccc;
 }
 
-.application-comment-list {
-  overflow-y: hidden;
-  clear: both;
+.application-comment-list li article:last-child hr {
+  display: none;
+}
+
+.application-comment-list li article p {
+  white-space: pre-wrap;
 }
 
 .application-comment-list li {

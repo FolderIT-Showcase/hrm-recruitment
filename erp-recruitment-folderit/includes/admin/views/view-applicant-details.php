@@ -270,25 +270,42 @@ if ( isset($applicant_information[0]) ) {
                     <div class="col-lg-12">
                       <div class="row">
                         <div class="col-lg-12">
-                          <div id="input_comment_wrapper">
-                            <ul>
-                              <li>
-                                <textarea class="widefat" rows="5" id="manager_comment" name="manager_comment" v-model="manager_comment"></textarea>
-                              </li>
-                            </ul>
-                            <span class="spinner"></span>
-                            <?php wp_nonce_field('wp_erp_rec_applicant_comment_nonce'); ?>
-                            <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>" id="comment_admin_user_id">
-                            <input type="hidden" name="application_id" value="<?php echo $application_id; ?>" id="application_id">
-                            <input type="hidden" name="applicant_id" value="<?php echo $applicant_id; ?>" id="applicant_id">
-                            <input type="hidden" name="action" value="wp-erp-rec-manager-comment" />
-                            <input class="page-title-action alignright button button-primary" type="button" v-on:click="postManagerComment" name="submit" value="Submit" />
+                          <div class="row">
+                            <div id="input_comment_wrapper">
+                              <ul>
+                                <li>
+                                  <textarea class="widefat" rows="5" id="manager_comment" name="manager_comment" v-model="manager_comment"></textarea>
+                                </li>
+                              </ul>
+                              <?php wp_nonce_field('wp_erp_rec_applicant_comment_nonce'); ?>
+                              <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>" id="comment_admin_user_id">
+                              <input type="hidden" name="application_id" value="<?php echo $application_id; ?>" id="application_id">
+                              <input type="hidden" name="applicant_id" value="<?php echo $applicant_id; ?>" id="applicant_id">
+                              <input type="hidden" name="action" value="wp-erp-rec-manager-comment" />
+                              <input class="page-title-action alignright button button-primary" type="button" v-on:click="postManagerComment" name="submit" value="Submit" style="margin-bottom:10px;" />
+                              <span class="spinner"></span>
 
-                            <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
+                              <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
+                            </div>
                           </div>
 
                           <ul class="application-comment-list">
-                            <li class="comment thread-even depth-1" v-for="cmnt in comments">
+                            <li class="comment thread-even depth-1">
+                              <article v-for="cmnt in comments">
+                                <div class="row">
+                                  <div class="col-xs-2 col-md-2">
+                                    <!--                                  {{{ cmnt.user_pic }}}-->
+                                    <?php echo get_avatar("{{ cmnt.ID }}", 100, '', false, ['class' => 'img-rounded img-responsive']); ?>
+                                  </div>
+                                  <div class="col-xs-10 col-md-10" style="padding-left:0px;">
+                                    <h6 style="margin-top:4px;"><b class="fn">{{ cmnt.display_name }}</b> {{ cmnt.comment_date }}</h6>
+                                    <p>{{ cmnt.comment }}</p>
+                                  </div>
+                                </div>
+                                <hr>
+                              </article>
+
+                              <!--
                               <article class="comment-body">
                                 <div class="comment-meta">
                                   <div class="comment-author vcard">
@@ -297,10 +314,13 @@ if ( isset($applicant_information[0]) ) {
                                     <span class="says">&nbsp;<?php _e('says:', 'wp-erp-rec'); ?></span>
 
                                     <div class="ctime">{{ cmnt.comment_date }}</div>
-                                    <div class="comment-content">{{ cmnt.comment }}</div>
+                                    <div class="comment-content">
+                                      <p style="white-space:pre-wrap;">{{ cmnt.comment }}</p>
+                                    </div>
                                   </div>
                                 </div>
                               </article>
+-->
                             </li>
                           </ul>
                         </div>
