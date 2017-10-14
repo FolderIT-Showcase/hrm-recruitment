@@ -485,7 +485,7 @@ class Ajax_Handler {
         $captcha_correct_result = isset( $_POST['captcha_correct_result'] ) ? $_POST['captcha_correct_result'] : 0;
         $job_id                 = isset( $_POST['job_id'] ) ? $_POST['job_id'] : 0;
 
-        $db_persoanl_fields  = get_post_meta( $job_id, '_personal_fields' );
+        $db_personal_fields  = get_post_meta( $job_id, '_personal_fields' );
         $meta_key            = '_personal_fields';
         $personal_field_data = $wpdb->get_var(
             $wpdb->prepare( "SELECT meta_value
@@ -494,16 +494,16 @@ class Ajax_Handler {
         $personal_field_data = maybe_unserialize( $personal_field_data );
 
         // convert object to array
-        $db_persoanl_fields_array = [ ];
-        if ( isset( $db_persoanl_fields ) ) {
-            foreach ( $db_persoanl_fields as $dbf ) {
-                $db_persoanl_fields_array[] = (array) $dbf;
+        $db_personal_fields_array = [ ];
+        if ( isset( $db_personal_fields ) ) {
+            foreach ( $db_personal_fields as $dbf ) {
+                $db_personal_fields_array[] = (array) $dbf;
             }
         }
 
         if ( isset( $_FILES['erp_rec_file']['name'] ) ) {
             $file_name             = $_FILES['erp_rec_file']['name'];
-            $file_size             = ceil( $_FILES['erp_rec_file']['size'] / 1024 ); //size in killobites
+            $file_size             = ceil( $_FILES['erp_rec_file']['size'] / 2048 ); //size in killobites
             $file_type             = $_FILES['erp_rec_file']['type'];
             $file_tmp_name         = $_FILES['erp_rec_file']['tmp_name'];
             $file_extension_holder = explode( '.', $file_name );
@@ -512,7 +512,7 @@ class Ajax_Handler {
         $attach_info['attach_id'] = '';
 
         //personal data validation
-        foreach ( $db_persoanl_fields_array as $db_data ) {
+        foreach ( $db_personal_fields_array as $db_data ) {
             if ( $db_data['req'] == true ) {
                 if ( $_POST[$db_data['field']] == "" ) {
                     $this->send_error( __( 'please enter ' . str_replace( '_', ' ', $db_data['field'] ), 'wp-erp-rec' ) );
@@ -743,7 +743,7 @@ class Ajax_Handler {
         $job_id                 = isset( $_POST['job_id'] ) ? $_POST['job_id'] : 0;
         $attach_id              = isset( $_POST['attach_id'] ) ? $_POST['attach_id'] : 0;
 
-        $db_persoanl_fields  = get_post_meta( $job_id, '_personal_fields' );
+        $db_personal_fields  = get_post_meta( $job_id, '_personal_fields' );
         $meta_key            = '_personal_fields';
         $personal_field_data = $wpdb->get_var(
             $wpdb->prepare( "SELECT meta_value
@@ -751,15 +751,15 @@ class Ajax_Handler {
                                     WHERE meta_key = %s AND post_id = %d", $meta_key, $job_id ) );
         $personal_field_data = maybe_unserialize( $personal_field_data );
         // convert object to array
-        $db_persoanl_fields_array = [ ];
-        if ( isset( $db_persoanl_fields ) ) {
-            foreach ( $db_persoanl_fields as $dbf ) {
-                $db_persoanl_fields_array[] = (array) $dbf;
+        $db_personal_fields_array = [ ];
+        if ( isset( $db_personal_fields ) ) {
+            foreach ( $db_personal_fields as $dbf ) {
+                $db_personal_fields_array[] = (array) $dbf;
             }
         }
 
         //personal data validation
-        foreach ( $db_persoanl_fields_array as $db_data ) {
+        foreach ( $db_personal_fields_array as $db_data ) {
             if ( $db_data['req'] == true ) {
                 if ( $_POST[$db_data['field']] == "" ) {
                     $this->send_error( __( 'please enter ' . str_replace( '_', ' ', $db_data['field'] ), 'wp-erp-rec' ) );
@@ -780,7 +780,7 @@ class Ajax_Handler {
         } elseif ( erp_rec_is_duplicate_email( $email, $job_id ) ) {
             $this->send_error( [ 'type' => 'duplicate-email', 'message' => __( 'E-mail address already exist', 'wp-erp-rec' ) ] );
         } elseif ( !isset( $attach_id ) || $attach_id == "" ) {
-            $this->send_error( [ 'type' => 'file-error', 'message' => __( 'Please upload your cv ( .doc or .pdf file only )', 'wp-erp-rec' ) ] );
+            $this->send_error( [ 'type' => 'file-error', 'message' => __( 'Please upload your cv ( .doc, .docx or .pdf file only )', 'wp-erp-rec' ) ] );
         } else {
 
             $data = array(
