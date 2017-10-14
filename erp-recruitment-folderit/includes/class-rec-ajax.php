@@ -563,21 +563,125 @@ class Ajax_Handler {
                     $attach_info = erp_rec_handle_upload( $upload );
                 }
             }
+          
+            // get the first or default stage for this applicant
+            $stage_id = $wpdb->get_var( "SELECT stageid FROM {$wpdb->prefix}erp_application_job_stage_relation WHERE jobid='" . $job_id . "' ORDER BY id LIMIT 1" );
+          
+            if ( !erp_rec_is_existing_email( $email, $job_id ) ) {
+              $data = array(
+                  'first_name' => strip_tags( $first_name ),
+                  'last_name'  => strip_tags( $last_name ),
+                  'email'      => $email
+              );
 
-            $data = array(
-                'first_name' => strip_tags( $first_name ),
-                'last_name'  => strip_tags( $last_name ),
-                'email'      => $email
-            );
+              $format = array(
+                  '%s',
+                  '%s',
+                  '%s'
+              );
 
-            $format = array(
-                '%s',
-                '%s',
-                '%s'
-            );
+              $wpdb->insert( $wpdb->prefix . 'erp_peoples', $data, $format );
+              $jobseeker_id = $wpdb->insert_id;
+              
+              //insert applicant IP Address
+              $data = array(
+                  'erp_people_id' => $jobseeker_id,
+                  'meta_key'      => 'ip',
+                  'meta_value'    => $_SERVER['REMOTE_ADDR']
+              );
 
-            $wpdb->insert( $wpdb->prefix . 'erp_peoples', $data, $format );
-            $jobseeker_id = $wpdb->insert_id;
+              $format = array(
+                  '%d',
+                  '%s',
+                  '%s'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+              
+              //insert job id and applicant id to application table
+              $data = array(
+                  'job_id'       => $job_id,
+                  'applicant_id' => $jobseeker_id,
+                  'stage'        => ( $stage_id == NULL ) ? 1 : $stage_id,
+                  'exam_detail'  => json_encode( $question_answer )
+              );
+
+              $format = array(
+                  '%d',
+                  '%d',
+                  '%s',
+                  '%s'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_application', $data, $format );
+
+              do_action( 'erp_rec_applied_job', $data );
+            } else {              
+              $query = "SELECT people.id
+                        FROM {$wpdb->prefix}erp_peoples as people
+                        WHERE people.email='{$email}' ORDER BY people.id DESC LIMIT 1";
+              
+              $jobseeker_id = $wpdb->get_var( $query );
+              
+              // Buscar postulación existente
+              $query = "SELECT app.id
+                        FROM {$wpdb->prefix}erp_application as app
+                        WHERE app.applicant_id='{$jobseeker_id}' ORDER BY app.id DESC LIMIT 1";
+              
+              $application_id = $wpdb->get_var( $query );
+              
+              // Agregar comentario sobre nueva postulación a nueva posición
+              $job_title = get_the_title($job_id);
+              
+              $admin_user_id = 0;
+              
+              $comment = __('Candidate also applied to position: ', 'wp-erp-rec') . $job_title;
+              $comment .= "\n" . __('Name: ', 'wp-erp-rec') . $first_name . ' ' . $last_name;
+              $comment .= "\n" . __('CV: ', 'wp-erp-rec') . $file_name;
+              
+              $all_personal_fields = erp_rec_get_personal_fields();
+              
+              foreach ( $personal_field_data as $db_data ) {
+                if ( json_decode( $db_data )->showfr == true
+                    && isset( $_POST[json_decode($db_data)->field] )
+                    && !empty( $_POST[json_decode($db_data)->field] ) ) {
+                  
+                  $field = json_decode( $db_data )->field;
+
+                  if ( json_decode( $db_data )->type == 'checkbox' ) {
+                    $value = implode( ",", $_POST[$field] );
+                  } else {
+                    $value = $_POST[$field];
+                  }
+                  
+                  if( !empty($all_personal_fields[$field]) ) {
+                    $field_label = $all_personal_fields[$field]['label'];
+                    
+                    if( isset($all_personal_fields[$field]['options']) ) {
+                      $value = $all_personal_fields[$field]['options'][$value];
+                    }
+                  } else {
+                    $field_label = $field;
+                  }
+                  
+                  $comment .= "\n" . $field_label . ": " . $value;
+                }
+              }
+              
+              $data = array(
+                'application_id' => $application_id,
+                'comment'        => $comment,
+                'user_id'        => $admin_user_id
+              );
+
+              $format = array(
+                  '%d',
+                  '%s',
+                  '%d'
+              );
+
+              $wpdb->insert( $wpdb->prefix . 'erp_application_comment', $data, $format );
+            }
 
             //insert applicant attach cv id
             $data = array(
@@ -593,24 +697,6 @@ class Ajax_Handler {
             );
 
             $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
-
-            //insert applicant IP Address
-            $data = array(
-                'erp_people_id' => $jobseeker_id,
-                'meta_key'      => 'ip',
-                'meta_value'    => $_SERVER['REMOTE_ADDR']
-            );
-
-            $format = array(
-                '%d',
-                '%s',
-                '%s'
-            );
-
-            $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
-
-            // get the first or default stage for this applicant
-            $stage_id = $wpdb->get_var( "SELECT stageid FROM {$wpdb->prefix}erp_application_job_stage_relation WHERE jobid='" . $job_id . "' ORDER BY id LIMIT 1" );
 
             // personal fields that is coming dynamically
             foreach ( $personal_field_data as $db_data ) {
@@ -648,25 +734,6 @@ class Ajax_Handler {
 					}
                 }
             }
-
-            //insert job id and applicant id to application table
-            $data = array(
-                'job_id'       => $job_id,
-                'applicant_id' => $jobseeker_id,
-                'stage'        => ( $stage_id == NULL ) ? 1 : $stage_id,
-                'exam_detail'  => json_encode( $question_answer )
-            );
-
-            $format = array(
-                '%d',
-                '%d',
-                '%s',
-                '%s'
-            );
-
-            $wpdb->insert( $wpdb->prefix . 'erp_application', $data, $format );
-
-            do_action( 'erp_rec_applied_job', $data );
 
             /*send an email to admin that a new applicant has been applied*/
             // get email address of hiring manager

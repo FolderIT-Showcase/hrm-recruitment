@@ -559,6 +559,26 @@ function erp_rec_is_duplicate_email( $email, $job_id ) {
 }
 
 /*
+* check email already in other application
+* return bool
+*/
+function erp_rec_is_existing_email( $email, $job_id ) {
+    global $wpdb;
+
+    $query = "SELECT email
+                FROM {$wpdb->prefix}erp_peoples as people
+                LEFT JOIN {$wpdb->prefix}erp_application as application
+                ON people.id = application.applicant_id
+                WHERE people.email='%s' AND application.job_id IS NOT NULL AND application.job_id <> %d";
+
+    if ( count( $wpdb->get_results( $wpdb->prepare( $query, $email, $job_id ), ARRAY_A ) ) > 0 ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*
 * check rating done or not
 * para int application id , int admin user id
 * return bool
