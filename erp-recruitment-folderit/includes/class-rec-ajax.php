@@ -808,6 +808,7 @@ class Ajax_Handler {
         $captcha_result         = isset( $_POST['captcha_result'] ) ? $_POST['captcha_result'] : '';
         $captcha_correct_result = isset( $_POST['captcha_correct_result'] ) ? $_POST['captcha_correct_result'] : 0;
         $job_id                 = isset( $_POST['job_id'] ) ? $_POST['job_id'] : 0;
+        $attach_id              = isset( $_POST['attach_id'] ) ? $_POST['attach_id'] : 0;
 
         $db_personal_fields  = get_post_meta( $job_id, '_personal_fields' );
         $meta_key            = '_personal_fields';
@@ -863,29 +864,9 @@ class Ajax_Handler {
             $this->send_error( [ 'type' => 'invalid-email', 'message' => __( 'Invalid Email', 'wp-erp-rec' ) ] );
         } elseif ( erp_rec_is_duplicate_email( $email, $job_id ) ) {
             $this->send_error( [ 'type' => 'duplicate-email', 'message' => __( 'E-mail address already exist', 'wp-erp-rec' ) ] );
-        } elseif ( !isset( $file_name ) || $file_name == "" ) {
+        } elseif ( !isset( $attach_id ) || $attach_id == "" ) {
             $this->send_error( [ 'type' => 'file-error', 'message' => __( 'Please upload your cv ( .doc, .docx or .pdf file only )', 'wp-erp-rec' ) ] );
         } else {
-            if ( isset( $file_name ) && $file_name != "" ) { // user upload cv so check file validation now
-                if ( $file_size > 2048 ) {
-                    $this->send_error( [ 'type' => 'file-error', 'message' => __( 'File size is greater than 2MB', 'wp-erp-rec' ) ] );
-                //} elseif ( $file_type != "application/msword" && $file_type != "application/pdf" && $file_extension != "pdf" && $file_type != "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
-				} elseif ( $file_extension != "doc" && $file_extension != "pdf" && $file_extension != "docx" ) {
-				//} elseif ( $file_type != "application/msword" && $file_type != "application/pdf" && $file_type != "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ) {
-                    $this->send_error( [ 'type' => $file_type, 'message' => __( 'Please upload doc, pdf or docx only', 'wp-erp-rec' ) ] );
-                } else {
-                    // wp way file upload
-                    $upload      = array(
-                        'name'     => $_FILES['erp_rec_file']['name'],
-                        'type'     => $_FILES['erp_rec_file']['type'],
-                        'tmp_name' => $_FILES['erp_rec_file']['tmp_name'],
-                        'error'    => $_FILES['erp_rec_file']['error'],
-                        'size'     => $_FILES['erp_rec_file']['size']
-                    );
-                    $attach_info = erp_rec_handle_upload( $upload );
-                }
-            }
-          
             // get the first or default stage for this applicant
             $stage_id = $wpdb->get_var( "SELECT stageid FROM {$wpdb->prefix}erp_application_job_stage_relation WHERE jobid='" . $job_id . "' ORDER BY id LIMIT 1" );
           
@@ -1009,7 +990,7 @@ class Ajax_Handler {
             $data = array(
                 'erp_people_id' => $jobseeker_id,
                 'meta_key'      => 'attach_id',
-                'meta_value'    => $attach_info['attach_id']
+                'meta_value'    => $attach_id
             );
 
             $format = array(
