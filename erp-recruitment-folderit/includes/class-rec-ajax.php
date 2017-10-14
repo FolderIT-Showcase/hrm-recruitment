@@ -288,7 +288,8 @@ class Ajax_Handler {
                 FROM {$wpdb->prefix}erp_application_comment as comment
                 LEFT JOIN {$wpdb->base_prefix}users as user
                 ON comment.user_id = user.ID
-                WHERE comment.application_id='%d'";
+                WHERE comment.application_id='%d'
+                ORDER BY comment.comment_date DESC";
             $udata = $wpdb->get_results( $wpdb->prepare( $query, $_GET['application_id'] ), ARRAY_A );
 
             $user_pic_data = [ ];

@@ -175,7 +175,7 @@ if (jQuery('#comment_form_wrapper').length > 0) {
           commentviewmodel.$set('response_message', 'Comment is empty!');
         } else {
           jQuery.post(ajaxurl, managerCommentFormData, function (response) {
-            commentviewmodel.comments.push({
+            commentviewmodel.comments.unshift({
               display_name: response.data.display_name,
               comment_date: response.data.comment_date,
               comment: response.data.comment,
