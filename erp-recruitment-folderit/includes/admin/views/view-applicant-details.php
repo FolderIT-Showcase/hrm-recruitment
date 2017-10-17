@@ -226,35 +226,37 @@ if ( isset($applicant_information[0]) ) {
               <div class="section-header">
                 <h2 class="hndle"><span><?php _e('Candidate Profile', 'wp-erp-rec'); ?></span></h2>
               </div>
-              <div class="section-content toggle-metabox-show">
-                <dl class="dl-custom dl-horizontal">
-                  <h5>
-                    <?php _e('Personal Information', 'wp-erp-rec'); ?>
-                  </h5>
-                  <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
-                  <dd>
-                    <?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
-                    <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>
-                  </dd>
+              <div class="section-content toggle-metabox-show full-width">
+                <div class="col-lg-12">
+                  <dl class="dl-custom dl-horizontal">
+                    <h5>
+                      <?php _e('Personal Information', 'wp-erp-rec'); ?>
+                    </h5>
+                    <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
+                    <dd>
+                      <?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
+                      <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>
+                    </dd>
 
-                  <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
-                  <dd>
-                    <?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?>
-                  </dd>
+                    <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
+                    <dd>
+                      <?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?>
+                    </dd>
 
-                  <?php $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );?>
-                  <?php foreach ( $db_personal_fields as $personal_data ) : ?>
-                  <?php $field_name = json_decode($personal_data)->field;?>
-                  <dt><?php echo ucfirst(str_replace("_"," ",$field_name));?></dt>
-                  <dd>
-                    <?php
+                    <?php $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );?>
+                    <?php foreach ( $db_personal_fields as $personal_data ) : ?>
+                    <?php $field_name = json_decode($personal_data)->field;?>
+                    <dt><?php echo ucfirst(str_replace("_"," ",$field_name));?></dt>
+                    <dd>
+                      <?php
                         $value = erp_people_get_meta($applicant_id, $field_name, true);
                         $value = stripslashes( $value );
                         echo esc_html( $value );
                       ?>
-                  </dd>
-                  <?php endforeach;?>
-                </dl>
+                    </dd>
+                    <?php endforeach;?>
+                  </dl>
+                </div>
               </div>
             </section>
           </div>
@@ -441,11 +443,11 @@ if ( isset($applicant_information[0]) ) {
               <div class="section-header">
                 <h2 class="hndle"><span><?php _e('Interviews', 'wp-erp-rec'); ?></span></h2>
               </div>
-              <div class="section-content toggle-metabox-show">
+              <div class="section-content toggle-metabox-show full-width">
                 <h3 class="no-interview-todo-caption" v-if="hasInterview">
                   <?php _e('No interview set', 'wp-erp-rec');?>
                 </h3>
-                <div class="calendar-list not-loaded">
+                <div class="col-lg-12 calendar-list not-loaded">
                   <div class="panel panel-default calendar-list-item" v-for="rt in interviewData">
                     <div class="panel-heading clearfix">
                       <h4 class="panel-title pull-left" id="interview-type-title-{{rt.id}}">{{ rt.type_detail }}</h4>
