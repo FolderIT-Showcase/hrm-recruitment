@@ -491,7 +491,7 @@ function erp_rec_get_app_interview_type_default( ) {
  */
 function erp_rec_get_interview_time_duration() {
     $interview_time_duration = array(
-        //'15'  => __( '15 minutes', 'wp-erp-rec' ),
+        '15'  => __( '15 minutes', 'wp-erp-rec' ),
         '30'  => __( '30 minutes', 'wp-erp-rec' ),
         '45'  => __( '45 minutes', 'wp-erp-rec' ),
         '60'  => __( '1 hour', 'wp-erp-rec' ),

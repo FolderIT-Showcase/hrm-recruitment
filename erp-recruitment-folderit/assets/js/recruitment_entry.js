@@ -382,6 +382,7 @@
             });
             var application_id = WeDevs_ERP_Recruitment.getApplicationId();
             $('#interview_application_id').val(application_id);
+            $('#duration').val(30);
             $('#type_of_interview').val($('#application_stage_id').val());
             $('#type_of_interview_text').val($('#application_stage_title').val());
             $('input:radio[name=internal_type_of_interview]').filter('[value=' + $('#default_internal_type_id').val() + ']').prop('checked', true).change();
