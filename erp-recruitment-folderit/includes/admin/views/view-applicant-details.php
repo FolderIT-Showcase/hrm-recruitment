@@ -550,7 +550,7 @@ if ( isset($applicant_information[0]) ) {
               <div class="section-content toggle-metabox-show">
                 <?php if ( isset($attach_id) ) : ?>
 
-                <?php if ( count($attachments) > 1 ) : ?>
+                <?php if ( count($attachments) > 0 ) : ?>
                 <?php foreach ( $attachments as $cv_id ) : ?>
                 <p><i class="fa fa-lg fa-file"></i>&nbsp;
                   <?php echo get_the_date('', $cv_id) . ' ' . get_the_time('', $cv_id) . ' - '; ?>
