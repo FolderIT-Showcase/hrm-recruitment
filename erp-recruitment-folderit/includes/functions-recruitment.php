@@ -233,6 +233,37 @@ function erp_rec_get_personal_fields() {
 }
 
 /*
+ * get available positions
+ * return array
+ */
+function erp_rec_get_available_positions( $all = false ) {
+  global $wpdb;
+  $positions = array();
+  
+  $query = "SELECT post.ID, post.post_title,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_hide_job_list') as hide_job_list,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_expire_date') expire_date,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_permanent_job') permanent_job
+  
+            FROM {$wpdb->prefix}posts as post
+            
+            WHERE post.post_type = 'erp_hr_recruitment' ";
+  
+  if ($all != true) {
+    $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
+            AND (expire_date >= '" . date("Y-m-d") . "' OR permanent_job = 1) ";
+  }
+
+  $rows = $wpdb->get_results( $query, ARRAY_A );
+  
+  foreach ( $rows as $row ) {
+    $positions[$row['ID']] = $row['post_title'];
+  }
+      
+  return $positions;
+}
+
+/*
  * get count applicants number
  * para custom post id
  * return int
