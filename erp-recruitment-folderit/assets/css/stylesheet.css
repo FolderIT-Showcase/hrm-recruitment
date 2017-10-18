@@ -75,6 +75,12 @@ dl.dl-custom h5 {
   padding-left: 5px !important;
   margin-bottom: 0px;
   line-height: 2em;
+  /*  white-space: pre-wrap;*/
+}
+
+.dl-custom dd span {
+  white-space: pre-line;
+  float: left;
 }
 
 .dl-custom dd:not(:last-child) {
@@ -726,10 +732,6 @@ span.value-pre {
   margin-left: 10px;
 }
 
-.erp-applicant-detail #status {
-  margin-left: 10px;
-}
-
 .erp-applicant-detail #button-actions {
   float: left;
   margin-left: 15px;
@@ -751,26 +753,6 @@ span.value-pre {
 .erp-applicant-detail #button-actions .button-controls a {
   margin-left: 10px;
 }
-
-.erp-applicant-detail #dropdown-actions {
-  float: right;
-  margin-top: 13px;
-  margin-bottom: 10px;
-  width: 46%;
-}
-
-.erp-applicant-detail #dropdown-actions #stage_action {
-  float: left;
-  width: 51%;
-}
-
-.erp-applicant-detail #dropdown-actions #stage_action .spinner {}
-
-.erp-applicant-detail #dropdown-actions #decision_action {
-  float: left;
-}
-
-/*.erp-applicant-detail #dropdown-actions #decision_action .spinner{*/
 
 /*position: absolute;*/
 
@@ -1683,6 +1665,14 @@ table.table-rec-reports,
 /*candidate report*/
 
 /*unique style*/
+
+.spinner {
+  margin: 4px 4px 0;
+}
+
+.form-inline .input-group.with-spinner {
+  width: calc(100% - 28px);
+}
 
 .unique-row {
   /*customize for recruitment*/

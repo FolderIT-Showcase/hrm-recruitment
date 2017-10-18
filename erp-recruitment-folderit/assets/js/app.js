@@ -734,6 +734,7 @@ if (jQuery('#candidate-detail').length > 0) {
     data: {
       stage_id: 0,
       status_name: '',
+      position_id: 0,
       avgRating: 0,
       success_notice_class: 'success_notice',
       error_notice_class: 'error_notice',
@@ -747,37 +748,6 @@ if (jQuery('#candidate-detail').length > 0) {
     },
 
     methods: {
-      changeStage: function () {
-        jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').show();
-        jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
-          'visibility': 'visible'
-        });
-        var application_id = this.getParameterByName('application_id');
-        jQuery.post(ajaxurl, {
-          action: 'erp-rec-change_stage',
-          application_id: application_id,
-          stage_id: this.stage_id,
-          _wpnonce: wpErpRec.nonce
-        }, function (response) {
-          if (response.success == true) {
-            var stage_name = jQuery('#change_stage option:selected').text();
-            var stage_id = jQuery('#change_stage option:selected').val();
-            jQuery('#application_stage_id').text(stage_id).val(stage_id);
-            jQuery('#application_stage_title').text(stage_name).val(stage_name);
-            jQuery('#stage_name #change_stage_name').text(stage_name);
-            jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
-              'visibility': 'hidden'
-            });
-            alertify.success(response.data);
-          } else {
-            jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
-              'visibility': 'hidden'
-            });
-            alertify.error(response.data);
-          }
-        });
-      },
-
       getParameterByName: function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -799,28 +769,85 @@ if (jQuery('#candidate-detail').length > 0) {
         );
       },
 
-      changeStaus: function () {
+      changeStage: function () {
+        if (!this.stage_id) {
+          return;
+        }
+        var application_id = this.getParameterByName('application_id');
         jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
           'visibility': 'visible'
         });
+        jQuery.post(ajaxurl, {
+          action: 'erp-rec-change_stage',
+          application_id: application_id,
+          stage_id: this.stage_id,
+          _wpnonce: wpErpRec.nonce
+        }, function (response) {
+          jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
+            'visibility': 'hidden'
+          });
+          if (response.success == true) {
+            var stage_name = jQuery('#change_stage option:selected').text();
+            var stage_id = jQuery('#change_stage option:selected').val();
+            jQuery('#application_stage_id').text(stage_id).val(stage_id);
+            jQuery('#application_stage_title').text(stage_name).val(stage_name);
+            jQuery('#stage_name #change_stage_name').text(stage_name);
+            alertify.success(response.data);
+          } else {
+            alertify.error(response.data);
+          }
+        });
+      },
+
+      changeStatus: function () {
+        if (!this.status_name) {
+          return;
+        }
         var application_id = this.getParameterByName('application_id');
+        jQuery('.erp-applicant-detail #dropdown-actions #status_action .spinner').css({
+          'visibility': 'visible'
+        });
         jQuery.post(ajaxurl, {
           action: 'erp-rec-change_status',
           application_id: application_id,
           status_name: this.status_name,
           _wpnonce: wpErpRec.nonce
         }, function (response) {
+          jQuery('.erp-applicant-detail #dropdown-actions #status_action .spinner').css({
+            'visibility': 'hidden'
+          });
           if (response.success == true) {
             var status = jQuery('#change_status option:selected').text();
             jQuery('#status #change_status_name').text(status);
-            jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
-              'visibility': 'hidden'
-            });
             alertify.success(response.data);
           } else {
-            jQuery('.erp-applicant-detail #dropdown-actions #stage_action .spinner').css({
-              'visibility': 'hidden'
-            });
+            alertify.error(response.data);
+          }
+        });
+      },
+
+      changePosition: function () {
+        if (!this.position_id) {
+          return;
+        }
+        var application_id = this.getParameterByName('application_id');
+        jQuery('.erp-applicant-detail #dropdown-actions #position_action .spinner').css({
+          'visibility': 'visible'
+        });
+        jQuery.post(ajaxurl, {
+          action: 'erp-rec-change_position',
+          application_id: application_id,
+          position_id: this.position_id,
+          _wpnonce: wpErpRec.nonce
+        }, function (response) {
+          jQuery('.erp-applicant-detail #dropdown-actions #position_action .spinner').css({
+            'visibility': 'hidden'
+          });
+          if (response.success == true) {
+            var position = jQuery('#change_position option:selected').text();
+            jQuery('#position #change_position_name').text(position);
+            alertify.success(response.data);
+          } else {
             alertify.error(response.data);
           }
         });
