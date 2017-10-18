@@ -65,6 +65,9 @@ class Ajax_Handler {
 
         // status
         $this->action( 'wp_ajax_erp-rec-change_status', 'change_status' );
+      
+        // position
+        $this->action( 'wp_ajax_erp-rec-change_position', 'change_position' );
 
         // to-do calendar
         $this->action( 'wp_ajax_erp-get-calendar-overview', 'todo_calendar_overview' );
@@ -2066,6 +2069,36 @@ class Ajax_Handler {
                 do_action( 'erp_rec_shortlisted_applicants', $application_id );
             }
             $this->send_success( __( 'status changed successfully', 'wp-erp-rec' ) );
+        } else {
+            $this->send_error( __( 'Something went wrong!', 'wp-erp-rec' ) );
+        }
+    }
+  
+    /**
+     * Change recruitment position
+     *
+     * @since  1.0.4
+     *
+     * @return void
+     */
+    public function change_position() {
+        global $wpdb;
+        $this->verify_nonce( 'recruitment_form_builder_nonce' );
+
+        $application_id = isset( $_POST['application_id'] ) ? $_POST['application_id'] : 0;
+        $position_id    = isset( $_POST['position_id'] ) ? $_POST['position_id'] : 0;
+
+        if ( isset( $position_id ) ) {
+            $data         = [
+                'job_id' => $position_id
+            ];
+            $where        = [
+                'id' => $application_id
+            ];
+            $data_format  = [ '%d' ];
+            $where_format = [ '%d' ];
+            $wpdb->update( $wpdb->prefix . 'erp_application', $data, $where, $data_format, $where_format );
+            $this->send_success( __( 'Position changed successfully', 'wp-erp-rec' ) );
         } else {
             $this->send_error( __( 'Something went wrong!', 'wp-erp-rec' ) );
         }
