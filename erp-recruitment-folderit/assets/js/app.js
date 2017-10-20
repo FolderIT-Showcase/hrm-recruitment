@@ -36,30 +36,30 @@ if (jQuery('#rating_status_form_wrapper').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'wp-erp-rec-get-applicationRating',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              ratingviewmodel.$set('ratingData', response.data);
-              ratingviewmodel.$set('showSwitch', response.data.length === 0 ? false : true);
-              jQuery('#section-rating .spinner').hide();
-            }
+          action: 'wp-erp-rec-get-applicationRating',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            ratingviewmodel.$set('ratingData', response.data);
+            ratingviewmodel.$set('showSwitch', response.data.length === 0 ? false : true);
+            jQuery('#section-rating .spinner').hide();
           }
-        );
+        }
+                  );
       },
 
       getApplicationAvgRating: function () {
         jQuery.get(ajaxurl, {
-            action: 'wp-erp-rec-get-applicationAvgRating',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              ratingviewmodel.$set('avgRating', response.data);
-            }
+          action: 'wp-erp-rec-get-applicationAvgRating',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            ratingviewmodel.$set('avgRating', response.data);
           }
-        );
+        }
+                  );
       },
 
       ratingSubmit: function () {
@@ -193,23 +193,23 @@ if (jQuery('#comment_form_wrapper').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'wp-erp-rec-get-comments',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              jQuery.each(response.data, function (k, v) {
-                commentviewmodel.comments.push({
-                  display_name: v.display_name,
-                  comment_date: v.comment_date,
-                  comment: v.comment,
-                  user_pic: v.user_pic
-                });
+          action: 'wp-erp-rec-get-comments',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            jQuery.each(response.data, function (k, v) {
+              commentviewmodel.comments.push({
+                display_name: v.display_name,
+                comment_date: v.comment_date,
+                comment: v.comment,
+                user_pic: v.user_pic
               });
-              jQuery('#section-comment .spinner').hide();
-            }
+            });
+            jQuery('#section-comment .spinner').hide();
           }
-        );
+        }
+                  );
       }
     }
   });
@@ -235,21 +235,21 @@ if (jQuery('#exam_detail').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'wp-erp-rec-get-examDetail',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              jQuery.each(response.data, function (k, v) {
-                exam_detail.exam_data.push({
-                  question: k,
-                  answer: v
-                });
+          action: 'wp-erp-rec-get-examDetail',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            jQuery.each(response.data, function (k, v) {
+              exam_detail.exam_data.push({
+                question: k,
+                answer: v
               });
-            }
-            jQuery('#section-exam-detail .spinner').hide();
+            });
           }
-        );
+          jQuery('#section-exam-detail .spinner').hide();
+        }
+                  );
       }
     }
   });
@@ -340,20 +340,20 @@ if (jQuery('#section-interview').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-interview',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              var serverInterviewData = response.data;
-              interviewModel.$set('interviewData', response.data);
-              if (serverInterviewData.length > 0) {
-                interviewModel.$set('hasInterview', false);
-              }
-              jQuery('#section-interview .spinner').hide();
+          action: 'erp-rec-get-interview',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            var serverInterviewData = response.data;
+            interviewModel.$set('interviewData', response.data);
+            if (serverInterviewData.length > 0) {
+              interviewModel.$set('hasInterview', false);
             }
+            jQuery('#section-interview .spinner').hide();
           }
-        );
+        }
+                  );
       },
 
       deleteInterview: function (invID) {
@@ -362,20 +362,20 @@ if (jQuery('#section-interview').length > 0) {
             'visibility': 'visible'
           });
           jQuery.post(ajaxurl, {
-              action: 'erp-rec-del-interview',
-              interview_id: invID,
-              _wpnonce: wpErpRec.nonce
-            },
-            function (response) {
-              if (response.success === true) {
-                interviewModel.getInterview();
-                jQuery('#section-interview .spinner').hide();
-                alertify.success(response.data);
-              } else {
-                alertify.error(response.data);
-              }
+            action: 'erp-rec-del-interview',
+            interview_id: invID,
+            _wpnonce: wpErpRec.nonce
+          },
+                      function (response) {
+            if (response.success === true) {
+              interviewModel.getInterview();
+              jQuery('#section-interview .spinner').hide();
+              alertify.success(response.data);
+            } else {
+              alertify.error(response.data);
             }
-          );
+          }
+                     );
         }
       },
 
@@ -514,7 +514,7 @@ if (jQuery('#section-interview').length > 0) {
         var name = 'application_id';
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
+            results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       }
     }
@@ -546,22 +546,22 @@ if (jQuery('#section-todo').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-todo',
-            application_id: jQuery('#application_id').val()
-          },
-          function (response) {
-            if (response.success === true) {
-              var serverTodoData = response.data;
-              todoModel.$set('todoData', response.data);
-              if (serverTodoData.length > 0) {
-                todoModel.$set('hasTodo', false);
-              }
-              jQuery('#section-todo .spinner').css({
-                'visibility': 'hidden'
-              });
+          action: 'erp-rec-get-todo',
+          application_id: jQuery('#application_id').val()
+        },
+                   function (response) {
+          if (response.success === true) {
+            var serverTodoData = response.data;
+            todoModel.$set('todoData', response.data);
+            if (serverTodoData.length > 0) {
+              todoModel.$set('hasTodo', false);
             }
+            jQuery('#section-todo .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       },
 
       handleTodo: function (todo_id, checkCondition) {
@@ -642,18 +642,18 @@ if (jQuery('#openingform_stage_handler').length > 0) {
         });
         this.jobid = jQuery('#postid').val();
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-stage',
-            jobid: this.jobid
-          },
-          function (response) {
-            if (response.success === true) {
-              openingform_stage_handler.$set('stageData', response.data);
-              jQuery('#openingform_stage_handler .spinner').css({
-                'visibility': 'hidden'
-              });
-            }
+          action: 'erp-rec-get-stage',
+          jobid: this.jobid
+        },
+                   function (response) {
+          if (response.success === true) {
+            openingform_stage_handler.$set('stageData', response.data);
+            jQuery('#openingform_stage_handler .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       },
 
       createStage: function () {
@@ -703,7 +703,7 @@ if (jQuery('#openingform_stage_handler').length > 0) {
       getParameterByName: function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
+            results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       }
     }
@@ -719,6 +719,7 @@ if (jQuery('#candidate-detail').length > 0) {
       stage_id: 0,
       status_name: '',
       position_id: 0,
+      project_id: null,
       avgRating: 0,
       success_notice_class: 'success_notice',
       error_notice_class: 'error_notice',
@@ -735,22 +736,22 @@ if (jQuery('#candidate-detail').length > 0) {
       getParameterByName: function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
+            results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       },
 
       getApplicationAvgRating: function () {
         var application_id = this.getParameterByName('application_id');
         jQuery.get(ajaxurl, {
-            action: 'wp-erp-rec-get-applicationAvgRating',
-            application_id: application_id
-          },
-          function (response) {
-            if (response.success === true) {
-              candidateDetail.$set('avgRating', response.data);
-            }
+          action: 'wp-erp-rec-get-applicationAvgRating',
+          application_id: application_id
+        },
+                   function (response) {
+          if (response.success === true) {
+            candidateDetail.$set('avgRating', response.data);
           }
-        );
+        }
+                  );
       },
 
       changeStage: function () {
@@ -837,6 +838,33 @@ if (jQuery('#candidate-detail').length > 0) {
         });
       },
 
+      changeProject: function () {
+        if (!this.project_id) {
+          return;
+        }
+        var application_id = this.getParameterByName('application_id');
+        jQuery('.erp-applicant-detail #dropdown-actions #project_action .spinner').css({
+          'visibility': 'visible'
+        });
+        jQuery.post(ajaxurl, {
+          action: 'erp-rec-change_project',
+          application_id: application_id,
+          project_id: this.project_id,
+          _wpnonce: wpErpRec.nonce
+        }, function (response) {
+          jQuery('.erp-applicant-detail #dropdown-actions #project_action .spinner').css({
+            'visibility': 'hidden'
+          });
+          if (response.success == true) {
+            var project = jQuery('#change_project option:selected').text();
+            jQuery('#project #change_project_title').text(project);
+            alertify.success(response.data);
+          } else {
+            alertify.error(response.data);
+          }
+        });
+      },
+
       editInterview: function () {
 
       }
@@ -867,16 +895,16 @@ if (jQuery('#update_openingform_stage_handler').length > 0) {
         });
         jQuery('#update_openingform_stage_handler .spinner').hide();
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-application-stage',
-            job_id: jobid
-          },
-          function (response) {
-            if (response.success === true) {
-              update_openingform_stage_handler.$set('updateStageData', response.data);
-              jQuery('#update_openingform_stage_handler .spinner').hide();
-            }
+          action: 'erp-rec-get-application-stage',
+          job_id: jobid
+        },
+                   function (response) {
+          if (response.success === true) {
+            update_openingform_stage_handler.$set('updateStageData', response.data);
+            jQuery('#update_openingform_stage_handler .spinner').hide();
           }
-        );
+        }
+                  );
       },
 
       createStage: function () {
@@ -924,21 +952,21 @@ if (jQuery('#update_openingform_stage_handler').length > 0) {
             'visibility': 'visible'
           });
           jQuery.post(ajaxurl, {
-              action: 'erp-rec-delete-application-stage',
-              _wpnonce: wpErpRec.nonce,
-              job_id: this.jobid,
-              stage_title: stage_title
-            },
-            function (response) {
-              if (response.success === true) {
-                update_openingform_stage_handler.getSpecificStages(update_openingform_stage_handler.jobid);
-                jQuery('#update_openingform_stage_handler .spinner').hide();
-              } else {
-                // applicant found in this stage so you cant delete this stage
-                alertify.alert(response.data);
-              }
+            action: 'erp-rec-delete-application-stage',
+            _wpnonce: wpErpRec.nonce,
+            job_id: this.jobid,
+            stage_title: stage_title
+          },
+                      function (response) {
+            if (response.success === true) {
+              update_openingform_stage_handler.getSpecificStages(update_openingform_stage_handler.jobid);
+              jQuery('#update_openingform_stage_handler .spinner').hide();
+            } else {
+              // applicant found in this stage so you cant delete this stage
+              alertify.alert(response.data);
             }
-          );
+          }
+                     );
           jQuery('#update_openingform_stage_handler .spinner').hide();
         }
       },
@@ -946,7 +974,7 @@ if (jQuery('#update_openingform_stage_handler').length > 0) {
       getParameterByName: function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-          results = regex.exec(location.search);
+            results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       }
     }
@@ -1016,19 +1044,19 @@ if (jQuery('#reports-wrapper').length > 0) {
           'visibility': 'visible'
         });
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-opening-report',
-            _wpnonce: wpErpRec.nonce,
-            jobid: 0
-          },
-          function (response) {
-            if (response.success === true) {
-              reportZone.$set('openingReportData', response.data);
-              jQuery('#reports-wrapper .spinner').css({
-                'visibility': 'hidden'
-              });
-            }
+          action: 'erp-rec-get-opening-report',
+          _wpnonce: wpErpRec.nonce,
+          jobid: 0
+        },
+                   function (response) {
+          if (response.success === true) {
+            reportZone.$set('openingReportData', response.data);
+            jQuery('#reports-wrapper .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       },
 
       generateReport: function () {
@@ -1041,19 +1069,19 @@ if (jQuery('#reports-wrapper').length > 0) {
         var current_url = get_base_url + '&jobid=' + jobid;
         jQuery('#csv-dl-link').attr('href', current_url);
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-opening-report',
-            _wpnonce: wpErpRec.nonce,
-            jobid: this.jobidSelection
-          },
-          function (response) {
-            if (response.success === true) {
-              reportZone.$set('openingReportData', response.data);
-              jQuery('#reports-wrapper .spinner').css({
-                'visibility': 'hidden'
-              });
-            }
+          action: 'erp-rec-get-opening-report',
+          _wpnonce: wpErpRec.nonce,
+          jobid: this.jobidSelection
+        },
+                   function (response) {
+          if (response.success === true) {
+            reportZone.$set('openingReportData', response.data);
+            jQuery('#reports-wrapper .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       },
 
       generateCandidateReport: function () {
@@ -1066,19 +1094,19 @@ if (jQuery('#reports-wrapper').length > 0) {
         current_url = current_url + '&jobid=' + jobid;
         jQuery('#csv-dl-link').attr('href', current_url);
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-candidate-report',
-            _wpnonce: wpErpRec.nonce,
-            jobid: this.jobidSelection
-          },
-          function (response) {
-            if (response.success === true) {
-              reportZone.$set('candidateReportData', response.data);
-              jQuery('#reports-wrapper .spinner').css({
-                'visibility': 'hidden'
-              });
-            }
+          action: 'erp-rec-get-candidate-report',
+          _wpnonce: wpErpRec.nonce,
+          jobid: this.jobidSelection
+        },
+                   function (response) {
+          if (response.success === true) {
+            reportZone.$set('candidateReportData', response.data);
+            jQuery('#reports-wrapper .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       }
     }
 
@@ -1104,19 +1132,19 @@ if (jQuery('#candidate-reports-wrapper').length > 0) {
         var current_url = get_base_url + '&jobid=' + jobid;
         jQuery('#csv-dl-link').attr('href', current_url);
         jQuery.get(ajaxurl, {
-            action: 'erp-rec-get-candidate-report',
-            _wpnonce: wpErpRec.nonce,
-            jobid: this.jobidSelection
-          },
-          function (response) {
-            if (response.success === true) {
-              candidateReportZone.$set('candidateReportData', response.data);
-              jQuery('#candidate-reports-wrapper .spinner').css({
-                'visibility': 'hidden'
-              });
-            }
+          action: 'erp-rec-get-candidate-report',
+          _wpnonce: wpErpRec.nonce,
+          jobid: this.jobidSelection
+        },
+                   function (response) {
+          if (response.success === true) {
+            candidateReportZone.$set('candidateReportData', response.data);
+            jQuery('#candidate-reports-wrapper .spinner').css({
+              'visibility': 'hidden'
+            });
           }
-        );
+        }
+                  );
       }
     }
 

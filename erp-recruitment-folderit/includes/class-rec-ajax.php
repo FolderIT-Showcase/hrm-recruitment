@@ -69,6 +69,9 @@ class Ajax_Handler {
     // position
     $this->action( 'wp_ajax_erp-rec-change_position', 'change_position' );
 
+    // project
+    $this->action( 'wp_ajax_erp-rec-change_project', 'change_project' );
+
     // to-do calendar
     $this->action( 'wp_ajax_erp-get-calendar-overview', 'todo_calendar_overview' );
     $this->action( 'wp_ajax_erp-get-calendar-overdue', 'todo_calendar_overdue' );
@@ -2108,6 +2111,34 @@ class Ajax_Handler {
       $where_format = [ '%d' ];
       $wpdb->update( $wpdb->prefix . 'erp_application', $data, $where, $data_format, $where_format );
       $this->send_success( __( 'Position changed successfully', 'wp-erp-rec' ) );
+    } else {
+      $this->send_error( __( 'Something went wrong!', 'wp-erp-rec' ) );
+    }
+  }
+  
+  /**
+     * Change recruitment project
+     *
+     * @return void
+     */
+  public function change_project() {
+    global $wpdb;
+    $this->verify_nonce( 'recruitment_form_builder_nonce' );
+
+    $application_id = isset( $_POST['application_id'] ) ? $_POST['application_id'] : 0;
+    $project_id     = isset( $_POST['project_id'] ) ? $_POST['project_id'] : null;
+
+    if ( isset( $project_id ) ) {
+      $data         = [
+        'project_id' => $project_id
+      ];
+      $where        = [
+        'id' => $application_id
+      ];
+      $data_format  = [ '%d' ];
+      $where_format = [ '%d' ];
+      $wpdb->update( $wpdb->prefix . 'erp_application', $data, $where, $data_format, $where_format );
+      $this->send_success( __( 'Project changed successfully', 'wp-erp-rec' ) );
     } else {
       $this->send_error( __( 'Something went wrong!', 'wp-erp-rec' ) );
     }

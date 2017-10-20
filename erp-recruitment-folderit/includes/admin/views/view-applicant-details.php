@@ -33,7 +33,13 @@ if ( isset($applicant_information[0]) ) {
   $application_status   = erp_people_get_meta($applicant_id, 'status');
   $application_stage_id = $applicant_information[0]['stage'];
   $application_stage_title = $applicant_information[0]['title'];
+  $application_project_id = $applicant_information[0]['project_id'];
   $default_internal_type_id = erp_rec_get_app_interview_type_default();
+
+  $available_positions = erp_rec_get_available_positions();
+  $all_projects = erp_rec_get_available_projects(true);
+  $available_projects = erp_rec_get_available_projects();
+  $application_project_title = $all_projects[$application_project_id];
 }
 ?>
 <nav class="navbar navbar-default navbar-static-top" style="margin-left:-20px;padding-left:10px;margin-bottom:-10px;z-index:99;">
@@ -97,6 +103,8 @@ if ( isset($applicant_information[0]) ) {
       <div class="col-lg-12">
         <input type="hidden" id="application_stage_id" name="application_stage_id" value="<?php echo $application_stage_id; ?>" />
         <input type="hidden" id="application_stage_title" name="application_stage_title" value="<?php echo $application_stage_title; ?>" />
+        <input type="hidden" id="application_project_id" name="application_project_id" value="<?php echo $application_project_id; ?>" />
+        <input type="hidden" id="application_project_title" name="application_project_title" value="<?php echo $application_project_title; ?>" />
         <input type="hidden" id="default_internal_type_id" name="default_internal_type_id" value="<?php echo $default_internal_type_id; ?>" />
 
         <div class="row">
@@ -149,6 +157,12 @@ if ( isset($applicant_information[0]) ) {
                           <span id="change_status_name"><?php echo ( erp_people_get_meta($applicant_id, 'status', true) != "" ) ? ucfirst( str_replace( "_", " ", $status[erp_people_get_meta($applicant_id, 'status', true )] ) ) : __('No status set', 'wp-erp-rec') ; ?></span>
                         </p>
                       </li>
+                      <li>
+                        <p id="project"><span class="fa fa-users one" style="width:30px;"></span>
+                          <?php _e('Project: ', 'wp-erp-rec'); ?>
+                          <span id="change_project_title"><?php echo $application_project_title;?></span>
+                        </p>
+                      </li>
                     </ul>
                   </div>
                   <hr>
@@ -173,10 +187,13 @@ if ( isset($applicant_information[0]) ) {
                     </div>
                   </div>
                   <hr>
+                  <?php if ( $hire_status == 0 ) : ?>
                   <div class="row">
-                    <?php if ( $hire_status == 0 ) : ?>
+                    <div class="col-xs-12 text-left-not-xs text-center-xs" >
+                      <h4 style="margin-top:0px;"><?php _e('Change...', 'wp-erp-rec'); ?></h4>
+                    </div>
                     <div class="form-inline" id="dropdown-actions">
-                      <div class="col-xs-12 col-md-4" id="stage_action">
+                      <div class="col-xs-12 col-md-3" id="stage_action">
                         <div class="input-group with-spinner">
                           <?php $stages = erp_rec_get_application_stages($application_id); ?>
                           <select class="form-control" id="change_stage" name="change_stage" v-model="stage_id">
@@ -191,7 +208,7 @@ if ( isset($applicant_information[0]) ) {
                         </div>
                         <span class="spinner"></span>
                       </div>
-                      <div class="col-xs-12 col-md-4" id="status_action">
+                      <div class="col-xs-12 col-md-3" id="status_action">
                         <div class="input-group with-spinner">
                           <?php $status = erp_rec_get_hiring_status(); ?>
                           <select class="form-control" id="change_status" name="change_status" v-model="status_name">
@@ -206,12 +223,11 @@ if ( isset($applicant_information[0]) ) {
                         </div>
                         <span class="spinner"></span>
                       </div>
-                      <div class="col-xs-12 col-md-4" id="position_action">
+                      <div class="col-xs-12 col-md-3" id="position_action">
                         <div class="input-group with-spinner">
-                          <?php $positions = erp_rec_get_available_positions(); ?>
                           <select class="form-control" id="change_position" name="change_position" v-model="position_id">
                             <option value="" selected><?php _e('&mdash; Change Position &mdash;', 'wp-erp-rec');?></option>
-                            <?php foreach ( $positions as $key => $value ) : ?>
+                            <?php foreach ( $available_positions as $key => $value ) : ?>
                             <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php endforeach; ?>
                           </select>
@@ -221,9 +237,23 @@ if ( isset($applicant_information[0]) ) {
                         </div>
                         <span class="spinner"></span>
                       </div>
+                      <div class="col-xs-12 col-md-3" id="project_action">
+                        <div class="input-group with-spinner">
+                          <select class="form-control" id="change_project" name="change_project" v-model="project_id">
+                            <option value="" selected><?php _e('&mdash; Change Project &mdash;', 'wp-erp-rec');?></option>
+                            <?php foreach ( $available_projects as $key => $value ) : ?>
+                            <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                            <?php endforeach; ?>
+                          </select>
+                          <span class="input-group-btn">
+                            <button class="btn btn-default" style="padding-top:3px;padding-bottom:3px;" v-on:click="changeProject"><?php _e('Assign', 'wp-erp-rec'); ?></button>
+                          </span>
+                        </div>
+                        <span class="spinner"></span>
+                      </div>
                     </div>
-                    <?php endif;?>
                   </div>
+                  <?php endif;?>
                 </div>
               </div>
             </div>
@@ -298,22 +328,22 @@ if ( isset($applicant_information[0]) ) {
 
                   if( isset($all_personal_fields[$field_name]['href']) ) {
                     $url = $value;
-                    
+
                     if( isset($all_personal_fields[$field_name]['href']['prefix']) ) {
                       $url = $all_personal_fields[$field_name]['href']['prefix'] . $url;
                     }
-                    
+
                     if( isset($all_personal_fields[$field_name]['href']['suffix']) ) {
                       $url = $url . $all_personal_fields[$field_name]['href']['suffix'];
                     }
-                    
+
                     if ($all_personal_fields[$field_name]['href']['validate'] === FALSE || !filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
                       $url_target = '';
-                      
+
                       if(isset($all_personal_fields[$field_name]['href']['target'])) {
                         $url_target = 'target="'.$all_personal_fields[$field_name]['href']['target'].'"';
                       }
-                      
+
                       $value = '<a href="'.$url.'" '.$url_target.'>'.$value.'</a>';
                     }
                   } else {
