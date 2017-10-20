@@ -561,6 +561,8 @@ if ( isset($applicant_information[0]) ) {
                     <input type="hidden" id="interview-time-{{rt.id}}" value="{{rt.interview_timee}}">
                     <input type="hidden" id="interview-duration-min-{{rt.id}}" value="{{rt.duration}}">
                     <input type="hidden" id="interview-type-id-{{rt.id}}" value="{{rt.type_id}}">
+                    <input type="hidden" id="feedback-english-level-{{rt.id}}" value="{{rt.feedback_english_level_id}}">
+                    <input type="hidden" id="feedback-english-conversation-{{rt.id}}" value="{{rt.feedback_english_conversation_id}}">
                   </div>
 
                   <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>

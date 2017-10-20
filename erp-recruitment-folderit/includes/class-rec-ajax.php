@@ -1488,6 +1488,10 @@ class Ajax_Handler {
 						ON app_inv.interview_internal_type_id=types.id
                         WHERE app_inv.application_id='%d'";
             $udata = $wpdb->get_results( $wpdb->prepare( $query, $_GET['application_id'] ), ARRAY_A );
+          
+            $english_levels = erp_rec_get_feedback_english_levels();
+          
+            $english_conversation = erp_rec_get_feedback_english_conversation();
 
             $user_data = [ ];
             foreach ( $udata as $ud ) {
@@ -1519,23 +1523,25 @@ class Ajax_Handler {
                 $stamp = $time->format( 'g:i A' );
 
                 $user_data[] = array(
-                    'id'                            => $ud['id'],
-                    'title'                         => $ud['title'],
-                    'type_detail'                   => $ud['type_detail'],
-                    'type_identifier'               => $ud['type_identifier'],
-                    'type_id'                       => $ud['type_id'],
-                    'interview_detail'              => $ud['interview_detail'],
-                    'interview_tech'                => $ud['interview_tech'],
-                    'feedback_comment'              => $ud['feedback_comment'],
-                    'feedback_english_level'        => $ud['feedback_english_level'],
-                    'feedback_english_conversation' => $ud['feedback_english_conversation'],
-                    'interview_datetime'            => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ),
-                    'interview_time'                => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ) . ' - ' . $stamp,
-                    'interview_date'                => date( 'Y-m-d', strtotime( $ud['start_date_time'] ) ),
-                    'interview_timee'               => date( 'g:i A', strtotime( $ud['start_date_time'] ) ),
-                    'duration'                      => $minutes_to_add,
-                    'display_name'                  => $interviewers_name,
-                    'interviewers_ids'              => $interviewers_ids
+                    'id'                               => $ud['id'],
+                    'title'                            => $ud['title'],
+                    'type_detail'                      => $ud['type_detail'],
+                    'type_identifier'                  => $ud['type_identifier'],
+                    'type_id'                          => $ud['type_id'],
+                    'interview_detail'                 => $ud['interview_detail'],
+                    'interview_tech'                   => $ud['interview_tech'],
+                    'feedback_comment'                 => $ud['feedback_comment'],
+                    'feedback_english_level'           => $english_levels[$ud['feedback_english_level']],
+                    'feedback_english_conversation'    => $english_conversation[$ud['feedback_english_conversation']],
+                    'feedback_english_level_id'        => $ud['feedback_english_level'],
+                    'feedback_english_conversation_id' => $ud['feedback_english_conversation'],
+                    'interview_datetime'               => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ),
+                    'interview_time'                   => date( 'd/m/Y g:i A', strtotime( $ud['start_date_time'] ) ) . ' - ' . $stamp,
+                    'interview_date'                   => date( 'Y-m-d', strtotime( $ud['start_date_time'] ) ),
+                    'interview_timee'                  => date( 'g:i A', strtotime( $ud['start_date_time'] ) ),
+                    'duration'                         => $minutes_to_add,
+                    'display_name'                     => $interviewers_name,
+                    'interviewers_ids'                 => $interviewers_ids
                 );
 
             }
@@ -1761,8 +1767,10 @@ class Ajax_Handler {
 
         $application_id                  = $params['interview_application_id'];
         $feedback_comment                = $params['feedback_comment'];
-        $feedback_english_level          = $params['feedback_english_level_text'];
-        $feedback_english_conversation   = $params['feedback_english_conversation_text'];
+//        $feedback_english_level          = $params['feedback_english_level_text'];
+//        $feedback_english_conversation   = $params['feedback_english_conversation_text'];
+        $feedback_english_level          = $params['feedback_english_level'];
+        $feedback_english_conversation   = $params['feedback_english_conversation'];
 
         if ( !isset( $interviewid ) ) {
             $this->send_error( __( 'Interview ID not available!', 'wp-erp-rec' ) );

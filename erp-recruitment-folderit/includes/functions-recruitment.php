@@ -540,7 +540,7 @@ function erp_rec_get_interview_time_duration() {
  */
 function erp_rec_get_feedback_english_levels() {
     $feedback_english_levels = array(
-        0 => __( '- Select English Level -', 'wp-erp-rec' ),
+        '' => __( '- Select English Level -', 'wp-erp-rec' ),
         'elementary'  => __( 'Elementary', 'wp-erp-rec' ),
         'beginners'  => __( 'Beginners', 'wp-erp-rec' ),
         'pre-intermediate'  => __( 'Pre-Intermediate', 'wp-erp-rec' ),
@@ -560,7 +560,7 @@ function erp_rec_get_feedback_english_levels() {
  */
 function erp_rec_get_feedback_english_conversation() {
     $feedback_english_conversation = array(
-        0 => __( '- Select English Conversation -', 'wp-erp-rec' ),
+        '' => __( '- Select English Conversation -', 'wp-erp-rec' ),
         'yes'  => __( 'Yes', 'wp-erp-rec' ),
         'no'  => __( 'No', 'wp-erp-rec' )
     );

@@ -480,29 +480,13 @@ if (jQuery('#section-interview').length > 0) {
             var feedbackCommentText = jQuery('#feedback-comment-text-' + invID).text();
             jQuery('#feedback_comment').val(feedbackCommentText);
 
-            var feedbackEnglishLevelText = jQuery('#feedback-english-level-text-' + invID).text();
-            jQuery('#feedback_english_level_text').val(feedbackEnglishLevelText);
-            jQuery('#feedback_english_level option').each(function () {
-              if (jQuery(this).text() == feedbackEnglishLevelText) {
-                this.selected = (this.text == feedbackEnglishLevelText);
-              }
-            });
-            jQuery('#feedback_english_level').change(function () {
-              var selected_feedback_english_level_name = jQuery(this).find("option:selected").text();
-              jQuery('#feedback_english_level_text').val(selected_feedback_english_level_name);
-            });
+            var feedbackEnglishLevel = jQuery('#feedback-english-level-' + invID).val();
+            console.log('feedbackEnglishLevel: ' + feedbackEnglishLevel);
+            jQuery("#feedback_english_level").val(feedbackEnglishLevel);
 
-            var feedbackEnglishConversationText = jQuery('#feedback-english-conversation-text-' + invID).text();
-            jQuery('#feedback_english_conversation_text').val(feedbackEnglishConversationText);
-            jQuery('#feedback_english_conversation option').each(function () {
-              if (jQuery(this).text() == feedbackEnglishConversationText) {
-                this.selected = (this.text == feedbackEnglishConversationText);
-              }
-            });
-            jQuery('#feedback_english_conversation').change(function () {
-              var selected_feedback_english_conversation_name = jQuery(this).find("option:selected").text();
-              jQuery('#feedback_english_conversation_text').val(selected_feedback_english_conversation_name);
-            });
+            var feedbackEnglishConversation = jQuery('#feedback-english-conversation-' + invID).val();
+            console.log('feedbackEnglishConversation: ' + feedbackEnglishConversation);
+            jQuery('#feedback_english_conversation').val(feedbackEnglishConversation);
           },
           onSubmit: function (modal) {
             modal.disableButton();
