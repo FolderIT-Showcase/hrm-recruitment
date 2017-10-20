@@ -290,21 +290,21 @@ function erp_rec_get_available_positions( $all = false ) {
   global $wpdb;
   $positions = array();
 
-  $query = "SELECT post.ID, post.post_title,
+  $query = "SELECT post.ID as ID, post.post_title as post_title,
             (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_hide_job_list') as hide_job_list,
             (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_expire_date') expire_date,
             (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_permanent_job') permanent_job
 
             FROM {$wpdb->prefix}posts as post
 
-            WHERE post.post_type = 'erp_hr_recruitment'
-            
-            ORDER BY post.menu_order, post.post_title";
+            WHERE post.post_type = 'erp_hr_recruitment' ";
 
-  if ($all != true) {
+  if ($all !== true) {
     $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
             AND (expire_date >= '" . date("Y-m-d") . "' OR permanent_job = 1) ";
   }
+  
+  $query .= " ORDER BY post.menu_order, post.post_title ";
 
   $rows = $wpdb->get_results( $query, ARRAY_A );
 
@@ -313,6 +313,44 @@ function erp_rec_get_available_positions( $all = false ) {
   }
 
   return $positions;
+}
+
+/*
+ * get available projects
+ * return array
+ */
+function erp_rec_get_available_projects( $all = false ) {
+  $projects = array();
+  if( is_plugin_active( 'administrador-de-proyectos/administrador-de-proyectos.php' ) ) {
+    global $wpdb;
+
+    $query = "SELECT project.ID, project.project_title
+            FROM {$wpdb->prefix}projects as project
+            ORDER BY project.project_title";
+
+    if ($all != true) {
+      $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
+            AND (expire_date >= '" . date("Y-m-d") . "' OR permanent_job = 1) ";
+    }
+
+    $rows = $wpdb->get_results( $query, ARRAY_A );
+
+    foreach ( $rows as $row ) {
+      $projects[$row['ID']] = $row['post_title'];
+    }
+  } else {
+    $projects[100] = 'Proyecto público de prueba 100';
+    $projects[200] = 'Proyecto público de prueba 200';
+    $projects[300] = 'Proyecto público de prueba 300';
+
+    if ($all === true) {
+      $projects[400] = 'Proyecto PRIVADO de prueba 400';
+      $projects[500] = 'Proyecto PRIVADO de prueba 500';
+      $projects[600] = 'Proyecto PRIVADO de prueba 600';
+    }
+  }
+
+  return $projects;
 }
 
 /*
