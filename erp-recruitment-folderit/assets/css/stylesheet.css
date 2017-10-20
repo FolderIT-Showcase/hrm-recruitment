@@ -48,6 +48,10 @@ dl.dl-custom:not(:last-child) {
   margin-bottom: 15px;
 }
 
+dl.dl-custom h1,
+dl.dl-custom h2,
+dl.dl-custom h3,
+dl.dl-custom h4,
 dl.dl-custom h5 {
   margin: 0;
   padding: 10px;

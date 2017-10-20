@@ -222,11 +222,11 @@ class Recruitment {
         $get_hide_job_list      = get_post_meta( $post->ID, '_hide_job_list', true );
         $get_permanent_job      = get_post_meta( $post->ID, '_permanent_job', true );
         ?>
-        <table class="form-table erp-hr-recruitment-meta-wrap-table" xmlns:v-on="http://www.w3.org/1999/xhtml">
-            <tr>
-                <td width="50%">
-                    <label><?php _e( 'Select Hiring Lead', 'wp-erp-rec' ); ?></label>
-                    <?php
+  <table class="form-table erp-hr-recruitment-meta-wrap-table" xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <tr>
+      <td width="50%">
+        <label><?php _e( 'Select Hiring Lead', 'wp-erp-rec' ); ?></label>
+        <?php
                         $hiring_lead_ids = get_post_meta( $post->ID, '_hiring_lead', true ) ? get_post_meta( $post->ID, '_hiring_lead', true ) : [];
                         $hiring_lead_name = [];
                         if ( is_array( $hiring_lead_ids ) && count( $hiring_lead_ids ) > 0 ) {
@@ -236,7 +236,7 @@ class Recruitment {
                             }
                         }
                     ?>
-                    <select name="hiring_lead[]" id="hiring_lead" class="erp-select2" multiple="multiple">
+          <select name="hiring_lead[]" id="hiring_lead" class="erp-select2" multiple="multiple">
                         <option></option>
                         <?php foreach ( $employees as $user ) : ?>
                             <?php if ( in_array( $user->user_id, $hiring_lead_ids ) ) : ?>
@@ -250,92 +250,94 @@ class Recruitment {
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
-                </td>
-                <td width="50%">
-                    <label><?php _e( 'Department', 'wp-erp-rec' ); ?></label> <select name="department">
+      </td>
+      <td width="50%">
+        <label><?php _e( 'Department', 'wp-erp-rec' ); ?></label> <select name="department">
                         <option></option><?php foreach ( $departments as $department ) { ?>
                         <option value='<?php echo $department->id; ?>'<?php if ( $get_department == $department->id ): ?> selected="selected"<?php endif; ?>>
                             <?php echo $department->title; ?>
                             </option><?php } ?>
                     </select>
-                </td>
-            </tr>
+      </td>
+    </tr>
 
-            <tr>
-                <td width="50%">
-                    <label><?php _e( 'Employment Type', 'wp-erp-rec' ); ?></label> <select name="employment_type">
+    <tr>
+      <td width="50%">
+        <label><?php _e( 'Employment Type', 'wp-erp-rec' ); ?></label> <select name="employment_type">
                         <option></option><?php foreach ( $employment_types as $key => $value ) { ?>
                         <option value='<?php echo $key; ?>'<?php if ( $get_employment_type == $key ): ?> selected="selected"<?php endif; ?>>
                             <?php echo $value; ?>
                             </option><?php } ?>
                     </select>
-                </td>
-                <td width="50%">
-                    <label>
+      </td>
+      <td width="50%">
+        <label>
                         <input type="checkbox" name="remote_job" <?php echo ( $get_remote_job == 1 ) ? 'checked' : ''; ?> />
                         <?php _e( 'Remote working is an option for this opening', 'wp-erp-rec' ); ?>
                     </label>
-                </td>
-			</tr>
-			<tr>
-				<td width="50%">
-                    <label>
+      </td>
+    </tr>
+    <tr>
+      <td width="50%">
+        <label>
                         <input type="checkbox" name="hide_job_list" <?php echo ( $get_hide_job_list == 1 ) ? 'checked' : ''; ?> />
                         <?php _e( 'Hide job from public list', 'wp-erp-rec' ); ?>
                     </label>
-                </td>
-				<td width="50%">
-                    <label>
+      </td>
+      <td width="50%">
+        <label>
                         <input type="checkbox" name="permanent_job" <?php echo ( $get_permanent_job == 1 ) ? 'checked' : ''; ?> />
                         <?php _e( 'Permanent job (doesn\'t expire and has no candidate limits)', 'wp-erp-rec' ); ?>
                     </label>
-                </td>
-            </tr>
+      </td>
+    </tr>
 
-            <tr>
-                <td width="50%">
-                    <label><?php _e( 'Minimum Experience', 'wp-erp-rec' ); ?></label> <select name="minimum_experience">
+    <tr>
+      <td width="50%">
+        <label><?php _e( 'Minimum Experience', 'wp-erp-rec' ); ?></label> <select name="minimum_experience">
                         <option></option><?php
                         foreach ( $minimum_experience as $key => $value ) { ?>
                         <option value='<?php echo $key; ?>'<?php if ( $get_minimum_experience == $key ): ?> selected="selected"<?php endif; ?>>
                             <?php echo $value; ?>
                             </option><?php } ?>
                     </select>
-                </td>
-                <td width="50%">
-                    <label><?php _e( 'Location', 'wp-erp-rec' ); ?></label>
-                    <input type="text" id="glocation" name="location" value="<?php echo $get_location; ?>"/>
-                    <input type="hidden" id="latlocation" name="latlocation" value=""/>
-                    <input type="hidden" id="lnglocation" name="lnglocation" value=""/>
-                </td>
-            </tr>
+      </td>
+      <td width="50%">
+        <label><?php _e( 'Location', 'wp-erp-rec' ); ?></label>
+        <input type="text" id="glocation" name="location" value="<?php echo $get_location; ?>" />
+        <input type="hidden" id="latlocation" name="latlocation" value="" />
+        <input type="hidden" id="lnglocation" name="lnglocation" value="" />
+      </td>
+    </tr>
 
-            <tr>
-                <td width="50%">
-                    <?php
+    <tr>
+      <td width="50%">
+        <?php
                     $date = date( 'Y-m-d' );
                     $date = date( 'Y-m-d', strtotime( '+30 days', strtotime( $date ) ) );
-                    ?><?php erp_html_form_input(
+                    ?>
+          <?php erp_html_form_input(
                         array( 'label' => __( 'Submission Deadline', 'wp-erp-rec' ),
                                'name'  => 'expire_date', 'value' => ( $get_expire_date == "" ) ? $date : $get_expire_date,
                                'type'  => 'text', 'class' => 'erp-date-field' )
                     );
                     ?>
-                </td>
-                <td width="50%">
-                    <label><?php _e( 'Vacancy', 'wp-erp-rec' ); ?></label>
-                    <input type="text" id="vacancy" name="vacancy" value="<?php _e( $get_vacancy, 'wp-erp-rec' ); ?>" maxlength="2"/>
-                </td>
-            </tr>
-            <tr></tr>
-            <tr></tr>
-            <tr>
-                <td width="50%"></td>
-                <td width="50%"></td>
-            </tr>
-            <tr></tr>
+      </td>
+      <td width="50%">
+        <label><?php _e( 'Vacancy', 'wp-erp-rec' ); ?></label>
+        <input type="text" id="vacancy" name="vacancy" value="<?php _e( $get_vacancy, 'wp-erp-rec' ); ?>" maxlength="2" />
+      </td>
+    </tr>
+    <tr></tr>
+    <tr></tr>
+    <tr>
+      <td width="50%"></td>
+      <td width="50%"></td>
+    </tr>
+    <tr></tr>
 
-        </table><?php wp_nonce_field( 'hr_recruitment_meta_action', 'hr_recruitment_meta_action_nonce' );
+  </table>
+  <?php wp_nonce_field( 'hr_recruitment_meta_action', 'hr_recruitment_meta_action_nonce' );
     }
 
     /**
@@ -403,63 +405,81 @@ class Recruitment {
             update_post_meta( $post->ID, '_personal_fields', $default_personal_fields );
             $db_personal_fields = $default_personal_fields;
         }
+      
+      // HOTFIX para restaurar el metadata _personal_fields
+      /*
+        $default_showfr = false;
+        $default_hotfix_fields = array("english_level", "observations", "cover_letter", "mobile");
+        $default_personal_fields = [ ];
+        foreach ( $fields as $default_field ) {
+            if ( in_array($default_field['name'], $default_hotfix_fields) ) {
+              $default_showfr = true;
+            } else { 
+              $default_showfr = false;
+            }
+            $push_new_field = json_encode( [ "field" => $default_field['name'], "type" => $default_field['type'], "req" => $default_field['required'], "showfr" => $default_showfr ] );
+            array_push( $default_personal_fields, $push_new_field );
+        }
+        update_post_meta( $post->ID, '_personal_fields', $default_personal_fields );
+        $db_personal_fields = $default_personal_fields;
+      */
 
         ?>
 
-        <div class="applicant_personal_mandatory_fields">
-            <label>
+  <div class="applicant_personal_mandatory_fields">
+    <label>
                 <?php _e( 'First Name', 'wp-erp-rec' ); ?>
             </label>
 
-            <div class="alignright">
-                <label>
+    <div class="alignright">
+      <label>
                     <?php _e( 'This field is required', 'wp-erp-rec' ); ?>
                 </label>
-            </div>
-        </div>
-        <div class="applicant_personal_mandatory_fields">
-            <label>
+    </div>
+  </div>
+  <div class="applicant_personal_mandatory_fields">
+    <label>
                 <?php _e( 'Last Name', 'wp-erp-rec' ); ?>
             </label>
 
-            <div class="alignright">
-                <label>
+    <div class="alignright">
+      <label>
                     <?php _e( 'This field is required', 'wp-erp-rec' ); ?>
                 </label>
-            </div>
-        </div>
-        <div class="applicant_personal_mandatory_fields">
-            <label>
+    </div>
+  </div>
+  <div class="applicant_personal_mandatory_fields">
+    <label>
                 <?php _e( 'Email', 'wp-erp-rec' ); ?>
             </label>
 
-            <div class="alignright">
-                <label>
+    <div class="alignright">
+      <label>
                     <?php _e( 'This field is required', 'wp-erp-rec' ); ?>
                 </label>
-            </div>
-        </div>
-        <div class="applicant_personal_mandatory_fields">
-            <label>
+    </div>
+  </div>
+  <div class="applicant_personal_mandatory_fields">
+    <label>
                 <?php _e( 'Upload CV', 'wp-erp-rec' ); ?>
             </label>
 
-            <div class="alignright">
-                <label>
+    <div class="alignright">
+      <label>
                     <?php _e( 'This field is required', 'wp-erp-rec' ); ?>
                 </label>
-            </div>
-        </div>
-        <hr>
+    </div>
+  </div>
+  <hr>
 
-        <div id="label-wrapper">
-            <label class="applicant_check_all"><input id="checkAll" type="checkbox"><?php _e( 'Check All', 'wp-erp-rec' ); ?></label>
-            <label class="applicant_check_all" style="float: right"><input id="checkAllReq" type="checkbox"><?php _e( 'Check All', 'wp-erp-rec' ); ?></label>
-        </div>
+  <div id="label-wrapper">
+    <label class="applicant_check_all"><input id="checkAll" type="checkbox"><?php _e( 'Check All', 'wp-erp-rec' ); ?></label>
+    <label class="applicant_check_all" style="float: right"><input id="checkAllReq" type="checkbox"><?php _e( 'Check All', 'wp-erp-rec' ); ?></label>
+  </div>
 
-        <div id="sortit">
-            <?php if ( count( $db_personal_fields ) > 0 && is_array( $db_personal_fields ) ) : ?>
-                <?php foreach ( $db_personal_fields as $key => $value ) :
+  <div id="sortit">
+    <?php if ( count( $db_personal_fields ) > 0 && is_array( $db_personal_fields ) ) : ?>
+    <?php foreach ( $db_personal_fields as $key => $value ) :
                     $fArray = [
                         "field"  => json_decode( $value )->field,
                         "type"   => json_decode( $value )->type,
@@ -467,8 +487,8 @@ class Recruitment {
                         "showfr" => json_decode( $value )->showfr
                     ];
                     ?>
-                    <div id="<?php echo htmlspecialchars( json_encode( $fArray ), ENT_QUOTES, 'UTF-8' ); ?>" class="applicant_personal_fields">
-                        <label>
+    <div id="<?php echo htmlspecialchars( json_encode( $fArray ), ENT_QUOTES, 'UTF-8' ); ?>" class="applicant_personal_fields">
+      <label>
                             <?php if ( json_decode( $value )->showfr == true ) : ?>
                                 <input class="applicant_chkbox" type="checkbox" name="efields[]" value="<?php echo json_decode( $value )->field; ?>" checked="checked">
                             <?php else : ?>
@@ -478,8 +498,8 @@ class Recruitment {
                             <?php echo ucwords( str_replace( '_', ' ', json_decode( $value )->field ) ); ?>
                         </label>
 
-                        <div class="alignright">
-                            <label>
+      <div class="alignright">
+        <label>
                                 <?php if ( json_decode( $value )->req == true ) : ?>
                                     <input class='applicant_chkbox_req' type="checkbox" name="req[]" value="<?php echo json_decode( $value )->field; ?>" checked="checked">
                                 <?php else : ?>
@@ -488,13 +508,13 @@ class Recruitment {
 
                                 <?php _e( 'This field is required', 'wp-erp-rec' ); ?>
                             </label>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
+      </div>
+    </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
 
-        <?php
+  <?php
     }
 
     /*
@@ -504,27 +524,31 @@ class Recruitment {
      */
     public function edit_stage() {
         ?>
-        <div id="update_openingform_stage_handler" class="openingform_input_wrapper">
-            <button style="margin-bottom: 10px;" class="button alignright" v-on:click.prevent="createStage">
+    <div id="update_openingform_stage_handler" class="openingform_input_wrapper">
+      <button style="margin-bottom: 10px;" class="button alignright" v-on:click.prevent="createStage">
                 <i class="fa fa-plus"></i>&nbsp;<?php _e( 'Add Stage', 'wp-erp-rec' ); ?>
             </button>
-            <div id="stage-validation-message"></div>
-            <div id="openingform_sortit_edit_mode">
-                <?php $get_stage = erp_rec_get_stage( get_the_ID() ); ?>
-                <?php foreach ( $get_stage as $st ) : ?>
-                    <div class="stage-list">
-                        <?php if ( array_key_exists( 'stage_selected', $st ) && is_null( $st['stage_selected'] ) ) : ?>
-                            <label>
+      <div id="stage-validation-message"></div>
+      <div id="openingform_sortit_edit_mode">
+        <?php $get_stage = erp_rec_get_stage( get_the_ID() ); ?>
+        <?php foreach ( $get_stage as $st ) : ?>
+        <div class="stage-list">
+          <?php if ( array_key_exists( 'stage_selected', $st ) && is_null( $st['stage_selected'] ) ) : ?>
+          <label>
                                 <input type="checkbox" name="stage_name[]" value="<?php echo $st['sid']; ?>"><?php echo $st['title']; ?>
                                 <input type="hidden" class="candidate_number" value="<?php echo $st['candidate_number']; ?>">
-                            </label><?php else: ?><label>
+                            </label>
+          <?php else: ?><label>
                             <input type="checkbox" name="stage_name[]" value="<?php echo $st['sid']; ?>" checked="checked"><?php echo $st['title']; ?>
                             <input type="hidden" class="candidate_number" value="<?php echo isset( $st['candidate_number'] ) ? $st['candidate_number'] : 0; ?>">
-                        </label><?php endif; ?>
-                    </div><?php endforeach; ?>
-            </div>
-            <span class="spinner"></span>
-        </div><?php
+                        </label>
+          <?php endif; ?>
+        </div>
+        <?php endforeach; ?>
+      </div>
+      <span class="spinner"></span>
+    </div>
+    <?php
     }
 
     /**
@@ -660,22 +684,23 @@ class Recruitment {
         $localize_scripts = [ 'qset' => get_post_meta( $post->ID, '_erp_hr_questionnaire', true ) ];
         wp_localize_script( 'erp-recruitment-app-script', 'wpErpHrQuestionnaire', $localize_scripts );
         ?>
-        <div id="meta_inner">
-            <?php
+      <div id="meta_inner">
+        <?php
             // get questionnaire post types and show in a drop down list
             $posts = get_posts( array( 'post_type' => 'erp_hr_questionnaire', 'post_status' => 'publish', 'posts_per_page' => -1 ) );
             $get_questionnaire = get_post_meta($post->ID, '_erp_hr_questionnaire', true);
             ?>
-            <div>
-                <label><?php _e( 'Please Select Question set:', 'wp-erp-rec' ); ?></label>
-                    <select id="qset">
+          <div>
+            <label><?php _e( 'Please Select Question set:', 'wp-erp-rec' ); ?></label>
+            <select id="qset">
                         <?php foreach ( $posts as $p ) : ?><?php if ( count( get_post_meta( $p->ID, '_erp_hr_questionnaire', true ) ) > 0 ) : ?>
                             <option value="<?php echo $p->ID; ?>"><?php echo $p->post_title; ?></option><?php endif; ?><?php endforeach; ?>
                     </select>
-                    <span class="add page-title-action page-title-action-q"><?php _e( 'Add Question Set', 'wp-erp-rec' ); ?></span>
-            </div>
-        <span id="here"></span>
-        </div><?php
+            <span class="add page-title-action page-title-action-q"><?php _e( 'Add Question Set', 'wp-erp-rec' ); ?></span>
+          </div>
+          <span id="here"></span>
+      </div>
+      <?php
     }
 
     /**
@@ -723,7 +748,10 @@ class Recruitment {
     public function recruitment_table_content( $column_name, $post_id ) {
 
         if ( $column_name == 'view_list' ) { ?>
-            <a class="jtitle" href="<?php echo admin_url( 'edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&jobid=' . get_the_ID() ); ?>"><?php the_title(); ?></a><?php
+        <a class="jtitle" href="<?php echo admin_url( 'edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&jobid=' . get_the_ID() ); ?>">
+          <?php the_title(); ?>
+        </a>
+        <?php
         }
 
         if ( $column_name == 'status' ) {
@@ -737,8 +765,10 @@ class Recruitment {
         }
 
         if ( $column_name == 'applicants' ) { ?>
-            <a class="jtitle" href="<?php echo admin_url( 'edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&jobid=' . get_the_ID() ); ?>"> <?php echo erp_rec_applicant_counter( get_the_ID() ); ?></a>
-        <?php }
+          <a class="jtitle" href="<?php echo admin_url( 'edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&jobid=' . get_the_ID() ); ?>">
+            <?php echo erp_rec_applicant_counter( get_the_ID() ); ?>
+          </a>
+          <?php }
 
         if ( $column_name == 'hiring_lead' ) {
             $hiring_lead_ids = get_post_meta( $post_id, '_hiring_lead', true ) ? get_post_meta( $post_id, '_hiring_lead', true ) : [];
