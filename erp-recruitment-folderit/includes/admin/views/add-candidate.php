@@ -6,12 +6,10 @@
         <div id="primary" class="content-area">
           <main id="main" class="site-main" role="main">
             <h4><?php _e('Select Job', 'wp-erp-rec'); ?></h4>
-            <?php $all_jobs = erp_rec_get_available_positions(); ?>
+            <?php $all_jobs = erp_rec_get_available_positions(true); ?>
             <select name="job_id" tabindex="3" id="cjob_id">
-              <?php foreach ( $all_jobs as $key => $alljobs ) : ?>
-              <option value="<?php echo $alljobs['jobid'];?>">
-                <?php echo $alljobs['jobtitle'];?>
-              </option>
+              <?php foreach ( $all_jobs as $key => $job ) : ?>
+              <option value="<?php echo $key;?>"><?php echo $job;?></option>
               <?php endforeach;?>
             </select>
             <?php

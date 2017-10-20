@@ -297,7 +297,9 @@ function erp_rec_get_available_positions( $all = false ) {
 
             FROM {$wpdb->prefix}posts as post
 
-            WHERE post.post_type = 'erp_hr_recruitment' ";
+            WHERE post.post_type = 'erp_hr_recruitment'
+            
+            ORDER BY post.menu_order, post.post_title";
 
   if ($all != true) {
     $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
