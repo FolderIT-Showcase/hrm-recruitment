@@ -1480,7 +1480,7 @@ class Ajax_Handler {
         if ( isset( $_GET['application_id'] ) ) {
             global $wpdb;
 
-            $query = "SELECT app_inv.id, app_inv.interview_detail, app_inv.interview_tech, types.id type_id, types.type_detail, app_inv.start_date_time, app_inv.duration_minutes, stage.title, app_inv.feedback_comment, app_inv.feedback_english_level, app_inv.feedback_english_conversation
+            $query = "SELECT app_inv.id, app_inv.interview_detail, app_inv.interview_tech, types.id type_id, types.type_detail, types.type_identifier type_identifier, app_inv.start_date_time, app_inv.duration_minutes, stage.title, app_inv.feedback_comment, app_inv.feedback_english_level, app_inv.feedback_english_conversation
                         FROM {$wpdb->prefix}erp_application_interview as app_inv
                         LEFT JOIN {$wpdb->prefix}erp_application_stage as stage
                         ON app_inv.interview_type_id=stage.id
@@ -1522,6 +1522,7 @@ class Ajax_Handler {
                     'id'                            => $ud['id'],
                     'title'                         => $ud['title'],
                     'type_detail'                   => $ud['type_detail'],
+                    'type_identifier'               => $ud['type_identifier'],
                     'type_id'                       => $ud['type_id'],
                     'interview_detail'              => $ud['interview_detail'],
                     'interview_tech'                => $ud['interview_tech'],

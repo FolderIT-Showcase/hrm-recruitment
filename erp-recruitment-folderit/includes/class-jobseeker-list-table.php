@@ -103,30 +103,48 @@ class Jobseeker_List_Table extends \WP_List_Table {
 
         $jobseeker_preview_url = admin_url('edit.php?post_type=erp_hr_recruitment&page=applicant_detail&application_id=' . $item['applicationid']);
 
-        $query = "SELECT app_iv.id, app_iv.feedback_comment, types.type_detail, types.type_identifier
+        $query = "SELECT app_iv.id, app_iv.feedback_comment, app_iv.feedback_english_level, app_iv.feedback_english_conversation, types.type_detail, types.type_identifier
                         FROM {$wpdb->prefix}erp_application_interview as app_iv
                         LEFT JOIN {$wpdb->prefix}erp_application_interview_types as types
                         ON app_iv.interview_internal_type_id = types.id
-                        WHERE app_iv.application_id='%d'";
-        $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['id'] ), ARRAY_A );
+                        WHERE app_iv.application_id=%d";
+        $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['applicationid'] ), ARRAY_A );
       
         $status = erp_rec_get_hiring_status();
 
         $interview_rrhh = "";
         $interview_tech = "";
         $interview_english = "";
+      
+        $interview_rrhh_style = "";
+        $interview_tech_style = "";
+        $interview_english_style = "";
+      
+        $interview_style = "border:1px #1e8cbe solid;";
 
         foreach ( $idata as $intv ) {
-            if ($intv['type_identifier'] == "english" && trim($intv['feedback_comment']) !== '') {
-                $interview_english = "checked";
-            }
-
-            if ($intv['type_identifier'] == "tech" && trim($intv['feedback_comment']) !== '') {
-                $interview_tech = "checked";
-            }
-
-            if ($intv['type_identifier'] == "rrhh" && trim($intv['feedback_comment']) !== '') {
+            if ($intv['type_identifier'] == "rrhh") {
+                $interview_rrhh_style = $interview_style;
+              
+              if (trim($intv['feedback_comment']) !== '') {
                 $interview_rrhh = "checked";
+              }
+            }
+          
+            if ($intv['type_identifier'] == "tech") {
+                $interview_tech_style = $interview_style;
+              
+              if (trim($intv['feedback_comment']) !== '') {
+                $interview_tech = "checked";
+              }
+            }
+
+            if ($intv['type_identifier'] == "english") {
+                $interview_english_style = $interview_style;
+              
+              if (trim($intv['feedback_comment']) !== '' && trim($intv['feedback_english_level']) !== '' && trim($intv['feedback_english_conversation']) !== '') {
+                $interview_english = "checked";
+              }
             }
         }
 
@@ -142,16 +160,16 @@ class Jobseeker_List_Table extends \WP_List_Table {
             case 'stage':
                 return $item['title'];
             case 'interview_rrhh':
-                return '<input type="checkbox" ' . $interview_rrhh . ' disabled></input>';
+                return '<input type="checkbox" ' . $interview_rrhh . ' style="' . $interview_rrhh_style. '" disabled></input>';
             case 'interview_tech':
-                return '<input type="checkbox" ' . $interview_tech . ' disabled></input>';
+                return '<input type="checkbox" ' . $interview_tech . ' style="' . $interview_tech_style. '" disabled></input>';
             case 'interview_english':
-                return '<input type="checkbox" ' . $interview_english . ' disabled></input>';
+                return '<input type="checkbox" ' . $interview_english . ' style="' . $interview_english_style. '" disabled></input>';
             case 'action':
                 $email_action_url = 'mailto:' . $item['email'];
                 return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $email_action_url, erp_people_get_meta($item['id'], 'ip', true ) );
             case 'status':
-                return ucwords(str_replace('_',' ',$status[$item['status']]));
+                return str_replace('_',' ',$status[$item['status']]);
             default:
         }
         return $item[$column_name];
