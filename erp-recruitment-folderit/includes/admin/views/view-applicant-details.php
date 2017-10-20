@@ -160,15 +160,15 @@ if ( isset($applicant_information[0]) ) {
                             <button class="btn btn-default btn-todo"><i class="fa fa-lg fa-list-alt"></i>&nbsp;<?php _e('New To-do', 'wp-erp-rec'); ?></button>
                             <button class="btn btn-default btn-attach-cv"><i class="fa fa-lg fa-paperclip"></i>&nbsp;<?php _e('Attach CV', 'wp-erp-rec'); ?></button>
                             <?php endif;?>
+                            <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
+                            <button class="btn btn-default" href="<?php echo wp_get_attachment_url($attach_id); ?>"><i class="fa fa-lg fa-file"></i>&nbsp;<?php _e('View CV', 'wp-erp-rec'); ?></button>
+                            <?php endif; ?>
                             <?php
                             if ( $hire_status == 0 && $application_status != 'rejected' ) {
                                 $make_employee_url = admin_url('admin.php?page=make_employee&application_id=' . $application_id);
                                 echo sprintf( '<button id="make_him_employee" class="btn btn-default" href="%s"><i class="fa fa-lg fa-user-plus"></i>%s</button>', $make_employee_url, __( 'Hire', 'wp-erp-rec' ) );
                             }
                             ?>
-                              <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
-                              <button class="btn btn-default" href="<?php echo wp_get_attachment_url($attach_id); ?>"><i class="fa fa-lg fa-file"></i>&nbsp;<?php _e('View CV', 'wp-erp-rec'); ?></button>
-                              <?php endif; ?>
                           </div>
                         </div>
                       </div>
@@ -245,15 +245,11 @@ if ( isset($applicant_information[0]) ) {
                       <?php _e('Personal Information', 'wp-erp-rec'); ?>
                     </h5>
                     <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
-                    <dd>
-                      <?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
-                      <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>
-                    </dd>
+                    <dd><span><?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
+                      <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?></span></dd>
 
                     <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
-                    <dd>
-                      <?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?>
-                    </dd>
+                    <dd><span><?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?></span></dd>
 
                     <?php
                       $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );
@@ -474,20 +470,26 @@ if ( isset($applicant_information[0]) ) {
                 <div class="col-lg-12 calendar-list not-loaded">
                   <div class="panel panel-default calendar-list-item" v-for="rt in interviewData">
                     <div class="panel-heading clearfix">
-                      <h4 class="panel-title pull-left" id="interview-type-title-{{rt.id}}">{{ rt.type_detail }}</h4>
-                      <div class="btn-group pull-right">
-                        <button class="btn btn-primary btn-sm" v-on:click="feedbackInterview(rt.id)">
+                      <div class="row">
+                        <div class="col-lg-4 col-xs-12 text-center-xs">
+                          <h3 id="interview-type-title-{{rt.id}}" style="margin:10px;">{{ rt.type_detail }}</h3>
+                        </div>
+                        <div class="col-lg-4 col-xs-12 text-right-not-xs text-center-xs pull-right">
+                          <div class="btn-group" style="margin:10px;">
+                            <button class="btn btn-primary btn-sm" v-on:click="feedbackInterview(rt.id)">
                                     <input id="interviewfeedbackid-{{rt.id}}" type="hidden" value="{{rt.id}}">
                                     <i class="fa fa-lg fa-comment-o"></i>&nbsp;<?php _e('Feedback','wp-erp-rec');?>
                                 </button>
-                        <button class="btn btn-primary btn-sm" v-on:click="editInterview(rt.id)">
+                            <button class="btn btn-primary btn-sm" v-on:click="editInterview(rt.id)">
                                     <input id="intervieweditid-{{rt.id}}" type="hidden" value="{{rt.id}}">
                                     <i class="fa fa-lg fa-pencil"></i>&nbsp;<?php _e('Edit','wp-erp-rec');?>
                                 </button>
-                        <button class="btn btn-danger btn-sm" v-on:click="deleteInterview(rt.id)">
+                            <button class="btn btn-danger btn-sm" v-on:click="deleteInterview(rt.id)">
                                     <input id="interviewid-{{rt.id}}" type="hidden" value="{{rt.id}}">
                                     <i class="fa fa-lg fa-trash"></i>&nbsp;<?php _e('Delete','wp-erp-rec');?>
                                 </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -520,8 +522,7 @@ if ( isset($applicant_information[0]) ) {
                             </li>
                           </ul>
                         </div>
-
-                        <div class="col-lg-6">
+                        <div class="col-lg-6" v-if="rt.type_identifier == 'english'">
                           <ul class="list-group">
                             <li class="list-group-item">
                               <i class="fa fa-lg fa-comments-o"></i>&nbsp;
@@ -539,11 +540,14 @@ if ( isset($applicant_information[0]) ) {
                         <div class="col-lg-12">
                           <ul class="list-group">
                             <li class="list-group-item">
-                              <p>
+                              <p v-if="rt.feedback_comment != ''">
                                 <i class="fa fa-lg fa-comments-o"></i>&nbsp;
                                 <?php _e('Feedback Comment : ', 'wp-erp-rec'); ?>
                               </p>
-                              <textarea readonly class="form-control" rows="5" id="feedback-comment-text-{{rt.id}}">{{ rt.feedback_comment }}</textarea>
+                              <div class="well well-sm" style="line-height:1.5;" id="feedback-comment-text-{{rt.id}}" v-if="rt.feedback_comment">{{ rt.feedback_comment }}</div>
+                              <h3 class="no-feedback-caption" style="margin-top:10px;" v-if="!rt.feedback_comment">
+                                <?php _e('No feedback provided', 'wp-erp-rec'); ?>
+                              </h3>
                             </li>
                           </ul>
                         </div>
@@ -558,12 +562,12 @@ if ( isset($applicant_information[0]) ) {
                     <input type="hidden" id="interview-duration-min-{{rt.id}}" value="{{rt.duration}}">
                     <input type="hidden" id="interview-type-id-{{rt.id}}" value="{{rt.type_id}}">
                   </div>
-                </div>
 
-                <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-                <button class="button button-primary alignright btn-interview"><?php _e('New Interview', 'wp-erp-rec');?></button>
-                <?php endif;?>
-                <span class="spinner"></span>
+                  <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
+                  <button class="button button-primary alignright btn-interview"><?php _e('New Interview', 'wp-erp-rec');?></button>
+                  <?php endif;?>
+                  <span class="spinner"></span>
+                </div>
               </div>
             </section>
           </div>

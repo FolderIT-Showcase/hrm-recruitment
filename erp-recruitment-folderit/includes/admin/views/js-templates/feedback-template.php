@@ -16,7 +16,7 @@
           'media' => true,
           'teeny' => false
       ),
-      'required'    => true
+      'required'    => false
     )); ?>
   </div>
 
