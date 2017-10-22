@@ -272,6 +272,14 @@ function erp_rec_get_personal_fields() {
       'required'    => false,
       'internal'    => true
     ),
+    'skills'         => array(
+      'label'       => __( 'Skills', 'wp-erp-rec' ),
+      'name'        => 'skills',
+      'type'        => 'text',
+      'placeholder' => '',
+      'required'    => false,
+      'internal'    => true
+    ),
     'linkedin'         => array(
       'label'       => __( 'LinkedIn', 'wp-erp-rec' ),
       'name'        => 'linkedin',
