@@ -47,6 +47,27 @@ function erp_hr_get_status_dropdown( $selected = '' ) {
 }
 
 /**
+ * Get recruitment projects drop down
+ *
+ * @param  int  status id
+ * @param  string  selected status
+ *
+ * @return string the drop down
+ */
+function erp_hr_get_projects_dropdown( $selected = '' ) {
+  $projects   = erp_rec_get_available_projects();
+  $dropdown = '';
+
+  if ( $projects ) {
+    foreach ( $projects as $key => $title ) {
+      $dropdown .= sprintf( "<option value='%s'%s>%s</option>\n", $key, selected( $selected, $key, false ), $title );
+    }
+  }
+
+  return $dropdown;
+}
+
+/**
  * get the minimum experience of recruitment
  *
  * @return array
@@ -303,7 +324,7 @@ function erp_rec_get_available_positions( $all = false ) {
     $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
             AND (expire_date >= '" . date("Y-m-d") . "' OR permanent_job = 1) ";
   }
-  
+
   $query .= " ORDER BY post.menu_order, post.post_title ";
 
   $rows = $wpdb->get_results( $query, ARRAY_A );
@@ -325,18 +346,17 @@ function erp_rec_get_available_projects( $all = false ) {
     global $wpdb;
 
     $query = "SELECT project.ID, project.project_title
-            FROM {$wpdb->prefix}projects as project
+            FROM {$wpdb->prefix}erp_projects as project
             ORDER BY project.project_title";
 
     if ($all != true) {
-      $query .= " HAVING (hide_job_list = 0 OR hide_job_list is null)
-            AND (expire_date >= '" . date("Y-m-d") . "' OR permanent_job = 1) ";
+      $query .= "";
     }
 
     $rows = $wpdb->get_results( $query, ARRAY_A );
 
     foreach ( $rows as $row ) {
-      $projects[$row['ID']] = $row['post_title'];
+      $projects[$row['ID']] = $row['project_title'];
     }
   } else {
     $projects[100] = 'Proyecto público de prueba 100';
@@ -422,6 +442,11 @@ function erp_rec_total_applicant_counter( $args ) {
  */
 function erp_rec_get_applicants_information( $args ) {
   global $wpdb;
+  
+  $plugin_projects = false;
+  if( is_plugin_active( 'administrador-de-proyectos/administrador-de-proyectos.php' ) ) {
+    $plugin_projects = true;
+  }
 
   $defaults = array(
     'number' => 5,
@@ -431,24 +456,35 @@ function erp_rec_get_applicants_information( $args ) {
   $args = wp_parse_args( $args, $defaults );
 
   $query = "SELECT *, posts.post_title as post_title, base_stage.title as title, application.id as applicationid, people.id as peopleid,
-                ( select AVG(rating)
-                    FROM {$wpdb->prefix}erp_application_rating
-                    WHERE application_id = applicationid ) as avg_rating,
-                CONCAT( first_name, ' ', last_name ) as full_name,
-                ( select meta_value
-                    FROM {$wpdb->prefix}erp_peoplemeta
-                    WHERE erp_people_id = peopleid AND meta_key = 'status' ) as status
-                FROM {$wpdb->prefix}erp_application as application
-                LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
-                ON application.stage=base_stage.id
-                LEFT JOIN {$wpdb->prefix}posts as posts
-                ON posts.ID=application.job_id
-                LEFT JOIN {$wpdb->prefix}erp_peoplemeta as peoplemeta
-                ON application.applicant_id = peoplemeta.erp_people_id
-                LEFT JOIN {$wpdb->prefix}erp_application_job_stage_relation as stage
-                ON application.job_id=stage.jobid
-                LEFT JOIN {$wpdb->prefix}erp_peoples as people
-                ON people.id=application.applicant_id";
+    ( select AVG(rating)";
+  
+  if( $plugin_projects ) {
+    $query .= ", project.project_title as project_title";
+  }
+  
+  $query .= " FROM {$wpdb->prefix}erp_application_rating
+        WHERE application_id = applicationid ) as avg_rating,
+    CONCAT( first_name, ' ', last_name ) as full_name,
+    ( select meta_value
+        FROM {$wpdb->prefix}erp_peoplemeta
+        WHERE erp_people_id = peopleid AND meta_key = 'status' ) as status
+    FROM {$wpdb->prefix}erp_application as application
+    LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
+    ON application.stage=base_stage.id
+    LEFT JOIN {$wpdb->prefix}posts as posts
+    ON posts.ID=application.job_id
+    LEFT JOIN {$wpdb->prefix}erp_peoplemeta as peoplemeta
+    ON application.applicant_id = peoplemeta.erp_people_id
+    LEFT JOIN {$wpdb->prefix}erp_application_job_stage_relation as stage
+    ON application.job_id=stage.jobid
+    LEFT JOIN {$wpdb->prefix}erp_peoples as people
+    ON people.id=application.applicant_id";
+  
+  if( $plugin_projects ) {
+    $query .= " LEFT JOIN {$wpdb->prefix}erp_projects as project
+    ON application.project_id = project.project_id";
+  }
+
   if ( isset( $args['status'] ) && $args['status'] == 'hired' ) {
     $query .= " WHERE application.status='1'";
   } else {
@@ -464,6 +500,9 @@ function erp_rec_get_applicants_information( $args ) {
   if ( isset( $args['status'] ) && $args['status'] != '' && $args['status'] != '-1' ) { //has status
     $query .= " AND peoplemeta.meta_key='status' AND peoplemeta.meta_value='" . $args['status'] . "'";
   }
+  if ( isset( $args['project_id'] ) && $args['project_id'] != '' && $args['project_id'] != '-1' ) { //has projcct
+    $query .= " AND application.project_id=" . $args['project_id'];
+  }
   if ( isset( $args['added_by_me'] ) && $args['added_by_me'] != '' ) { //added by me query
     $query .= " AND application.added_by='" . get_current_user_id() . "'";
   }
@@ -472,6 +511,9 @@ function erp_rec_get_applicants_information( $args ) {
   }
 
   if ( isset( $args['orderby'] ) ) {
+    if ($args['orderby'] == 'project_title' && !$plugin_projects) {
+      $args['orderby'] = 'project_id';
+    }
     $query .= " GROUP BY applicationid ORDER BY " . $args['orderby'] . " " . $args['order'] . " LIMIT {$args['offset']}, {$args['number']}";
   } else {
     $query .= " GROUP BY applicationid ORDER BY application.apply_date DESC LIMIT {$args['offset']}, {$args['number']}";
