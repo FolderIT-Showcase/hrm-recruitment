@@ -43,7 +43,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     <option value="-1"><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
     <?php echo erp_hr_get_status_dropdown($selected_status); ?>
   </select>
-  
+
   <?php submit_button(__('Filter'), 'button', 'filter_status_button', false); ?>
 </div>
 <div class="alignleft actions">
@@ -52,9 +52,9 @@ class Jobseeker_List_Table extends \WP_List_Table {
     <option value="-1"><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
     <?php echo erp_hr_get_projects_dropdown($selected_project); ?>
   </select>
-  
+
   <?php submit_button(__('Filter'), 'button', 'filter_project_button', false); ?>
-  
+
   <input type="hidden" name="jobid" value="<?php echo $jobid;?>">
 </div>
 <input type="hidden" name="jobid" value="<?php echo $jobid;?>">
@@ -113,6 +113,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     global $wpdb;
 
     $jobseeker_preview_url = admin_url('edit.php?post_type=erp_hr_recruitment&page=applicant_detail&application_id=' . $item['applicationid']);
+    $jobseeker_email_url = admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list_email');
 
     $query = "SELECT app_iv.id, app_iv.feedback_comment, app_iv.feedback_english_level, app_iv.feedback_english_conversation, types.type_detail, types.type_identifier
       FROM {$wpdb->prefix}erp_application_interview as app_iv
@@ -179,8 +180,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
       case 'interview_english':
         return '<input type="checkbox" ' . $interview_english . ' style="' . $interview_english_style. '" disabled></input>';
       case 'action':
-        $email_action_url = 'mailto:' . $item['email'];
-        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $email_action_url, erp_people_get_meta($item['id'], 'ip', true ) );
+        $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
+        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $jobseeker_email_url, erp_people_get_meta($item['id'], 'ip', true ) );
       case 'project':
         return $projects[$item['project_id']];
       case 'status':
@@ -252,7 +253,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     if ( isset( $_REQUEST['filter_status_button'] ) ) {
       return 'filter_status';
     }
-    
+
     if ( isset( $_REQUEST['filter_project_button'] ) ) {
       return 'filter_project';
     }
@@ -333,7 +334,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     if ( isset($_REQUEST['filter_status']) && $_REQUEST['filter_status'] ) {
       $args['status'] = $_REQUEST['filter_status'];
     }
-    
+
     if ( isset($_REQUEST['filter_project']) && $_REQUEST['filter_project'] ) {
       $args['project_id'] = $_REQUEST['filter_project'];
     }
