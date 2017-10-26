@@ -5,10 +5,10 @@
     <table style="width: 600px;" cellspacing="0" cellpadding="0" align="center">
       <tbody>
         <tr>
-          <td style="padding: 30px 25px 0 25px;"><span style="font-size: 24px; color: #3b3b3b; font-weight: bold; font-family: 'Raleway', Arial, sans-serif;">Postulación recibida - %1$s</span></td>
+          <td style="padding: 30px 25px 0 25px;"><span style="font-size: 24px; color: #3b3b3b; font-weight: bold; font-family: 'Raleway', Arial, sans-serif;">Postulación recibida - {job_title}</span></td>
         </tr>
         <tr>
-          <td style="text-align: right; margin: 10px; width: 600px;"><label style="float: right; padding-right: 25px; font-family: 'Raleway', Arial, sans-serif;">%5$s</label></td>
+          <td style="text-align: right; margin: 10px; width: 600px;"><label style="float: right; padding-right: 25px; font-family: 'Raleway', Arial, sans-serif;">{apply_date}</label></td>
         </tr>
         <tr>
           <td style="padding: 10px 25px 0 25px; font-size: 14px; font-family: Franklin Gothic regular, Arial, sans-serif; font-weight: normal; line-height: 20px; text-align: justify; color: #3b3b3b;">Agradecemos tu postulación a nuestra búsqueda, y que hayas elegido a Folder IT como un posible destino en tu carrera.<br/>
@@ -16,10 +16,10 @@
             No obstante, nos estaremos comunicando para realizar una entrevista y así ampliar la información recibida.<br/>
             <br/>
             <strong>Datos de tu postulación:</strong><br/>
-            Nombre: %2$s<br/>
-            Posición: %1$s<br/>
-            Email: %3$s<br/>
-            Teléfono: %4$s<br/>
+            Nombre: {full_name}<br/>
+            Posición: {job_title}<br/>
+            Email: {applicant_email}<br/>
+            Teléfono: {applicant_mobile}<br/>
             <br/>
             Saludos cordiales,
         </tr>
