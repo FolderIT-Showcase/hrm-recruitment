@@ -186,7 +186,8 @@ class WeDevs_ERP_Recruitment_Installer {
       "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_stage` (
                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                  `title` varchar(50) DEFAULT NULL,
-                 `stage_order` int(11) DEFAULT NULL,				 
+                 `stage_order` int(11) DEFAULT NULL,	
+                 `stage_individual` tinyint unsigned DEFAULT 0,				 
                  `created_by` int(11) DEFAULT NULL,
                  `created_at` datetime DEFAULT NULL,
                  `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
