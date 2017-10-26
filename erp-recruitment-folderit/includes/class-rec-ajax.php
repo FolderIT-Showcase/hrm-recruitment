@@ -774,22 +774,15 @@ class Ajax_Handler {
 
       $local_date = str_replace($date_connectors_capital, $date_connectors_lower, $default_local_date);
 
-      $message = sprintf(__(
-        'Job title: %1$s - %5$s
-<br/><br/>Thank you for submitting your application.
-<br/><br/><strong>Applicant details</strong>
-<br/>Name: %2$s
-<br/>Email: %3$s
-<br/>Mobile: %4$s
-<br/><br/>Best regards', 'wp-erp-rec'),
-                         $job_title,
-                         $first_name . ' ' . $last_name,
-                         $email,
-                         $mobile,
-                         $local_date);
-
-      $headers[] = "Content-type: text/html";
-      wp_mail( $email, $subject, $message, $headers );
+      $data = array(
+        'job_title' => $job_title,
+        'full_name' => $first_name . ' ' . $last_name,
+        'applicant_email' => $email,
+        'applicant_mobile' => $mobile,
+        'apply_date' => $local_date
+      );
+      $email = new Emails\Job_Application();
+      $email->trigger( $data );
 
       $this->send_success( [ 'message' => __( 'Your application has been received successfully. Thank you for applying.', 'wp-erp-rec' ) ] );
     }
@@ -1061,8 +1054,6 @@ class Ajax_Handler {
     $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
     $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
 
-    //echo $to . '<br />' . $subject . '<br />' . $message . '<br />';
-
     if ( !isset( $to ) || $to == '' ) {
       $this->send_error( __( 'You did not select any applicant to send email', 'wp-erp-rec' ) );
     } elseif ( !isset( $subject ) || $subject == '' ) {
@@ -1071,8 +1062,13 @@ class Ajax_Handler {
       $this->send_error( __( 'Message cannot be empty', 'wp-erp-rec' ) );
     } else {
       $headers[] = "Content-type: text/html";
-      if (wp_mail( $to, $subject, $message, $headers )) {
+      $email = new Emails\HR_Manager();
+
+      //      if (wp_mail( $to, $subject, $message, $headers )) {
+      if($email->trigger( $to, $subject, $message, $headers )) {
         $this->send_success( __( 'Email sent successfully', 'wp-erp-rec' ) );
+        
+        // TODO: guardar email enviado en la planilla del candidato (buscarla via email)
       } else {
         $this->send_error( __( 'An error occured when sending email', 'wp-erp-rec' ) );
       }
@@ -1421,15 +1417,19 @@ class Ajax_Handler {
       foreach ( $udata as $ud ) {
         $data['first_name'] = $ud['first_name'];
         $data['last_name'] = $ud['last_name'];
-        $data['mobile'] = $ud['mobile'];
-        $data['email'] = $ud['email'];
+        $data['applicant_mobile'] = $ud['mobile'];
+        $data['applicant_email'] = $ud['email'];
       }
 
-      $data['link'] = admin_url('edit.php?post_type=erp_hr_recruitment&page=applicant_detail&application_id=' . $application_id);
+      $data['interview_link'] = admin_url('edit.php?post_type=erp_hr_recruitment&page=applicant_detail&application_id=' . $application_id);
 
       $data['interviewer_id']         = $interviewer_ids;
       $data['type_of_interview_text'] = $type_of_interview_text;
-      $data['internal_type_of_interview_text'] = $internal_type_of_interview_text;
+      $data['interview_type'] = $internal_type_of_interview_text;
+      $data['interview_stage'] = $type_of_interview_text;
+      $data['interview_date'] = date( 'd/m/Y h:i A', strtotime($data['start_date_time']));
+      $data['interview_duration'] = $data['duration_minutes'];
+      $data['interview_description'] = $data['interview_detail'];
 
       // Obtener datos de empresa
       $company = get_option("_erp_company");
@@ -2115,7 +2115,7 @@ class Ajax_Handler {
       $this->send_error( __( 'Something went wrong!', 'wp-erp-rec' ) );
     }
   }
-  
+
   /**
      * Change recruitment project
      *

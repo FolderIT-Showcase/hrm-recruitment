@@ -450,7 +450,7 @@ function erp_rec_total_applicant_counter( $args ) {
  */
 function erp_rec_get_applicants_information( $args ) {
   global $wpdb;
-  
+
   $plugin_projects = false;
   if( is_plugin_active( 'administrador-de-proyectos/administrador-de-proyectos.php' ) ) {
     $plugin_projects = true;
@@ -465,11 +465,11 @@ function erp_rec_get_applicants_information( $args ) {
 
   $query = "SELECT *, posts.post_title as post_title, base_stage.title as title, application.id as applicationid, people.id as peopleid,
     ( select AVG(rating)";
-  
+
   if( $plugin_projects ) {
     $query .= ", project.project_title as project_title";
   }
-  
+
   $query .= " FROM {$wpdb->prefix}erp_application_rating
         WHERE application_id = applicationid ) as avg_rating,
     CONCAT( first_name, ' ', last_name ) as full_name,
@@ -487,7 +487,7 @@ function erp_rec_get_applicants_information( $args ) {
     ON application.job_id=stage.jobid
     LEFT JOIN {$wpdb->prefix}erp_peoples as people
     ON people.id=application.applicant_id";
-  
+
   if( $plugin_projects ) {
     $query .= " LEFT JOIN {$wpdb->prefix}erp_projects as project
     ON application.project_id = project.project_id";
@@ -927,7 +927,7 @@ function erp_rec_get_application_stages( $application_id ) {
 function erp_rec_get_this_job_stages( $job_id ) {
   global $wpdb;
 
-  $query = "SELECT stage.stageid, base_stage.title
+  $query = "SELECT stage.stageid, base_stage.title, base_stage.stage_individual
                 FROM {$wpdb->prefix}erp_application_job_stage_relation as stage
                 LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
                 ON stage.stageid=base_stage.id
@@ -943,7 +943,7 @@ function erp_rec_get_this_job_stages( $job_id ) {
  */
 function erp_rec_get_all_stages() {
   global $wpdb;
-  $query = "SELECT stage.id, stage.title
+  $query = "SELECT stage.id, stage.title, stage.stage_individual
                 FROM {$wpdb->prefix}erp_application_stage as stage
                 ORDER BY stage.stage_order";
   return $wpdb->get_results( $query, ARRAY_A );
