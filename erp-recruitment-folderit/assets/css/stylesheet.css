@@ -107,6 +107,21 @@ dl.dl-custom h5 {
   border-bottom: 1px solid #CCCCCC;
 }
 
+.btn-label {
+  position: relative;
+  left: -12px;
+  display: inline-block;
+  padding: 6px 12px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 3px 0 0 3px;
+}
+
+.btn-labeled {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 10px !important;
+}
+
 /*applicant detail page*/
 
 .erp-applicant-detail section .hndle {

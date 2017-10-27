@@ -173,25 +173,26 @@ if ( isset($applicant_information[0]) ) {
                   <hr>
                   <div class="row">
                     <div class="col-lg-12">
-                      <div class="btn-group <?php echo ( $hire_status == 1 || $application_status == 'rejected' ) ? 'button-actions-hired' : '';?>">
+                      <div class="<?php echo ( $hire_status == 1 || $application_status == 'rejected' ) ? 'button-actions-hired' : '';?>">
                         <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-                        <button class="btn btn-default btn-interview"><i class="fa fa-lg fa-calendar"></i>&nbsp;<?php _e('New Interview', 'wp-erp-rec'); ?></button>
-                        <button class="btn btn-default btn-todo"><i class="fa fa-lg fa-list-alt"></i>&nbsp;<?php _e('New To-do', 'wp-erp-rec'); ?></button>
-                        <button class="btn btn-default btn-attach-cv"><i class="fa fa-lg fa-paperclip"></i>&nbsp;<?php _e('Attach CV', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled btn-interview"><span class="btn-label"><i class="fa fa-lg fa-calendar"></i></span><?php _e('New Interview', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled btn-todo"><span class="btn-label"><i class="fa fa-lg fa-list-alt"></i></span><?php _e('New To-do', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled btn-sendemail"><span class="btn-label"><i class="fa fa-lg fa-envelope-o"></i></span><?php _e('Send Email', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled btn-attach-cv"><span class="btn-label"><i class="fa fa-lg fa-paperclip"></i></span><?php _e('Attach CV', 'wp-erp-rec'); ?></button>
                         <?php endif;?>
                         <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
-                        <button class="btn btn-default" href="<?php echo wp_get_attachment_url($attach_id); ?>"><i class="fa fa-lg fa-file"></i>&nbsp;<?php _e('View CV', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled" href="<?php echo wp_get_attachment_url($attach_id); ?>"><span class="btn-label"><i class="fa fa-lg fa-file"></i></span><?php _e('View CV', 'wp-erp-rec'); ?></button>
                         <?php endif; ?>
                         <?php
                         if ( $hire_status == 0 && $application_status != 'rejected' ) {
                           $make_employee_url = admin_url('admin.php?page=make_employee&application_id=' . $application_id);
-                          echo sprintf( '<button id="make_him_employee" class="btn btn-default" href="%s"><i class="fa fa-lg fa-user-plus"></i>%s</button>', $make_employee_url, __( 'Hire', 'wp-erp-rec' ) );
+                          echo sprintf( '<button id="make_him_employee" class="btn btn-default btn-labeled" href="%s"><span class="btn-label"><i class="fa fa-lg fa-user-plus"></i></span>%s</button>', $make_employee_url, __( 'Hire', 'wp-erp-rec' ) );
                         }
                         ?>
                       </div>
                     </div>
                   </div>
-                  <hr>
+                  <hr style="margin-top:10px;">
                   <?php if ( $hire_status == 0 ) : ?>
                   <div class="row">
                     <div class="col-xs-12 text-left-not-xs text-center-xs" >
