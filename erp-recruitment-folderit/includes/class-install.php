@@ -100,6 +100,19 @@ class WeDevs_ERP_Recruitment_Installer {
                  KEY `job_id` (`job_id`),
                  KEY `applicant_id` (`applicant_id`)
              ) $collate;",
+      
+      "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_comms` (
+                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                 `application_id` int(11) unsigned DEFAULT NULL,
+                 `user_id` int(11) unsigned DEFAULT NULL,
+                 `comm_email`, varchar(250) DEFAULT NULL,
+                 `comm_author` varchar(250) DEFAULT NULL,
+                 `comm_subject` text,
+                 `comm_message` text,
+                 `comm_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                 PRIMARY KEY (`id`),
+                 KEY `application_id` (`application_id`)
+             ) $collate;",
 
       "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_comment` (
                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,

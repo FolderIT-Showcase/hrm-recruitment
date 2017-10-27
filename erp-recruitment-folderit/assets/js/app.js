@@ -215,6 +215,46 @@ if (jQuery('#comment_form_wrapper').length > 0) {
   });
 }
 
+if (jQuery('#comms_form_wrapper').length > 0) {
+
+  var commsviewmodel = new Vue({
+    el: "#comms_form_wrapper",
+
+    data: {
+      comms: [],
+      success_notice_class: 'success_notice',
+      error_notice_class: 'error_notice',
+      isError: false,
+      isVisible: false,
+      response_message: ''
+    },
+
+    ready: function () {
+      this.getAllComms();
+    },
+
+    methods: {
+      getAllComms: function () {
+        jQuery('#section-comms .spinner').show();
+        jQuery('#section-comms .spinner').css({
+          'visibility': 'visible'
+        });
+        jQuery.get(ajaxurl, {
+          action: 'wp-erp-rec-get-comms',
+          application_id: jQuery('#application_id').val()
+        }, function (response) {
+          if (response.success === true) {
+            jQuery.each(response.data, function (k, v) {
+              commsviewmodel.comms.push(v);
+            });
+            jQuery('#section-comms .spinner').hide();
+          }
+        });
+      }
+    }
+  });
+}
+
 if (jQuery('#exam_detail').length > 0) {
 
   var exam_detail = new Vue({

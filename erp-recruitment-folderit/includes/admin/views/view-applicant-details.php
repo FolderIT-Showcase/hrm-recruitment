@@ -40,6 +40,7 @@ if ( isset($applicant_information[0]) ) {
   $all_projects = erp_rec_get_available_projects(true);
   $available_projects = erp_rec_get_available_projects();
   $application_project_title = $all_projects[$application_project_id];
+  $email_address = isset($applicant_information[0]['email']) ? $applicant_information[0]['email'] : '';
 }
 ?>
 <nav class="navbar navbar-default navbar-static-top" style="margin-left:-20px;padding-left:10px;margin-bottom:-10px;z-index:99;">
@@ -75,6 +76,11 @@ if ( isset($applicant_information[0]) ) {
         <li>
           <a href="#section-comment" class="list-item-scroller">
             <?php _e('Comments', 'wp-erp-rec'); ?>
+          </a>
+        </li>
+        <li>
+          <a href="#section-comms" class="list-item-scroller">
+            <?php _e('Comms', 'wp-erp-rec'); ?>
           </a>
         </li>
         <li>
@@ -121,7 +127,6 @@ if ( isset($applicant_information[0]) ) {
                 <div class="col-md-2 col-xs-12 col-sm-6 col-lg-2">
                   <!--                    <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">-->
                   <?php
-                  $email_address = isset($applicant_information[0]['email']) ? $applicant_information[0]['email'] : '';
                   echo get_avatar($email_address, 500, '', false, ['class' => 'img-circle img-responsive']);
                   ?>
                 </div>
@@ -262,285 +267,319 @@ if ( isset($applicant_information[0]) ) {
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-        <section id="section-personal-info" class="postbox section-personal-info">
-          <span class="hndle-toogle-button"></span>
-          <div class="section-header">
-            <h2 class="hndle"><span><?php _e('Candidate Profile', 'wp-erp-rec'); ?></span></h2>
-          </div>
-          <div class="section-content toggle-metabox-show full-width">
-            <div class="col-lg-12">
-              <dl class="dl-custom dl-horizontal">
-                <h4><?php _e('Personal Information', 'wp-erp-rec'); ?></h4>
-                <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
-                <dd><span><?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
-                  <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?></span></dd>
+      <div class="col-lg-6 col-xs-12">
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-personal-info" class="postbox section-personal-info">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Candidate Profile', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div class="section-content toggle-metabox-show full-width">
+              <div class="col-lg-12">
+                <dl class="dl-custom dl-horizontal">
+                  <h4><?php _e('Personal Information', 'wp-erp-rec'); ?></h4>
+                  <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
+                  <dd><span><?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
+                    <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?></span></dd>
 
-                <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
-                <dd><span><?php echo isset($applicant_information[0]['email']) ? esc_html( $applicant_information[0]['email'] ) : ''; ?></span></dd>
+                  <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
+                  <dd><span id="applicant_email_address"><?php echo $email_address; ?></span></dd>
 
-                <?php
-                $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );
-                $all_personal_fields = erp_rec_get_personal_fields();
-                ?>
-                <?php foreach ( $db_personal_fields as $personal_data ) : ?>
-                <?php
-                $field_name = json_decode($personal_data)->field;
-                $value = erp_people_get_meta($applicant_id, $field_name, true);?>
+                  <?php
+                  $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );
+                  $all_personal_fields = erp_rec_get_personal_fields();
+                  ?>
+                  <?php foreach ( $db_personal_fields as $personal_data ) : ?>
+                  <?php
+                  $field_name = json_decode($personal_data)->field;
+                  $value = erp_people_get_meta($applicant_id, $field_name, true);?>
 
-                <?php if ( $all_personal_fields[$field_name]['internal'] != true ) : ?>
-                <?php
+                  <?php if ( $all_personal_fields[$field_name]['internal'] != true ) : ?>
+                  <?php
 
-                if( !empty($all_personal_fields[$field_name]) ) {
-                  $field_label = $all_personal_fields[$field_name]['label'];
+                  if( !empty($all_personal_fields[$field_name]) ) {
+                    $field_label = $all_personal_fields[$field_name]['label'];
 
-                  if( isset($all_personal_fields[$field_name]['options']) ) {
-                    $value = $all_personal_fields[$field_name]['options'][$value];
-                  }
-                } else {
-                  $field_label = $field;
-                }
-
-                $value = esc_html( stripslashes( $value ) );
-                ?>
-                <dt><?php echo $field_label; ?></dt>
-                <dd><span><?php echo $value; ?></span></dd>
-
-                <?php endif; ?>
-                <?php endforeach;?>
-              </dl>
-              <dl class="dl-custom dl-horizontal">
-                <h4><?php _e('Internal Information', 'wp-erp-rec'); ?></h4>
-                <?php foreach ( $db_personal_fields as $personal_data ) : ?>
-                <?php
-                $field_name = json_decode($personal_data)->field;
-                $value = erp_people_get_meta($applicant_id, $field_name, true);?>
-
-                <?php if ( $all_personal_fields[$field_name]['internal'] == true ) : ?>
-                <?php
-
-                if( !empty($all_personal_fields[$field_name]) ) {
-                  $field_label = $all_personal_fields[$field_name]['label'];
-
-                  if( isset($all_personal_fields[$field_name]['options']) ) {
-                    $value = $all_personal_fields[$field_name]['options'][$value];
-                  }
-
-                  if( isset($all_personal_fields[$field_name]['href']) ) {
-                    $url = $value;
-
-                    if( isset($all_personal_fields[$field_name]['href']['prefix']) ) {
-                      $url = $all_personal_fields[$field_name]['href']['prefix'] . $url;
-                    }
-
-                    if( isset($all_personal_fields[$field_name]['href']['suffix']) ) {
-                      $url = $url . $all_personal_fields[$field_name]['href']['suffix'];
-                    }
-
-                    if ($all_personal_fields[$field_name]['href']['validate'] === FALSE || !filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
-                      $url_target = '';
-
-                      if(isset($all_personal_fields[$field_name]['href']['target'])) {
-                        $url_target = 'target="'.$all_personal_fields[$field_name]['href']['target'].'"';
-                      }
-
-                      $value = '<a href="'.$url.'" '.$url_target.'>'.$value.'</a>';
+                    if( isset($all_personal_fields[$field_name]['options']) ) {
+                      $value = $all_personal_fields[$field_name]['options'][$value];
                     }
                   } else {
+                    $field_label = $field;
+                  }
+
+                  $value = esc_html( stripslashes( $value ) );
+                  ?>
+                  <dt><?php echo $field_label; ?></dt>
+                  <dd><span><?php echo $value; ?></span></dd>
+
+                  <?php endif; ?>
+                  <?php endforeach;?>
+                </dl>
+                <dl class="dl-custom dl-horizontal">
+                  <h4><?php _e('Internal Information', 'wp-erp-rec'); ?></h4>
+                  <?php foreach ( $db_personal_fields as $personal_data ) : ?>
+                  <?php
+                  $field_name = json_decode($personal_data)->field;
+                  $value = erp_people_get_meta($applicant_id, $field_name, true);?>
+
+                  <?php if ( $all_personal_fields[$field_name]['internal'] == true ) : ?>
+                  <?php
+
+                  if( !empty($all_personal_fields[$field_name]) ) {
+                    $field_label = $all_personal_fields[$field_name]['label'];
+
+                    if( isset($all_personal_fields[$field_name]['options']) ) {
+                      $value = $all_personal_fields[$field_name]['options'][$value];
+                    }
+
+                    if( isset($all_personal_fields[$field_name]['href']) ) {
+                      $url = $value;
+
+                      if( isset($all_personal_fields[$field_name]['href']['prefix']) ) {
+                        $url = $all_personal_fields[$field_name]['href']['prefix'] . $url;
+                      }
+
+                      if( isset($all_personal_fields[$field_name]['href']['suffix']) ) {
+                        $url = $url . $all_personal_fields[$field_name]['href']['suffix'];
+                      }
+
+                      if ($all_personal_fields[$field_name]['href']['validate'] === FALSE || !filter_var($url, FILTER_VALIDATE_URL) === FALSE) {
+                        $url_target = '';
+
+                        if(isset($all_personal_fields[$field_name]['href']['target'])) {
+                          $url_target = 'target="'.$all_personal_fields[$field_name]['href']['target'].'"';
+                        }
+
+                        $value = '<a href="'.$url.'" '.$url_target.'>'.$value.'</a>';
+                      }
+                    } else {
+                      $value = esc_html( stripslashes( $value ) );
+                    }
+                  } else {
+                    $field_label = $field;
                     $value = esc_html( stripslashes( $value ) );
                   }
-                } else {
-                  $field_label = $field;
-                  $value = esc_html( stripslashes( $value ) );
-                }
-                ?>
-                <dt><?php echo $field_label; ?></dt>
-                <dd><span><?php echo $value; ?></span></dd>
+                  ?>
+                  <dt><?php echo $field_label; ?></dt>
+                  <dd><span><?php echo $value; ?></span></dd>
 
-                <?php endif; ?>
-                <?php endforeach;?>
-              </dl>
+                  <?php endif; ?>
+                  <?php endforeach;?>
+                </dl>
+              </div>
             </div>
-          </div>
-        </section>
-      </div>
-      <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-        <section id="section-comment" class="postbox">
-          <span class="hndle-toogle-button"></span>
-          <div class="section-header">
-            <h2 class="hndle"><span><?php _e('Comments', 'wp-erp-rec'); ?></span></h2>
-          </div>
-          <div class="section-content toggle-metabox-show full-width">
-            <div id="comment_form_wrapper" class="not-loaded">
-              <form id="applicant-comment-form" method="post">
-                <div class="col-lg-12">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div class="row">
-                        <div id="input_comment_wrapper">
-                          <ul>
-                            <li>
-                              <textarea class="widefat" rows="5" id="manager_comment" name="manager_comment" v-model="manager_comment"></textarea>
-                            </li>
-                          </ul>
-                          <?php wp_nonce_field('wp_erp_rec_applicant_comment_nonce'); ?>
-                          <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>" id="comment_admin_user_id">
-                          <input type="hidden" name="application_id" value="<?php echo $application_id; ?>" id="application_id">
-                          <input type="hidden" name="applicant_id" value="<?php echo $applicant_id; ?>" id="applicant_id">
-                          <input type="hidden" name="action" value="wp-erp-rec-manager-comment" />
-                          <input class="page-title-action alignright button button-primary" type="button" v-on:click="postManagerComment" name="submit" value="Submit" style="margin-bottom:10px;" />
-                          <span class="spinner"></span>
-
-                          <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
-                        </div>
-                      </div>
-
-                      <ul class="application-comment-list">
-                        <li class="comment thread-even depth-1">
-                          <article v-for="cmnt in comments">
-                            <div class="row">
-                              <div class="col-xs-2 col-md-2">
-                                <!--                                  {{{ cmnt.user_pic }}}-->
-                                <?php echo get_avatar("{{ cmnt.ID }}", 100, '', false, ['class' => 'img-rounded img-responsive']); ?>
-                              </div>
-                              <div class="col-xs-10 col-md-10" style="padding-left:0px;">
-                                <h6 style="margin-top:4px;"><b class="fn">{{ cmnt.display_name }}</b> {{ cmnt.comment_date }}</h6>
-                                <p>{{ cmnt.comment }}</p>
-                              </div>
-                            </div>
-                            <hr>
-                          </article>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </form>
+          </section>
+        </div>
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-rating" class="postbox">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Ratings', 'wp-erp-rec'); ?></span></h2>
             </div>
-          </div>
-        </section>
-      </div>
-      <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-        <section id="section-rating" class="postbox">
-          <span class="hndle-toogle-button"></span>
-          <div class="section-header">
-            <h2 class="hndle"><span><?php _e('Ratings', 'wp-erp-rec'); ?></span></h2>
-          </div>
-          <div class="section-content toggle-metabox-show full-width">
-            <div id="rating_status_form_wrapper" class="not-loaded">
-              <form id="rating_status_form" method="post" v-on:submit.prevent="ratingSubmit">
-                <div id="input_rating_wrapper">
-                  <label id="or_label"><?php _e('Overall Rating', 'wp-erp-rec'); ?></label>
-                  <label id="average_rating">{{ avgRating }}/5</label>
+            <div class="section-content toggle-metabox-show full-width">
+              <div id="rating_status_form_wrapper" class="not-loaded">
+                <form id="rating_status_form" method="post" v-on:submit.prevent="ratingSubmit">
+                  <div id="input_rating_wrapper">
+                    <label id="or_label"><?php _e('Overall Rating', 'wp-erp-rec'); ?></label>
+                    <label id="average_rating">{{ avgRating }}/5</label>
 
-                  <div class="stars stars-example-fontawesome">
-                    <select id="example-fontawesome" name="rating" v-on:click="ratingSubmit">
-                      <option value=""></option>
-                      <option value="1"><?php _e('Bad', 'wp-erp-rec'); ?></option>
-                      <option value="2"><?php _e('Average', 'wp-erp-rec'); ?></option>
-                      <option value="3"><?php _e('Good', 'wp-erp-rec'); ?></option>
-                      <option value="4"><?php _e('Super', 'wp-erp-rec'); ?></option>
-                      <option value="5"><?php _e('Excellent', 'wp-erp-rec'); ?></option>
-                    </select>
-                  </div>
-                  <div class="br-current-rating"></div>
-                </div>
-
-                <?php wp_nonce_field('wp_erp_rec_applicant_rating_nonce'); ?>
-                <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>">
-                <input type="hidden" name="application_id" value="<?php echo $application_id; ?>">
-                <input type="hidden" name="action" value="wp-erp-rec-manager-rating" />
-                <input class="page-title-action alignright button button-primary" v-show="false" type="submit" name="submit" value="Save" />
-              </form>
-              <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
-
-              <ul class="application-rating-list not-loaded" v-show="showSwitch">
-                <li class="comment thread-even depth-1" v-for="rt in ratingData">
-                  <div class="comment-author vcard">
-                    <div class="fn">
-                      {{{ rt.user_pic }}}
-                      <label>{{ rt.display_name }}</label>
-                      <label style="color: #000"><?php _e(' rated ', 'wp-erp-rec'); ?></label>
-                    </div>
                     <div class="stars stars-example-fontawesome">
-                      <select class="examplefontawesome" v-barrating="rt.rating">
+                      <select id="example-fontawesome" name="rating" v-on:click="ratingSubmit">
                         <option value=""></option>
-                        <option value="1"><?php _e('1', 'wp-erp-rec'); ?></option>
-                        <option value="2"><?php _e('2', 'wp-erp-rec'); ?></option>
-                        <option value="3"><?php _e('3', 'wp-erp-rec'); ?></option>
-                        <option value="4"><?php _e('4', 'wp-erp-rec'); ?></option>
-                        <option value="5"><?php _e('5', 'wp-erp-rec'); ?></option>
+                        <option value="1"><?php _e('Bad', 'wp-erp-rec'); ?></option>
+                        <option value="2"><?php _e('Average', 'wp-erp-rec'); ?></option>
+                        <option value="3"><?php _e('Good', 'wp-erp-rec'); ?></option>
+                        <option value="4"><?php _e('Super', 'wp-erp-rec'); ?></option>
+                        <option value="5"><?php _e('Excellent', 'wp-erp-rec'); ?></option>
                       </select>
                     </div>
-                    <label class="rating_number">&nbsp;({{rt.rating}}/5)</label>
-
                     <div class="br-current-rating"></div>
                   </div>
+
+                  <?php wp_nonce_field('wp_erp_rec_applicant_rating_nonce'); ?>
+                  <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>">
+                  <input type="hidden" name="application_id" value="<?php echo $application_id; ?>">
+                  <input type="hidden" name="action" value="wp-erp-rec-manager-rating" />
+                  <input class="page-title-action alignright button button-primary" v-show="false" type="submit" name="submit" value="Save" />
+                </form>
+                <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
+
+                <ul class="application-rating-list not-loaded" v-show="showSwitch">
+                  <li class="comment thread-even depth-1" v-for="rt in ratingData">
+                    <div class="comment-author vcard">
+                      <div class="fn">
+                        {{{ rt.user_pic }}}
+                        <label>{{ rt.display_name }}</label>
+                        <label style="color: #000"><?php _e(' rated ', 'wp-erp-rec'); ?></label>
+                      </div>
+                      <div class="stars stars-example-fontawesome">
+                        <select class="examplefontawesome" v-barrating="rt.rating">
+                          <option value=""></option>
+                          <option value="1"><?php _e('1', 'wp-erp-rec'); ?></option>
+                          <option value="2"><?php _e('2', 'wp-erp-rec'); ?></option>
+                          <option value="3"><?php _e('3', 'wp-erp-rec'); ?></option>
+                          <option value="4"><?php _e('4', 'wp-erp-rec'); ?></option>
+                          <option value="5"><?php _e('5', 'wp-erp-rec'); ?></option>
+                        </select>
+                      </div>
+                      <label class="rating_number">&nbsp;({{rt.rating}}/5)</label>
+
+                      <div class="br-current-rating"></div>
+                    </div>
+                  </li>
+                </ul>
+                <span class="spinner"></span>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-exam-detail" class="postbox">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Exam Detail', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div id="exam_detail" class="section-content toggle-metabox-show not-loaded">
+              <ul class="applicant-exam-detail">
+                <li class="examlist" v-for="edata in exam_data">
+                  <div class="questions_here">
+                    <label><?php _e('Q', 'wp-erp-rec'); ?>.&nbsp;</label><strong>{{ edata.question }}</strong></div>
+                  <div class="answers_here"><label><?php _e('A', 'wp-erp-rec'); ?>.&nbsp;</label>{{ edata.answer }}</div>
                 </li>
               </ul>
               <span class="spinner"></span>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-todo" class="postbox">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('To-Do List', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div class="section-content toggle-metabox-show full-width">
+              <h3 class="no-interview-todo-caption" v-if="hasTodo">
+                <?php _e('No To-do set', 'wp-erp-rec');?>
+              </h3>
+              <ul id="calendar_list" class="calendar-list not-loaded">
+                <li class="calendar-list-item" v-for="rt in todoData">
+                  <div class="interview_type">
+                    <span class="todo-handler" v-on:click="handleTodo(rt.id, 0)" v-if=" rt.status == '1' "><i class="fa fa-lg fa-check-square-o"></i></span>
+                    <span class="todo-handler" v-on:click="handleTodo(rt.id, 1)" v-if=" rt.status == '0' "><i class="fa fa-lg fa-square-o"></i></span>
+                    <label class="todo-title">{{ rt.title }}</label>
+                  </div>
+                  <div class="interviewers">
+                    <i class="fa fa-lg fa-user"></i>&nbsp;
+                    <?php _e('Todo handlers : ', 'wp-erp-rec'); ?>{{ rt.display_name }}
+                  </div>
+                  <div class="interview_time">
+                    <span title="click to undo" class="todo-status-done-button" v-if=" rt.status == '1' ">
+                      <i class="fa fa-lg fa-check"></i><?php _e('Done', 'wp-erp-rec'); ?>
+                    </span>
+                    <span title="click to undo" class="todo-status-overdue-button" v-if=" rt.is_overdue == '1' ">
+                      <?php _e('Overdue', 'wp-erp-rec'); ?>
+                    </span>
+                    <i class="fa fa-lg fa-clock-o"></i>&nbsp;<span>{{ rt.deadline_date }}</span>
+                    <span class="todo-delete" v-on:click="deleteTodo(rt.id)"><i class="fa fa-lg fa-trash-o"></i></span>
+                  </div>
+                </li>
+              </ul>
+              <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
+              <button id="new-todo" style="margin-right:1%" class="button button-primary alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
+              <?php endif;?>
+              <span class="spinner"></span>
+            </div>
+          </section>
+        </div>
       </div>
-      <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-        <section id="section-exam-detail" class="postbox">
-          <span class="hndle-toogle-button"></span>
-          <div class="section-header">
-            <h2 class="hndle"><span><?php _e('Exam Detail', 'wp-erp-rec'); ?></span></h2>
-          </div>
-          <div id="exam_detail" class="section-content toggle-metabox-show not-loaded">
-            <ul class="applicant-exam-detail">
-              <li class="examlist" v-for="edata in exam_data">
-                <div class="questions_here">
-                  <label><?php _e('Q', 'wp-erp-rec'); ?>.&nbsp;</label><strong>{{ edata.question }}</strong></div>
-                <div class="answers_here"><label><?php _e('A', 'wp-erp-rec'); ?>.&nbsp;</label>{{ edata.answer }}</div>
-              </li>
-            </ul>
-            <span class="spinner"></span>
-          </div>
-        </section>
+      <div class="col-lg-6 col-xs-12">
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-comment" class="postbox">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Comments', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div class="section-content toggle-metabox-show full-width">
+              <div id="comment_form_wrapper" class="not-loaded">
+                <form id="applicant-comment-form" method="post">
+                  <div class="col-lg-12">
+                    <div class="row">
+                      <div id="input_comment_wrapper">
+                        <ul>
+                          <li>
+                            <textarea class="widefat" rows="5" id="manager_comment" name="manager_comment" v-model="manager_comment"></textarea>
+                          </li>
+                        </ul>
+                        <?php wp_nonce_field('wp_erp_rec_applicant_comment_nonce'); ?>
+                        <input type="hidden" name="admin_user_id" value="<?php echo get_current_user_id(); ?>" id="comment_admin_user_id">
+                        <input type="hidden" name="application_id" value="<?php echo $application_id; ?>" id="application_id">
+                        <input type="hidden" name="applicant_id" value="<?php echo $applicant_id; ?>" id="applicant_id">
+                        <input type="hidden" name="action" value="wp-erp-rec-manager-comment" />
+                        <input class="page-title-action alignright button button-primary" type="button" v-on:click="postManagerComment" name="submit" value="<?php _e('Submit', 'wp-erp-rec'); ?>" style="margin-bottom:10px;" />
+                        <span class="spinner"></span>
+
+                        <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-12 scrollable">
+                        <ul class="application-comment-list">
+                          <li class="comment thread-even depth-1">
+                            <article v-for="cmnt in comments">
+                              <div class="row">
+                                <div class="col-xs-2 col-md-2">
+                                  <!--                                  {{{ cmnt.user_pic }}}-->
+                                  <?php echo get_avatar("{{ cmnt.ID }}", 100, '', false, ['class' => 'img-rounded img-responsive']); ?>
+                                </div>
+                                <div class="col-xs-10 col-md-10" style="padding-left:0px;">
+                                  <h6 style="margin-top:4px;"><b class="fn">{{ cmnt.display_name }}</b> {{ cmnt.comment_date }}</h6>
+                                  <p>{{ cmnt.comment }}</p>
+                                </div>
+                              </div>
+                              <hr>
+                            </article>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-comms" class="postbox">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Comms', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div class="section-content toggle-metabox-show full-width">
+              <div id="comms_form_wrapper" class="not-loaded">
+                <div class="col-lg-12 application-comms-list scrollable">
+                  <article v-for="comm in comms">
+                    <div class="panel panel-default" style="margin-bottom:10px;">
+                      <div class="panel-heading">
+                        <h5 style="margin-top:4px;"><b class="fn">{{ comm.comm_author }}</b> <span>({{ comm.comm_email }})</span> <span class="pull-right">{{ comm.comm_date }}</span></h5>
+                        <h6 style="margin-top:4px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                      </div>
+                      <div class="panel-body">
+                        <p>{{ comm.comm_message }}</p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+              <div class="col-lg-12">
+                <button class="button button-primary alignright btn-sendemail"><?php _e('Send Email', 'wp-erp-rec'); ?></button>
+                <span class="spinner"></span>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-      <div class="col-lg-6 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-        <section id="section-todo" class="postbox">
-          <span class="hndle-toogle-button"></span>
-          <div class="section-header">
-            <h2 class="hndle"><span><?php _e('To-Do List', 'wp-erp-rec'); ?></span></h2>
-          </div>
-          <div class="section-content toggle-metabox-show full-width">
-            <h3 class="no-interview-todo-caption" v-if="hasTodo">
-              <?php _e('No To-do set', 'wp-erp-rec');?>
-            </h3>
-            <ul id="calendar_list" class="calendar-list not-loaded">
-              <li class="calendar-list-item" v-for="rt in todoData">
-                <div class="interview_type">
-                  <span class="todo-handler" v-on:click="handleTodo(rt.id, 0)" v-if=" rt.status == '1' "><i class="fa fa-lg fa-check-square-o"></i></span>
-                  <span class="todo-handler" v-on:click="handleTodo(rt.id, 1)" v-if=" rt.status == '0' "><i class="fa fa-lg fa-square-o"></i></span>
-                  <label class="todo-title">{{ rt.title }}</label>
-                </div>
-                <div class="interviewers">
-                  <i class="fa fa-lg fa-user"></i>&nbsp;
-                  <?php _e('Todo handlers : ', 'wp-erp-rec'); ?>{{ rt.display_name }}
-                </div>
-                <div class="interview_time">
-                  <span title="click to undo" class="todo-status-done-button" v-if=" rt.status == '1' ">
-                    <i class="fa fa-lg fa-check"></i><?php _e('Done', 'wp-erp-rec'); ?>
-                  </span>
-                  <span title="click to undo" class="todo-status-overdue-button" v-if=" rt.is_overdue == '1' ">
-                    <?php _e('Overdue', 'wp-erp-rec'); ?>
-                  </span>
-                  <i class="fa fa-lg fa-clock-o"></i>&nbsp;<span>{{ rt.deadline_date }}</span>
-                  <span class="todo-delete" v-on:click="deleteTodo(rt.id)"><i class="fa fa-lg fa-trash-o"></i></span>
-                </div>
-              </li>
-            </ul>
-            <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-            <button id="new-todo" style="margin-right:1%" class="button button-primary alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
-            <?php endif;?>
-            <span class="spinner"></span>
-          </div>
-        </section>
-      </div>
+    </div>
+    <div class="row">
       <div class="col-lg-12 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
         <section id="section-interview" class="postbox">
           <span class="hndle-toogle-button"></span>
@@ -655,6 +694,8 @@ if ( isset($applicant_information[0]) ) {
           </div>
         </section>
       </div>
+    </div>
+    <div class="row">
       <div class="col-lg-12 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
         <section id="section-resume" class="postbox">
           <span class="hndle-toogle-button"></span>

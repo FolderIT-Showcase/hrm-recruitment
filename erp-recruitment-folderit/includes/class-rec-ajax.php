@@ -33,6 +33,7 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_wp-erp-rec-manager-rating', 'manager_rating' );
     $this->action( 'wp_ajax_wp-erp-rec-manager-status', 'status_posting' );
     $this->action( 'wp_ajax_wp-erp-rec-get-comments', 'get_comments' );
+    $this->action( 'wp_ajax_wp-erp-rec-get-comms', 'get_comms' );
     $this->action( 'wp_ajax_wp-erp-rec-manager-comment', 'manager_comment' );
     $this->action( 'wp_ajax_recruitment_form_builder', 'recruitment_form_builder_handler' );
     $this->action( 'wp_ajax_wp-erp-rec-serial-personal-fields', 'sort_personal_fields' );
@@ -313,6 +314,45 @@ class Ajax_Handler {
       }
 
       $this->send_success( $user_pic_data );
+    } else {
+      $this->send_success( [ ] );
+    }
+  }
+
+  /**
+     * Get comms list
+     *
+     * @since  1.0.5
+     *
+     * @return void
+     */
+  public function get_comms() {    
+    if ( isset( $_GET['application_id'] ) ) {
+      global $wpdb;
+
+      $query = "SELECT *, user.ID as uid
+                FROM {$wpdb->prefix}erp_application_comms as comm
+                LEFT JOIN {$wpdb->base_prefix}users as user
+                ON comm.user_id = user.ID
+                WHERE comm.application_id='%d'
+                ORDER BY comm.comm_date DESC";
+      $udata = $wpdb->get_results( $wpdb->prepare( $query, $_GET['application_id'] ), ARRAY_A );
+
+      $comms_data = [ ];
+      foreach ( $udata as $ud ) {
+        $comms_data[] = array(
+          'id'              => $ud['id'],
+          'application_id'  => $ud['application_id'],
+          'user_id'         => $ud['uid'],
+          'comm_email'      => $ud['comm_email'],
+          'comm_author'     => $ud['comm_author'],
+          'comm_subject'    => $ud['comm_subject'],
+          'comm_message'    => $ud['comm_message'],
+          'comm_date'       => $ud['comm_date']
+        );
+      }
+
+      $this->send_success( $comms_data );
     } else {
       $this->send_success( [ ] );
     }
@@ -1067,7 +1107,7 @@ class Ajax_Handler {
       //      if (wp_mail( $to, $subject, $message, $headers )) {
       if($email->trigger( $to, $subject, $message, $headers )) {
         $this->send_success( __( 'Email sent successfully', 'wp-erp-rec' ) );
-        
+
         // TODO: guardar email enviado en la planilla del candidato (buscarla via email)
       } else {
         $this->send_error( __( 'An error occured when sending email', 'wp-erp-rec' ) );

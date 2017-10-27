@@ -196,7 +196,8 @@ dl.dl-custom h5 {
   display: none;
 }
 
-.application-comment-list li article p {
+.application-comment-list li article p,
+.application-comms-list article p {
   white-space: pre-wrap;
 }
 
@@ -206,17 +207,20 @@ dl.dl-custom h5 {
   margin-bottom: 10px;
 }
 
-.application-comment-list li b.fn {
+.application-comment-list li b.fn,
+.application-comms-list b.fn {
   color: #0073aa;
 }
 
-.application-comment-list li .vcard .avatar {
+.application-comment-list li .vcard .avatar,
+.application-comms-list .vcard .avatar {
   border-radius: 50%;
   float: left;
   margin-right: 15px;
 }
 
-.application-comment-list li .ctime {
+.application-comment-list li .ctime,
+.application-comms-list .ctime {
   font-size: 9px;
   float: right;
 }
@@ -1052,7 +1056,8 @@ textarea#feedback_comment {
   padding: 10px 10px 10px 15px;
 }
 
-#section-comment .application-comment-list li .vcard .avatar {
+#section-comment .application-comment-list li .vcard .avatar, 
+#section-comms .application-comms-list .vcard .avatar {
   border-radius: 0;
 }
 

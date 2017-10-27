@@ -189,9 +189,9 @@
       if (Object.keys(qSetServerData).length > 0) {
         jQuery.each(qSetServerData, function (index, value) {
           jQuery('#here').append('<p> Selected Question Set: ' +
-            '<input readonly type="text" name="questions[' + index + '][questionset_name]" value="' + value.questionset_name + '" /> ' +
-            '<input type="hidden" name="questions[' + index + '][questionset_id]" value="' + index + '" /> ' +
-            '<span id="' + index + '" class="button remove">Remove</span></p>');
+                                 '<input readonly type="text" name="questions[' + index + '][questionset_name]" value="' + value.questionset_name + '" /> ' +
+                                 '<input type="hidden" name="questions[' + index + '][questionset_id]" value="' + index + '" /> ' +
+                                 '<span id="' + index + '" class="button remove">Remove</span></p>');
           exam_list.push(index);
         });
       }
@@ -208,9 +208,9 @@
 
           if (duplicate_flag == false) {
             jQuery('#here').append('<p class="selected-question-set"> Selected Question Set: ' +
-              '<input readonly type="text" name="questions[' + qset_id + '][questionset_name]" value="' + qset_text + '" /> ' +
-              '<input type="hidden" name="questions[' + qset_id + '][questionset_id]" value="' + qset_id + '" /> ' +
-              '<span id="' + qset_id + '" class="button remove">Remove</span></p>');
+                                   '<input readonly type="text" name="questions[' + qset_id + '][questionset_name]" value="' + qset_text + '" /> ' +
+                                   '<input type="hidden" name="questions[' + qset_id + '][questionset_id]" value="' + qset_id + '" /> ' +
+                                   '<span id="' + qset_id + '" class="button remove">Remove</span></p>');
             exam_list.push(qset_id);
           }
           duplicate_flag = false;
@@ -902,7 +902,7 @@
       var name = 'application_id';
       name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
       var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-        results = regex.exec(location.search);
+          results = regex.exec(location.search);
       return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     },
 
@@ -911,11 +911,11 @@
         e.preventDefault();
         if (confirm('This file will be deleted permanently')) {
           var that = $(this),
-            data = {
-              file_id: that.data('id'),
-              action: 'erp_hr_attachment_delete_file',
-              _wpnonce: wpErpRec.nonce
-            };
+              data = {
+                file_id: that.data('id'),
+                action: 'erp_hr_attachment_delete_file',
+                _wpnonce: wpErpRec.nonce
+              };
           $.post(ajaxurl, data, function () {});
           that.closest('.cpm-uploaded-item').fadeOut(function () {
             $(this).remove();
