@@ -1,11 +1,8 @@
 <div class="row">
   <?php $application_id = $_GET['application_id'];?>
   <div class="col-lg-12 form-group">
-    <label>
-      <?php _e('Feedback Comments', 'wp-erp-rec'); ?>
-    </label>
     <?php erp_html_form_input(array(
-      'label'       => __('', 'wp-erp-rec'),
+      'label'       => __('Feedback Comments', 'wp-erp-rec'),
       'name'        => 'feedback_comment',
       'value'       => '',
       'type'        => 'textarea',
@@ -21,11 +18,8 @@
   </div>
 
   <div class="col-lg-6 form-group">
-    <label>
-      <?php _e('English Level', 'wp-erp-rec'); ?>
-    </label>
     <?php erp_html_form_input(array(
-      'label'       => __('', 'wp-erp-rec'),
+      'label'       => __('English Level', 'wp-erp-rec'),
       'name'        => 'feedback_english_level',
       'value'       => '',
       'class'       => 'form-control',
@@ -36,11 +30,8 @@
     )); ?>
   </div>
   <div class="col-lg-6 form-group">
-    <label>
-      <?php _e('English Conversation', 'wp-erp-rec'); ?>
-    </label>
     <?php erp_html_form_input(array(
-      'label'    => __('', 'wp-erp-rec'),
+      'label'    => __('English Conversation', 'wp-erp-rec'),
       'name'     => 'feedback_english_conversation',
       'value'    => '',
       'type'     => 'select',

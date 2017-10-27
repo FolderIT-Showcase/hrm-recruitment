@@ -37,7 +37,7 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_wp-erp-rec-manager-comment', 'manager_comment' );
     $this->action( 'wp_ajax_recruitment_form_builder', 'recruitment_form_builder_handler' );
     $this->action( 'wp_ajax_wp-erp-rec-serial-personal-fields', 'sort_personal_fields' );
-    $this->action( 'wp_ajax_wp-erp-rec-sendEmail', 'send_email' );
+    $this->action( 'wp_ajax_wp-erp-rec-send-email', 'send_email' );
 
     // to-do
     $this->action( 'wp_ajax_erp-rec-get-todo', 'get_todo' );
@@ -1088,11 +1088,21 @@ class Ajax_Handler {
      *
      * @return void
      */
-  public function send_email() {
-    $this->verify_nonce( 'wp_erp_rec_sendEmail_nonce' );
-    $to      = isset( $_POST['to'] ) ? $_POST['to'] : '';
-    $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
-    $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
+  public function send_email() {    
+    $this->verify_nonce( 'wp_erp_rec_send_email_nonce' );
+
+    if(isset( $_POST['fdata'] )) {
+      $params = [ ];
+      parse_str( $_POST['fdata'], $params );
+
+      $to      = $params['email_to'];
+      $subject = $params['email_subject'];
+      $message = $params['email_message'];
+    } else {
+      $to      = isset( $_POST['to'] ) ? $_POST['to'] : '';
+      $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
+      $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
+    }
 
     if ( !isset( $to ) || $to == '' ) {
       $this->send_error( __( 'You did not select any applicant to send email', 'wp-erp-rec' ) );

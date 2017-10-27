@@ -1,9 +1,8 @@
 <div class="row">
   <?php $application_id = $_GET['application_id'];?>
   <div class="col-lg-6 form-group">
-    <label><?php _e('Select internal type of interview (required)', 'wp-erp-rec'); ?></label>
     <?php erp_html_form_input(array(
-            'label'       => __('', 'wp-erp-rec'),
+            'label'       => __('Select internal type of interview (required)', 'wp-erp-rec'),
             'name'        => 'internal_type_of_interview',
             'value'       => '',
             'type'        => 'radio',
@@ -21,9 +20,8 @@
 
   <div class="col-lg-12 form-group">
     <?php $employee_list = erp_hr_get_employees_dropdown_raw(); unset($employee_list[0]);?>
-    <label><?php _e('Interviewers (required)', 'wp-erp-rec'); ?></label>
     <?php erp_html_form_input(array(
-            'label'       => __('', 'wp-erp-rec'),
+            'label'       => __('Interviewers (required)', 'wp-erp-rec'),
             'name'        => 'interviewers[]',
             'value'       => '',
             'type'        => 'select',
@@ -46,9 +44,8 @@
   </div>
 
   <div class="col-lg-6 form-group">
-    <label><?php _e('Duration', 'wp-erp-rec'); ?></label>
     <?php erp_html_form_input(array(
-          'label'       => __('', 'wp-erp-rec'),
+          'label'       => __('Duration', 'wp-erp-rec'),
           'name'        => 'duration',
           'value'       => '',
           'type'        => 'select',
@@ -60,9 +57,8 @@
   </div>
 
   <div class="col-lg-12 form-group">
-    <label><?php _e('Interview Detail (e.g vanue, phone etc)', 'wp-erp-rec'); ?></label>
     <?php erp_html_form_input(array(
-          'label'    => __('', 'wp-erp-rec'),
+          'label'    => __('Interview Detail (e.g vanue, phone etc)', 'wp-erp-rec'),
           'name'     => 'interview_detail',
           'value'    => '',
           'type'     => 'textarea',

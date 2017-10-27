@@ -273,6 +273,10 @@ class WeDevs_ERP_Recruitment {
         'submit'       => __( 'Create', 'wp-erp-rec' ),
         'update'       => __( 'Update', 'wp-erp-rec' )
       ],
+      'sendemail_popup'                => [
+        'title'        => __( 'Send Email', 'wp-erp-rec' ),
+        'submit'       => __( 'Send', 'wp-erp-rec' )
+      ],
       'cv_upload_popup'                => [
         'title'        => __( 'Attach CV', 'wp-erp-rec' ),
         'submit'       => __( 'Upload', 'wp-erp-rec' )
@@ -574,6 +578,7 @@ class WeDevs_ERP_Recruitment {
         erp_get_js_template( WPERP_REC_JS_TMPL . '/interview-template.php', 'erp-rec-interview-template' );
         erp_get_js_template( WPERP_REC_JS_TMPL . '/feedback-template.php', 'erp-rec-feedback-template' );
         erp_get_js_template( WPERP_REC_JS_TMPL . '/cv-upload-template.php', 'erp-rec-cv-upload-template' );
+        erp_get_js_template( WPERP_REC_JS_TMPL . '/sendemail-template.php', 'erp-rec-sendemail-template' );
 
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );

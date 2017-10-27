@@ -410,6 +410,37 @@
         });
       });
 
+      $('.btn-sendemail').click(function () {
+        $.erpPopupBs({
+          title: wpErpRec.sendemail_popup.title,
+          button: wpErpRec.sendemail_popup.submit,
+          id: 'send-email-top',
+          content: wp.template('erp-rec-sendemail-template')().trim(),
+          extraClass: 'medium',
+          onReady: function (modal) {
+            modal.enableButton();
+            $('#email_to').val($('#applicant_email_address').text());
+          },
+          onSubmit: function (modal) {
+            modal.disableButton();
+            wp.ajax.send('wp-erp-rec-send-email', {
+              data: {
+                fdata: this.serialize(),
+                _wpnonce: $('#_sendemail_nonce').val()
+              },
+              success: function (res) {
+                alertify.success(res);
+                modal.closeModal();
+              },
+              error: function (error) {
+                modal.enableButton();
+                alert(error);
+              }
+            });
+          }
+        });
+      });
+
       $('.btn-attach-cv:not(:disabled)').click(function () {
         $.erpPopupBs({
           title: wpErpRec.cv_upload_popup.title,

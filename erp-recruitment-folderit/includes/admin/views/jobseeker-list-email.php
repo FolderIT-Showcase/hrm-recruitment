@@ -40,8 +40,8 @@
                 ?>
               </div>
               <div class="row">
-                <input type="hidden" name="action" value="wp-erp-rec-sendEmail"/>
-                <?php wp_nonce_field('wp_erp_rec_sendEmail_nonce'); ?>
+                <input type="hidden" name="action" value="wp-erp-rec-send-email"/>
+                <?php wp_nonce_field('wp_erp_rec_send_email_nonce'); ?>
                 <input type="submit" class="page-title-action alignright email_send_button button button-primary" value="Send Email">
               </div>
               <div v-bind:class="[ isError ? error_notice_class : success_notice_class ]" v-show="isVisible">{{ response_message }}</div>
