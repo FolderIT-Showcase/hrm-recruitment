@@ -244,6 +244,7 @@ if (jQuery('#comms_form_wrapper').length > 0) {
           application_id: jQuery('#application_id').val()
         }, function (response) {
           if (response.success === true) {
+            commsviewmodel.comms = [];
             jQuery.each(response.data, function (k, v) {
               commsviewmodel.comms.push(v);
             });

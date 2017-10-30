@@ -1088,21 +1088,25 @@ class Ajax_Handler {
      *
      * @return void
      */
-  public function send_email() {    
+  public function send_email() {
+    global $wpdb;
     $this->verify_nonce( 'wp_erp_rec_send_email_nonce' );
 
     if(isset( $_POST['fdata'] )) {
       $params = [ ];
       parse_str( $_POST['fdata'], $params );
 
-      $to      = $params['email_to'];
-      $subject = $params['email_subject'];
-      $message = $params['email_message'];
+      $application_id = $params['email_aplication_id'];
+      $to             = $params['email_to'];
+      $subject        = $params['email_subject'];
+      $message        = $params['email_message'];
     } else {
       $to      = isset( $_POST['to'] ) ? $_POST['to'] : '';
       $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
       $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
     }
+    
+    // TODO: buscar application_id (postulación) en base al campo $to y bulkificar inserción de comms
 
     if ( !isset( $to ) || $to == '' ) {
       $this->send_error( __( 'You did not select any applicant to send email', 'wp-erp-rec' ) );
@@ -1114,11 +1118,33 @@ class Ajax_Handler {
       $headers[] = "Content-type: text/html";
       $email = new Emails\HR_Manager();
 
-      //      if (wp_mail( $to, $subject, $message, $headers )) {
       if($email->trigger( $to, $subject, $message, $headers )) {
-        $this->send_success( __( 'Email sent successfully', 'wp-erp-rec' ) );
+        // TODO: grabar comunicaciones de manera bukleable
+        if(isset($application_id)) {
+          $current_user = wp_get_current_user();
+          
+          $data = array(
+            'application_id' => $application_id,
+            'user_id'        => $current_user->ID,
+            'comm_email'     => $current_user->user_email,
+            'comm_author'    => $current_user->display_name,
+            'comm_subject'   => $subject,
+            'comm_message'   => $message,
+          );
 
-        // TODO: guardar email enviado en la planilla del candidato (buscarla via email)
+          $format = array(
+            '%d',
+            '%d',
+            '%s',
+            '%s',
+            '%s',
+            '%s'
+          );
+          $wpdb->insert( $wpdb->prefix . 'erp_application_comms', $data, $format );
+          $comm_id = $wpdb->insert_id;
+        }
+
+        $this->send_success( __( 'Email sent successfully', 'wp-erp-rec' ) );
       } else {
         $this->send_error( __( 'An error occured when sending email', 'wp-erp-rec' ) );
       }

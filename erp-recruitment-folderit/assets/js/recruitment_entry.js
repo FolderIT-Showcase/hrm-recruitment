@@ -430,6 +430,7 @@
               },
               success: function (res) {
                 alertify.success(res);
+                commsviewmodel.getAllComms();
                 modal.closeModal();
               },
               error: function (error) {

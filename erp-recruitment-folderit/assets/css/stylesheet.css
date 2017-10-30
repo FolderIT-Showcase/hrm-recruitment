@@ -189,26 +189,34 @@ dl.dl-custom h5 {
 
 .scrollable::-webkit-scrollbar-track
 {
-	-webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
+  -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
 }
 
 .scrollable::-webkit-scrollbar
 {
-	width: 12px;
-/*	background-color: #F5F5F5;*/
+  width: 12px;
+  /*	background-color: #F5F5F5;*/
 }
 
 .scrollable::-webkit-scrollbar-thumb
 {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #0085ba;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+  background-color: #0085ba;
 }
 
 .application-comment-list li article:last-child hr {
   display: none;
+}
+
+.application-comms-list article:not(:last-child) .panel-comms {
+  margin-bottom:10px;
+}
+
+.application-comms-list article:last-child .panel-comms {
+  margin-bottom:0px;
 }
 
 .application-comment-list li article p,
@@ -2362,22 +2370,31 @@ section.url-wrap:after {
 }
 
 #candidate-overview-zone .btn {
-  margin-bottom: 5px;
-  margin-left: 3px;
+  margin-bottom: 10px;
+  margin-left: 10px;
   font-size: 20px;
   float: left;
-  color: #555;
+  color: #337ab7;
+  border-color: #337ab7;
+  border-radius: 0px;
+  padding: 6px 12px 6px 24px;
+  text-align: left;
+}
+#candidate-overview-zone .btn-individual {
+  text-align: center;
+  clear: both;
 }
 #candidate-overview-zone .btn.btn-primary {
   color: #fff;
 }
-@media (min-width: 768px) {
-  #candidate-overview-zone .btn-individual {
-    margin-left: 40px;
-  }
-  #candidate-overview-zone .btn-individual+.btn-individual {
-    margin-left: 3px;
-  }
+
+#candidate-overview-zone .btn-individual {
+  margin-left: 0px;
+  padding: 6px 12px;
+}
+#candidate-overview-zone .btn-individual+.btn-individual {
+  clear: none;
+  margin-left: 10px;
 }
 @media screen and (max-width: 767px) {
   #candidate-overview-zone .btn-individual {
@@ -2387,6 +2404,17 @@ section.url-wrap:after {
   #candidate-overview-zone .btn-individual+.btn-individual {
     clear: none;
   }
+}
+#candidate-overview-zone .btn span b {
+  font-weight: normal;
+  font-size: 1.5em;
+}
+#candidate-overview-zone .btn-arrow-right:not(.btn-individual):first-child {
+  margin-left: 0px;
+  padding: 6px 12px 6px 12px;
+}
+#candidate-overview-zone .btn-arrow-right:first-child:before {
+  display: none;
 }
 .btn-arrow-right,
 .btn-arrow-left {
@@ -2406,32 +2434,32 @@ section.url-wrap:after {
 .btn-arrow-left:not(.btn-individual):after { /* make two squares (before and after), looking similar to the button */
   content:"";
   position: absolute;
-  top: 5px; /* move it down because of rounded corners */
+  top: 30px; /* move it down because of rounded corners */
   width: 22px; /* same as height */
   height: 22px; /* button_outer_height / sqrt(2) */
   background: inherit; /* use parent background */
   border: inherit; /* use parent border */
   border-left-color: transparent; /* hide left border */
   border-bottom-color: transparent; /* hide bottom border */
-  border-radius: 0px 4px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
-  -webkit-border-radius: 0px 4px 0px 0px;
-  -moz-border-radius: 0px 4px 0px 0px;
+  border-radius: 0px 1px 0px 0px; /* round arrow corner, the shorthand property doesn't accept "inherit" so it is set to 4px */
+  -webkit-border-radius: 0px 1px 0px 0px;
+  -moz-border-radius: 0px 1px 0px 0px;
 }
 .btn-arrow-right:not(.btn-individual):before,
 .btn-arrow-right:not(.btn-individual):after {
-  transform: rotate(45deg); /* rotate right arrow squares 45 deg to point right */
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
+  transform: scale(1, 2.8) rotate(45deg); /* rotate right arrow squares 45 deg to point right */
+  -webkit-transform: scale(1, 2.8) rotate(45deg);
+  -moz-transform: scale(1, 2.8) rotate(45deg);
+  -o-transform: scale(1, 2.8) rotate(45deg);
+  -ms-transform: scale(1, 2.8) rotate(45deg);
 }
 .btn-arrow-left:not(.btn-individual):before,
 .btn-arrow-left:not(.btn-individual):after {
-  transform: rotate(225deg); /* rotate left arrow squares 225 deg to point left */
-  -webkit-transform: rotate(225deg);
-  -moz-transform: rotate(225deg);
-  -o-transform: rotate(225deg);
-  -ms-transform: rotate(225deg);
+  transform: scale(1, 2.8) rotate(225deg); /* rotate left arrow squares 225 deg to point left */
+  -webkit-transform: scale(1, 2.8) rotate(225deg);
+  -moz-transform: scale(1, 2.8) rotate(225deg);
+  -o-transform: scale(1, 2.8) rotate(225deg);
+  -ms-transform: scale(1, 2.8) rotate(225deg);
 }
 .btn-arrow-right:not(.btn-individual):before,
 .btn-arrow-left:not(.btn-individual):before { /* align the "before" square to the left */

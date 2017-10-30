@@ -559,7 +559,7 @@ if ( isset($applicant_information[0]) ) {
               <div id="comms_form_wrapper" class="not-loaded">
                 <div class="col-lg-12 application-comms-list scrollable">
                   <article v-for="comm in comms">
-                    <div class="panel panel-default" style="margin-bottom:10px;">
+                    <div class="panel panel-default panel-comms">
                       <div class="panel-heading">
                         <h5 style="margin-top:4px;"><b class="fn">{{ comm.comm_author }}</b> <span>({{ comm.comm_email }})</span> <span class="pull-right">{{ comm.comm_date }}</span></h5>
                         <h6 style="margin-top:4px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
@@ -571,7 +571,7 @@ if ( isset($applicant_information[0]) ) {
                   </article>
                 </div>
               </div>
-              <div class="col-lg-12">
+              <div class="col-lg-12" style="margin-top:10px;">
                 <button class="button button-primary alignright btn-sendemail"><?php _e('Send Email', 'wp-erp-rec'); ?></button>
                 <span class="spinner"></span>
               </div>
@@ -599,18 +599,18 @@ if ( isset($applicant_information[0]) ) {
                       <h3 id="interview-type-title-{{rt.id}}" style="margin:10px;">{{ rt.type_detail }}</h3>
                     </div>
                     <div class="col-lg-4 col-xs-12 text-right-not-xs text-center-xs pull-right">
-                      <div class="btn-group" style="margin:10px;">
-                        <button class="btn btn-primary btn-sm" v-on:click="feedbackInterview(rt.id)">
+                      <div class="" style="margin:10px 0px 0px 0px;">
+                        <button class="btn btn-primary btn-labeled btn-sm" v-on:click="feedbackInterview(rt.id)">
                           <input id="interviewfeedbackid-{{rt.id}}" type="hidden" value="{{rt.id}}">
-                          <i class="fa fa-lg fa-comment-o"></i>&nbsp;<?php _e('Feedback','wp-erp-rec');?>
+                          <span class="btn-label"><i class="fa fa-lg fa-comment-o"></i></span><?php _e('Feedback','wp-erp-rec');?>
                         </button>
-                        <button class="btn btn-primary btn-sm" v-on:click="editInterview(rt.id)">
+                        <button class="btn btn-primary btn-labeled btn-sm" v-on:click="editInterview(rt.id)">
                           <input id="intervieweditid-{{rt.id}}" type="hidden" value="{{rt.id}}">
-                          <i class="fa fa-lg fa-pencil"></i>&nbsp;<?php _e('Edit','wp-erp-rec');?>
+                          <span class="btn-label"><i class="fa fa-lg fa-pencil"></i></span><?php _e('Edit','wp-erp-rec');?>
                         </button>
-                        <button class="btn btn-danger btn-sm" v-on:click="deleteInterview(rt.id)">
+                        <button class="btn btn-danger btn-labeled btn-sm" v-on:click="deleteInterview(rt.id)">
                           <input id="interviewid-{{rt.id}}" type="hidden" value="{{rt.id}}">
-                          <i class="fa fa-lg fa-trash"></i>&nbsp;<?php _e('Delete','wp-erp-rec');?>
+                          <span class="btn-label"><i class="fa fa-lg fa-trash"></i></span><?php _e('Delete','wp-erp-rec');?>
                         </button>
                       </div>
                     </div>
