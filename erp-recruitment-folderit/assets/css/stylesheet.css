@@ -207,6 +207,12 @@ dl.dl-custom h5 {
   background-color: #0085ba;
 }
 
+.panel-heading-overflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .application-comment-list li article:last-child hr {
   display: none;
 }

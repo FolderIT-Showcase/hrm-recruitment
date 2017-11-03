@@ -561,8 +561,10 @@ if ( isset($applicant_information[0]) ) {
                   <article v-for="comm in comms">
                     <div class="panel panel-default panel-comms">
                       <div class="panel-heading">
-                        <h5 style="margin-top:4px;"><b class="fn">{{ comm.comm_author }}</b> <span>({{ comm.comm_email }})</span> <span class="pull-right">{{ comm.comm_date }}</span></h5>
-                        <h6 style="margin-top:4px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                        <span class="pull-right" style="line-height:1.2;">{{ comm.comm_date }}</span>
+                        <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?>{{ comm.comm_author }}</b> <span>({{ comm.comm_from }})</span></h5>
+                        <h5 class="panel-heading-overflow" style="margin-top:4px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); echo $applicant_information[0]['first_name'] . ' ' . $applicant_information[0]['last_name']; ?></b> <span>({{ comm.comm_to }})</span></h5>
+                        <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
                       </div>
                       <div class="panel-body">
                         <p>{{ comm.comm_message }}</p>

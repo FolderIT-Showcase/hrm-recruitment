@@ -344,7 +344,8 @@ class Ajax_Handler {
           'id'              => $ud['id'],
           'application_id'  => $ud['application_id'],
           'user_id'         => $ud['uid'],
-          'comm_email'      => $ud['comm_email'],
+          'comm_from'       => $ud['comm_from'],
+          'comm_to'         => $ud['comm_to'],
           'comm_author'     => $ud['comm_author'],
           'comm_subject'    => $ud['comm_subject'],
           'comm_message'    => $ud['comm_message'],
@@ -1119,14 +1120,15 @@ class Ajax_Handler {
       $email = new Emails\HR_Manager();
 
       if($email->trigger( $to, $subject, $message, $headers )) {
-        // TODO: grabar comunicaciones de manera bukleable
+        // TODO: grabar comunicaciones de manera bulkeable
         if(isset($application_id)) {
           $current_user = wp_get_current_user();
           
           $data = array(
             'application_id' => $application_id,
             'user_id'        => $current_user->ID,
-            'comm_email'     => $current_user->user_email,
+            'comm_from'      => $current_user->user_email,
+            'comm_to'        => $to,
             'comm_author'    => $current_user->display_name,
             'comm_subject'   => $subject,
             'comm_message'   => $message,
@@ -1135,6 +1137,7 @@ class Ajax_Handler {
           $format = array(
             '%d',
             '%d',
+            '%s',
             '%s',
             '%s',
             '%s',
