@@ -1174,6 +1174,7 @@ class Ajax_Handler {
     $assign_user_id = $params['assign_user_id'];
     $deadlinedate   = $params['deadlinedate'];
     $deadlinetime   = $params['deadlinetime'];
+    $description       = $params['description'];
 
     $current_date = date_create( date( 'Y-m-d' ) );
     $given_date   = date_create( $deadlinedate );
@@ -1197,6 +1198,7 @@ class Ajax_Handler {
         'title'          => $todotitle,
         'application_id' => $application_id,
         'deadline_date'  => ( $deadlinedate == '' ? '' : date( 'Y-m-d H:i:s', strtotime( "$deadlinedate $deadlinetime" ) ) ),
+        'description'    => $description,
         'created_by'     => get_current_user_id(),
         'created_at'     => date( 'Y-m-d H:i:s', time() )
       );
@@ -1204,6 +1206,7 @@ class Ajax_Handler {
       $format = array(
         '%s',
         '%d',
+        '%s',
         '%s',
         '%s',
         '%s'

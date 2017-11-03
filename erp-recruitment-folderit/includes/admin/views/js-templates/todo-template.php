@@ -38,6 +38,21 @@
                 'class'    => 'erp-time-field form-control',
                 'required' => false
             ) ); ?>
+  <div class="col-lg-12 form-group">
+    <?php erp_html_form_input(array(
+      'label'       => __('Description', 'wp-erp-rec'),
+      'name'        => 'description',
+      'value'       => '',
+      'type'        => 'textarea',
+      'id'          => 'description',
+      'class'       => 'form-control',
+      'custom_attr' => array(
+          'rows'  => 10,
+          'media' => true,
+          'teeny' => false
+      ),
+      'required'    => false
+    )); ?>
   </div>
 </div>
 

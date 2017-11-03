@@ -43,7 +43,8 @@ class New_Todo extends Email {
 
         /*making mail body*/
         $html = 'To-do Title: '.$data['title'].'<br/>';
-        $html .= 'To-do Deadline: '.$data['deadline_date'];
+        $html .= 'To-do Deadline: '.$data['deadline_date'].'<br/>';
+        $html .= 'To-do Description: '.$data['description'];
 
         $ids = explode(',', $data['assigned_user_id']);
 
