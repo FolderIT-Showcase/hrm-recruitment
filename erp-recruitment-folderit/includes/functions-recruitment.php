@@ -345,6 +345,29 @@ function erp_rec_get_available_positions( $all = false ) {
 }
 
 /*
+ * get positions
+ * return array
+ */
+function erp_rec_get_position( $jobid ) {
+  global $wpdb;
+
+  $query = "SELECT post.ID as ID, post.post_title as post_title,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_hide_job_list') as hide_job_list,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_expire_date') expire_date,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_permanent_job') permanent_job
+
+            FROM {$wpdb->prefix}posts as post
+
+            WHERE post.post_type = 'erp_hr_recruitment' AND post.ID = {$jobid}";
+
+  $query .= " ORDER BY post.menu_order, post.post_title ";
+
+  $position = $wpdb->get_row( $query );
+
+  return $position;
+}
+
+/*
  * get available projects
  * return array
  */

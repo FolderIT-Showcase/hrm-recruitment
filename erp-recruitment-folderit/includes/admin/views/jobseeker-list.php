@@ -10,6 +10,8 @@
   <?php $total_applicants = erp_rec_applicant_counter($jobid);?>
   <?php
   $all_candidate_link = ($jobid == 0) ? admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list') : admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&jobid='.$jobid);
+  $job_title = ($jobid == 0) ? '' : erp_rec_get_position($jobid)->post_title;
+  $filter_url = ($filter_stage == 0) ? '' : '&filter_stage='.$filter_stage;
   ?>
   <form method="post">
     <div id="dashboard-widgets-wrap">
@@ -51,6 +53,9 @@
 
                   <div class="col-lg-12">
                     <div class="single-information-container">
+                      <?php if ( $jobid != 0 ) : ?>
+                      <h4><?php echo __('Filtering by position: ', 'wp-erp-rec') . ' ' . $job_title; ?> <small><a href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list'.$filter_url); ?>">[<?php _e('Remove filter', 'wp-erp-rec'); ?>]</a></small></h4>
+                      <?php endif; ?>
                       <div id="candidate-overview-zone">
                         <a type="button" class="btn btn-default btn-arrow-right" href="<?php echo $all_candidate_link; ?>">
                           <span class="icon-arrow-right"><b><?php echo $total_applicants;?></b><br/><small><?php _e(' Candidates', 'wp-erp-rec'); ?></small></span>
@@ -64,13 +69,15 @@
                         foreach ( $stages as $stage ) :
                         $stage_individual = $stage['stage_individual'];
                         if($jobid == 0) {
+                          $joburl = '';
                           $stageid = $stage['id'];
                         } else {
                           $stageid = $stage['stageid'];
+                          $joburl = '&jobid='.$jobid;
                         }
                         ?>
-                        <a type="button" class="btn btn-default btn-arrow-right <?php if ($filter_stage == $stageid) echo " btn-primary active "; ?> <?php if ($stage_individual != 0) echo " btn-individual "; ?>" href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list&filter_stage='.$stageid);?>">
-                          <span class="icon-arrow-right"><b><?php echo erp_rec_get_candidate_number_in_this_stages($jobid, $stage['id']);?></b><br/><small><?php echo $stage['title'];?></small></span>
+                        <a type="button" class="btn btn-default btn-arrow-right <?php if ($filter_stage == $stageid) echo " btn-primary active "; ?> <?php if ($stage_individual != 0) echo " btn-individual "; ?>" href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list'.$joburl.'&filter_stage='.$stageid);?>">
+                          <span class="icon-arrow-right"><b><?php echo erp_rec_get_candidate_number_in_this_stages($jobid, $stageid);?></b><br/><small><?php echo $stage['title'];?></small></span>
                         </a>
                         <?php endforeach;?>
                       </div>
