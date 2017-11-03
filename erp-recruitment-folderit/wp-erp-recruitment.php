@@ -576,7 +576,7 @@ class WeDevs_ERP_Recruitment {
       case 'recruitment_page_applicant_detail':
         erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );
         erp_get_js_template( WPERP_REC_JS_TMPL . '/interview-template.php', 'erp-rec-interview-template' );
-        erp_get_js_template( WPERP_REC_JS_TMPL . '/feedback-template.php', 'erp-rec-feedback-template' );
+        erp_get_js_template( WPERP_REC_JS_TMPL . '/interview-feedback-template.php', 'erp-rec-interview-feedback-template' );
         erp_get_js_template( WPERP_REC_JS_TMPL . '/cv-upload-template.php', 'erp-rec-cv-upload-template' );
         erp_get_js_template( WPERP_REC_JS_TMPL . '/sendemail-template.php', 'erp-rec-sendemail-template' );
 

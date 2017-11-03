@@ -509,7 +509,7 @@ if (jQuery('#section-interview').length > 0) {
           title: wpErpRec.interview_popup.update_title,
           button: wpErpRec.interview_popup.update,
           id: 'new-feedback-top',
-          content: wp.template('erp-rec-feedback-template')().trim(),
+          content: wp.template('erp-rec-interview-feedback-template')().trim(),
           extraClass: 'medium',
           onReady: function (modal) {
             modal.enableButton();
@@ -589,8 +589,7 @@ if (jQuery('#section-todo').length > 0) {
         jQuery.get(ajaxurl, {
           action: 'erp-rec-get-todo',
           application_id: jQuery('#application_id').val()
-        },
-                   function (response) {
+        }, function (response) {
           if (response.success === true) {
             var serverTodoData = response.data;
             todoModel.$set('todoData', response.data);
@@ -601,8 +600,7 @@ if (jQuery('#section-todo').length > 0) {
               'visibility': 'hidden'
             });
           }
-        }
-                  );
+        });
       },
 
       handleTodo: function (todo_id, checkCondition) {
