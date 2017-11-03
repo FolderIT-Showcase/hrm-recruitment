@@ -486,7 +486,7 @@ if ( isset($applicant_information[0]) ) {
                 </li>
               </ul>
               <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-              <button id="new-todo" style="margin-right:1%" class="button button-primary alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
+              <button style="margin-right:1%" class="button button-primary btn-todo alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
               <?php endif;?>
               <span class="spinner"></span>
             </div>

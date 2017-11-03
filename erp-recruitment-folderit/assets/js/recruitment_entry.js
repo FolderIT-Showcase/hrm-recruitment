@@ -130,7 +130,6 @@
             action: 'wp-erp-rec-serial-personal-fields',
             list: postdata
           }, function (response) {
-            //console.log( response );
           }, 'json');
         }
       });
@@ -306,44 +305,8 @@
             $('#assign_user_id').select2();
             var application_id = WeDevs_ERP_Recruitment.getApplicationId();
             $('#todo_application_id').val(application_id);
-            WeDevs_ERP_Recruitment.initTimePicker();
-            WeDevs_ERP_Recruitment.initDateField();
-          },
-          onSubmit: function (modal) {
-            modal.disableButton();
-            wp.ajax.send('erp-rec-create-todo', {
-              data: {
-                fdata: this.serialize(),
-                _wpnonce: wpErpRec.nonce
-              },
-              success: function (res) {
-                alertify.success(res);
-                modal.closeModal();
-                todoModel.getTodo();
-              },
-              error: function (error) {
-                modal.enableButton();
-                alert(error);
-              }
-            });
-          }
-        });
-      });
-
-      $('#new-todo').click(function () {
-        $.erpPopupBs({
-          title: wpErpRec.todo_popup.title,
-          button: wpErpRec.todo_popup.submit,
-          id: 'new-todo-low',
-          content: wp.template('erp-rec-todo-template')().trim(),
-          extraClass: 'smaller',
-          onReady: function (modal) {
-            modal.enableButton();
-            $('#assign_user_id').select2();
-            var application_id = WeDevs_ERP_Recruitment.getApplicationId();
-            $('#todo_application_id').val(application_id);
-            WeDevs_ERP_Recruitment.initTimePicker();
-            WeDevs_ERP_Recruitment.initDateField();
+            var now = new Date();
+            $('#deadline_datetime').val(now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear() + " 10:00 AM");
           },
           onSubmit: function (modal) {
             modal.disableButton();

@@ -1169,22 +1169,21 @@ class Ajax_Handler {
 
     parse_str( $_POST['fdata'], $params );
 
-    $todotitle      = $params['todo_title'];
-    $application_id = $params['todo_application_id'];
-    $assign_user_id = $params['assign_user_id'];
-    $deadlinedate   = $params['deadlinedate'];
-    $deadlinetime   = $params['deadlinetime'];
+    $todotitle         = $params['todo_title'];
+    $application_id    = $params['todo_application_id'];
+    $assign_user_id    = $params['assign_user_id'];
+    $deadline_datetime = $params['deadline_datetime'];
     $description       = $params['description'];
 
     $current_date = date_create( date( 'Y-m-d' ) );
-    $given_date   = date_create( $deadlinedate );
+    $given_date   = date_create_from_format('d/m/Y g:i A', $deadline_datetime);
     $diff         = date_diff( $current_date, $given_date );
 
     if ( !isset( $todotitle ) ) {
       $this->send_error( __( 'Title cannot be empty!', 'wp-erp-rec' ) );
     } elseif ( count( $assign_user_id ) == 0 ) {
       $this->send_error( __( 'Please assign user for this todo!', 'wp-erp-rec' ) );
-    } elseif ( isset( $deadlinedate ) && $diff->format( "%r%a" ) < 0 ) {
+    } elseif ( isset( $deadline_datetime ) && $diff->format( "%r%a" ) < 0 ) {
       $this->send_error( __( 'invalid deadline - pick today or any next day', 'wp-erp-rec' ) );
     } else {
       $todo_array_ids = [ ];
@@ -1197,7 +1196,7 @@ class Ajax_Handler {
       $data = array(
         'title'          => $todotitle,
         'application_id' => $application_id,
-        'deadline_date'  => ( $deadlinedate == '' ? '' : date( 'Y-m-d H:i:s', strtotime( "$deadlinedate $deadlinetime" ) ) ),
+        'deadline_date'  => date_format($given_date, 'Y-m-d H:i:s'),
         'description'    => $description,
         'created_by'     => get_current_user_id(),
         'created_at'     => date( 'Y-m-d H:i:s', time() )
@@ -1264,19 +1263,28 @@ class Ajax_Handler {
                                         ON app_todo_relation.assigned_user_id=user.ID
                                         WHERE app_todo_relation.todo_id='%d'";
         $urelationdata       = $wpdb->get_results( $wpdb->prepare( $query_assigned_user, $ud['id'] ), ARRAY_A );
-
+        
         $todo_handler_name = '';
+        $todo_handlers_ids = array();
+        $isFirst = true;
         foreach ( $urelationdata as $todo_handler_dname ) {
-          $todo_handler_name .= ',' . $todo_handler_dname['display_name'];
+          if (!$isFirst) {
+            $todo_handler_name .= ', ';
+          }
+
+          $isFirst = false;
+          $todo_handler_name .= $todo_handler_dname['display_name'];
+          array_push($todo_handlers_ids, $todo_handler_dname['id']);
         }
 
         $user_data[] = array(
-          'id'            => $ud['id'],
-          'title'         => $ud['title'],
-          'deadline_date' => date( 'Y-m-d g:i A', strtotime( $ud['deadline_date'] ) ),
-          'display_name'  => $todo_handler_name,
-          'status'        => $ud['status'],
-          'is_overdue'    => ( date( 'Y-m-d', strtotime( $ud['deadline_date'] ) ) < date( 'Y-m-d', time() ) ? 1 : 0 )
+          'id'                => $ud['id'],
+          'title'             => $ud['title'],
+          'deadline_date'     => date( 'Y-m-d g:i A', strtotime( $ud['deadline_date'] ) ),
+          'display_name'      => $todo_handler_name,
+          'todo_handlers_ids' => $todo_handlers_ids,
+          'status'            => $ud['status'],
+          'is_overdue'        => ( date( 'Y-m-d', strtotime( $ud['deadline_date'] ) ) < date( 'Y-m-d', time() ) ? 1 : 0 )
         );
       }
       $this->send_success( $user_data );
@@ -1388,17 +1396,26 @@ class Ajax_Handler {
         $urelationdata       = $wpdb->get_results( $wpdb->prepare( $query_assigned_user, $ud['id'] ), ARRAY_A );
 
         $todo_handler_name = '';
+        $todo_handlers_ids = array();
+        $isFirst = true;
         foreach ( $urelationdata as $todo_handler_dname ) {
-          $todo_handler_name .= ',' . $todo_handler_dname['display_name'];
+          if (!$isFirst) {
+            $todo_handler_name .= ', ';
+          }
+
+          $isFirst = false;
+          $todo_handler_name .= $todo_handler_dname['display_name'];
+          array_push($todo_handlers_ids, $todo_handler_dname['id']);
         }
 
         $user_data[] = array(
-          'id'            => $ud['id'],
-          'title'         => $ud['title'],
-          'deadline_date' => date( 'Y-m-d g:i A', strtotime( $ud['deadline_date'] ) ),
-          'display_name'  => $todo_handler_name,
-          'status'        => $ud['status'],
-          'is_overdue'    => ( date( 'Y-m-d', strtotime( $ud['deadline_date'] ) ) < date( 'Y-m-d', time() ) ? 1 : 0 )
+          'id'                => $ud['id'],
+          'title'             => $ud['title'],
+          'deadline_date'     => date( 'Y-m-d g:i A', strtotime( $ud['deadline_date'] ) ),
+          'display_name'      => $todo_handler_name,
+          'todo_handlers_ids' => $todo_handlers_ids,
+          'status'            => $ud['status'],
+          'is_overdue'        => ( date( 'Y-m-d', strtotime( $ud['deadline_date'] ) ) < date( 'Y-m-d', time() ) ? 1 : 0 )
         );
       }
       $this->send_success( $user_data );
