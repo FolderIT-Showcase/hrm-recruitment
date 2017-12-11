@@ -656,6 +656,36 @@ if ( isset($applicant_information[0]) ) {
     </div>
     <div class="row">
       <div class="col-lg-12 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+        <section id="section-summary" class="postbox">
+          <span class="hndle-toogle-button"></span>
+          <div class="section-header">
+            <h2 class="hndle"><span><?php _e('Evaluation Summary', 'wp-erp-rec'); ?></span></h2>
+          </div>
+          <div class="section-content toggle-metabox-show full-width">
+            <div class="col-lg-12">
+              <div class="row">
+                <form id="summary_form" method="post">
+                  <div class="col-md-2 col-sm-12 form-group">
+                    <label class="control-label" for="summary_rating"><?php _e('Summary Rating', 'wp-erp-rec'); ?></label>
+                    <input disabled style="font-size:4em;height:2em;text-align:center;" class="form-control form-control-noborder metadata" type="number" step="0.1" min="0" max="10" id="summary_rating" name="summary_rating" value="<?php echo $applicant_information[0]['summary_rating']; ?>">
+                  </div>
+                  <div class="col-md-10 col-sm-12 form-group">
+                    <label class="control-label" for="summary_comment"><?php _e('Summary Comment', 'wp-erp-rec'); ?></label>
+                    <textarea disabled rows="10" cols="10" class="form-control form-control-noborder metadata" id="summary_comment" name="summary_comment"><?php echo $applicant_information[0]['summary_comment']; ?></textarea>
+                  </div>
+                  <?php wp_nonce_field('wp_erp_rec_update_summary_nonce', '_summary_nonce'); ?>
+                </form>
+              </div>
+              <button style="margin-left:6px;" class="button button-primary alignright btn-summary"><?php _e('Edit', 'wp-erp-rec'); ?></button>
+              <button style="margin-left:6px;display:none;" class="button button-primary alignright btn-summary-save"><?php _e('Save', 'wp-erp-rec'); ?></button>
+              <button style="margin-left:6px;display:none;" class="button button-secondary alignright btn-summary-cancel"><?php _e('Cancel', 'wp-erp-rec'); ?></button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
         <section id="section-interview" class="postbox">
           <span class="hndle-toogle-button"></span>
           <div class="section-header">

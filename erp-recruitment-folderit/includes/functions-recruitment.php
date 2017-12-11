@@ -495,6 +495,7 @@ function erp_rec_get_applicants_information( $args ) {
 
   $query .= " FROM {$wpdb->prefix}erp_application_rating
         WHERE application_id = applicationid ) as avg_rating,
+    application.summary_rating as summary_rating,
     CONCAT( first_name, ' ', last_name ) as full_name,
     ( select meta_value
         FROM {$wpdb->prefix}erp_peoplemeta

@@ -415,6 +415,66 @@
         }
       });
 
+      $('.btn-summary').click(function () {
+        $('.btn-summary').hide();
+        $('.btn-summary-cancel').show();
+        $('.btn-summary-save').show();
+
+        $('#summary_form .metadata').prop('disabled', false);
+        $('#summary_form .metadata').removeClass('form-control-noborder');
+      });
+
+      $('.btn-summary-cancel').click(function () {
+        $('.btn-summary').show();
+        $('.btn-summary-cancel').hide();
+        $('.btn-summary-save').hide();
+
+        $('#summary_form .metadata').prop('disabled', true);
+        $('#summary_form .metadata').addClass('form-control-noborder');
+
+        // TODO: restaurar valores originales de campos
+      });
+
+      $('.btn-summary-save').click(function () {
+        // Enviar datos a backend y deshabilitar controles
+        var formData = $('#summary_form').serialize();
+
+        $('#summary_form .metadata').prop('disabled', true);
+        $('#summary_form .metadata').addClass('form-control-noborder');
+        $('#section-summary button').prop('disabled', true);
+
+        wp.ajax.send('erp-rec-update-summary', {
+          data: {
+            fdata: formData,
+            application_id: WeDevs_ERP_Recruitment.getApplicationId(),
+            _wpnonce: $('#_summary_nonce').val()
+          },
+          success: function (res) {
+            alertify.success(res);
+            $('#section-summary button').prop('disabled', false);
+            $('#summary_form .metadata').prop('disabled', true);
+            $('#summary_form .metadata').addClass('form-control-noborder');
+            $('.btn-summary').show();
+            $('.btn-summary-cancel').hide();
+            $('.btn-summary-save').hide();
+          },
+          error: function (error) {
+            alert(error);
+            $('#section-summary button').prop('disabled', false);
+            $('#summary_form .metadata').prop('disabled', false);
+            $('#summary_form .metadata').removeClass('form-control-noborder');
+          }
+        });
+      });
+
+      $('#summary_form input').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+          e.preventDefault();
+          return false;
+        }
+      });
+
       $('.btn-todo').click(function () {
         $.erpPopupBs({
           title: wpErpRec.todo_popup.title,

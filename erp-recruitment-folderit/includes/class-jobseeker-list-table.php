@@ -117,9 +117,10 @@ class Jobseeker_List_Table extends \WP_List_Table {
   public function get_columns() {
     $columns = array(
       'cb'                => '<input type="checkbox" />',
-      'apply_date'        => __('Date', 'wp-erp-rec'),
       'full_name'         => __('Name', 'wp-erp-rec'),
+      'apply_date'        => __('Date', 'wp-erp-rec'),
       'avg_rating'        => __('Rating', 'wp-erp-rec'),
+      'summary_rating'    => __('Summary Rating Column', 'wp-erp-rec'),
       'job_title'         => __('Applied Job', 'wp-erp-rec'),
       'stage'             => __('Stage', 'wp-erp-rec'),
       'interview_rrhh'    => __('RRHH Interview', 'wp-erp-rec'),
@@ -203,6 +204,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return sprintf(__('<a href="%s">' . $item['first_name'] . ' ' . $item['last_name'] . '</a>', 'wp-erp-rec'), $jobseeker_preview_url);
       case 'avg_rating':
         return number_format($item['avg_rating'], 2, '.', ',');
+      case 'summary_rating':
+        return number_format($item['summary_rating'], 1, '.', ',');
       case 'job_title':
         return $item['post_title'];
       case 'stage':
@@ -213,9 +216,12 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return '<input type="checkbox" ' . $interview_tech . ' style="' . $interview_tech_style. '" disabled></input>';
       case 'interview_english':
         return '<input type="checkbox" ' . $interview_english . ' style="' . $interview_english_style. '" disabled></input>';
+        //      case 'action':
+        //        $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
+        //        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $jobseeker_email_url, erp_people_get_meta($item['id'], 'ip', true ) );
       case 'action':
         $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
-        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $jobseeker_email_url, erp_people_get_meta($item['id'], 'ip', true ) );
+        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a>'), $jobseeker_preview_url, $jobseeker_email_url);
       case 'project':
         return $projects[$item['project_id']];
       case 'status':
@@ -234,12 +240,13 @@ class Jobseeker_List_Table extends \WP_List_Table {
      */
   public function get_sortable_columns() {
     $sortable_columns = array(
-      'apply_date' => array( 'apply_date', true ),
-      'full_name'  => array( 'full_name', true ),
-      'avg_rating' => array( 'avg_rating', true ),
-      'project'    => array( 'project_title', true ),
-      'stage'      => array( 'title', true ),
-      'job_title'  => array( 'post_title', true ),
+      'apply_date'     => array( 'apply_date', true ),
+      'full_name'      => array( 'full_name', true ),
+      'avg_rating'     => array( 'avg_rating', true ),
+      'summary_rating' => array( 'summary_rating', true ),
+      'project'        => array( 'project_title', true ),
+      'stage'          => array( 'title', true ),
+      'job_title'      => array( 'post_title', true ),
     );
 
     return $sortable_columns;
@@ -350,7 +357,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
     $columns = $this->get_columns();
     $hidden = [];
     $sortable = $this->get_sortable_columns();
-    $this->_column_headers = array($columns, $hidden, $sortable);
+    $primary = 'full_name';
+    $this->_column_headers = array($columns, $hidden, $sortable, $primary);
 
     $per_page = 20;
     $current_page = $this->get_pagenum();

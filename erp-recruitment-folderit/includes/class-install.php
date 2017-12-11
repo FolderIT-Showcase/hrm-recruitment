@@ -96,6 +96,8 @@ class WeDevs_ERP_Recruitment_Installer {
                  `added_by` int(11) unsigned DEFAULT 0,
                  `status` tinyint unsigned DEFAULT 0,
                  `project_id` int(11) unsigned DEFAULT NULL,
+                 `summary_rating` decimal(4,1) unsigned DEFAULT 0,
+                 `summary_comment` text,
                  PRIMARY KEY (`id`),
                  KEY `job_id` (`job_id`),
                  KEY `applicant_id` (`applicant_id`)
