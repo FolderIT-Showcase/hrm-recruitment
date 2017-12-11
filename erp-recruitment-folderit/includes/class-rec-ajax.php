@@ -45,6 +45,12 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_erp-rec-update-todo', 'update_todo_status' );
     $this->action( 'wp_ajax_erp-rec-delete-todo', 'delete_todo' );
 
+    // personal-info and internal-info
+    $this->action( 'wp_ajax_erp-rec-get-personal-info', 'get_personal_info' );
+    $this->action( 'wp_ajax_erp-rec-update-internal-info', 'update_candidate_info' );
+    $this->action( 'wp_ajax_erp-rec-update-personal-info', 'update_candidate_info' );
+    $this->action( 'wp_ajax_erp-rec-update-summary', 'update_summary' );
+
     // interview
     $this->action( 'wp_ajax_erp-rec-create-interview', 'create_interview' );
     $this->action( 'wp_ajax_erp-rec-get-interview', 'get_interview' );
@@ -302,14 +308,15 @@ class Ajax_Handler {
       $user_pic_data = [ ];
       foreach ( $udata as $ud ) {
         $user_pic_data[] = array(
-          'uid'             => $ud['uid'],
-          'applicationd_id' => $ud['application_id'],
-          'comment'         => $ud['comment'],
-          'comment_date'    => $ud['comment_date'],
-          'user_id'         => $ud['user_id'],
-          'display_name'    => $ud['display_name'],
-          'user_email'      => $ud['user_email'],
-          'user_pic'        => get_avatar( $ud['uid'], 64 )
+          'uid'              => $ud['uid'],
+          'applicationd_id'  => $ud['application_id'],
+          'comment'          => $ud['comment'],
+          'comment_date'     => $ud['comment_date'],
+          'user_id'          => $ud['user_id'],
+          'display_name'     => $ud['display_name'],
+          'user_email'       => $ud['user_email'],
+          'user_pic'         => get_avatar( $ud['uid'], 64 ),
+          'user_pic_rounded' => get_avatar($ud['uid'], 100, '', false, ['class' => 'img-rounded img-responsive'])
         );
       }
 
@@ -1106,7 +1113,7 @@ class Ajax_Handler {
       $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
       $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
     }
-    
+
     // TODO: buscar application_id (postulación) en base al campo $to y bulkificar inserción de comms
 
     if ( !isset( $to ) || $to == '' ) {
@@ -1123,7 +1130,7 @@ class Ajax_Handler {
         // TODO: grabar comunicaciones de manera bulkeable
         if(isset($application_id)) {
           $current_user = wp_get_current_user();
-          
+
           $data = array(
             'application_id' => $application_id,
             'user_id'        => $current_user->ID,
@@ -1263,7 +1270,7 @@ class Ajax_Handler {
                                         ON app_todo_relation.assigned_user_id=user.ID
                                         WHERE app_todo_relation.todo_id='%d'";
         $urelationdata       = $wpdb->get_results( $wpdb->prepare( $query_assigned_user, $ud['id'] ), ARRAY_A );
-        
+
         $todo_handler_name = '';
         $todo_handlers_ids = array();
         $isFirst = true;
@@ -1421,6 +1428,204 @@ class Ajax_Handler {
       $this->send_success( $user_data );
     } else {
       $this->send_success( [ ] );
+    }
+  }
+
+  /**
+     * Get personal info
+     *
+     * @since  1.0.6
+     *
+     * @return void
+     */
+  public function get_personal_info() {
+    if ( isset( $_GET['application_id'] ) ) {
+      $application_id = $_GET['application_id'];
+      $applicant_information = erp_rec_get_applicant_information($application_id);
+
+      if ( isset($applicant_information[0]) ) {
+        $applicant_id = $applicant_information[0]['applicant_id'];
+        $jobid = $applicant_information[0]['job_id'];
+
+        $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );
+        $all_personal_fields = erp_rec_get_personal_fields();
+
+        for ($i = 0; $i < count($db_personal_fields); ++$i ) {
+          $field_name = json_decode($db_personal_fields[$i])->field;
+          $db_personal_fields[$i]->value = erp_people_get_meta($applicant_id, $field_name, true);
+
+          if ( $all_personal_fields[$field_name]['internal'] != true ) {
+            if( !empty($all_personal_fields[$field_name]) ) {
+              $db_personal_fields[$i]->label = $all_personal_fields[$field_name]['label'];
+
+              if( isset($all_personal_fields[$field_name]['options']) ) {
+                $db_personal_fields[$i]->value = $all_personal_fields[$field_name]['options'][$value];
+              }
+            } else {
+              $db_personal_fields[$i]->label = $field_name;
+            }
+
+            $db_personal_fields[$i]->value = esc_html( stripslashes( $value ) );
+          }
+        }
+
+        $this->send_success( $db_personal_fields );
+      } else {
+        $this->send_success( [ ] );
+      }      
+    } else {
+      $this->send_success( [ ] );
+    }
+  }
+
+  /**
+     * Update personal or internal info
+     *
+     * @since  1.0.6
+     *
+     * @return void
+     */
+  public function update_candidate_info() {
+    $update_type = isset( $_POST['update_type'] ) ? $_POST['update_type'] : null;
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_update_' . $update_type . '_info_nonce' );
+
+    $application_id = isset( $_POST['application_id'] ) ? $_POST['application_id'] : null;
+    $params      = [];
+
+    parse_str( $_POST['fdata'], $params );
+
+    if ( !isset( $application_id ) ) {
+      $this->send_error( __( 'Application ID not available!', 'wp-erp-rec' ) );
+    } else {
+      $applicant_information = erp_rec_get_applicant_information($application_id);
+      $applicant_id = $applicant_information[0]['applicant_id'];
+      $job_id = $applicant_information[0]['job_id'];
+
+      $db_personal_fields = get_post_meta( $job_id, '_personal_fields' );
+
+      // convert object to array
+      $db_personal_fields_array = [];
+      if ( isset( $db_personal_fields ) ) {
+        foreach ( $db_personal_fields as $dbf ) {
+          $db_personal_fields_array = (array) $dbf;
+        }
+      }
+
+      //default fields
+      $default_fields = array('first_name', 'last_name', 'email');
+      foreach($default_fields as $field_name) {
+        if(!isset($params[$field_name])) {
+          continue;
+        }
+
+        $data = array(
+          $field_name => $params[$field_name]
+        );
+
+        $data_format = array(
+          '%s'
+        );
+
+        $where = array(
+          'id' => $applicant_id
+        );
+
+        $where_format = array(
+          '%d'
+        );
+
+        $wpdb->update( $wpdb->prefix . 'erp_peoples', $data, $where, $data_format, $where_format );
+      }
+
+      foreach($db_personal_fields_array as $db_data) {
+        $db_data = json_decode($db_data);
+        $field_name = $db_data->field;
+
+        if(!isset($params[$field_name])) {
+          continue;
+        }
+
+        $data = array(
+          'erp_people_id' => $applicant_id,
+          'meta_key'      => $field_name,
+          'meta_value'    => $params[$field_name]
+        );
+
+        $data_format = array(
+          '%d',
+          '%s',
+          '%s'
+        );
+
+        $query = "SELECT meta_id FROM {$wpdb->prefix}erp_peoplemeta WHERE erp_people_id={$applicant_id} AND meta_key ='{$field_name}'";
+        $meta_id = $wpdb->get_var( $query );
+
+        if (isset($meta_id) && $meta_id > 0) {
+          $where = array(
+            'meta_id' => $meta_id
+          );
+
+          $where_format = array(
+            '%d'
+          );
+
+          $wpdb->update( $wpdb->prefix . 'erp_peoplemeta', $data, $where, $data_format, $where_format );
+        } else {
+          $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+        }
+      }
+
+      if($update_type == 'internal') {
+        $this->send_success( __( 'Internal info updated successfully', 'wp-erp-rec' ) );
+      } elseif($update_type == 'personal') {
+        $this->send_success( __( 'Personal info updated successfully', 'wp-erp-rec' ) );
+      } else {
+        $this->send_success( __( 'Info updated successfully', 'wp-erp-rec' ) );
+      }
+    }
+  }
+
+  /**
+     * Update application summary
+     *
+     * @since  1.0.6
+     *
+     * @return void
+     */
+  public function update_summary() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_update_summary_nonce' );
+
+    $application_id = isset( $_POST['application_id'] ) ? $_POST['application_id'] : null;
+    $params      = [];
+
+    parse_str( $_POST['fdata'], $params );
+
+    if ( !isset( $application_id ) ) {
+      $this->send_error( __( 'Application ID not available!', 'wp-erp-rec' ) );
+    } else {
+      $data = array(
+        'summary_rating'      => $params['summary_rating'],
+        'summary_comment'     => $params['summary_comment']
+      );
+
+      $data_format = array(
+        '%s',
+        '%s'
+      );
+
+      $where = array(
+        'id' => $application_id
+      );
+
+      $where_format = array(
+        '%d'
+      );          
+
+      $wpdb->update( $wpdb->prefix . 'erp_application', $data, $where, $data_format, $where_format );
+
+      $this->send_success( __( 'Summary updated successfully', 'wp-erp-rec' ) );
     }
   }
 

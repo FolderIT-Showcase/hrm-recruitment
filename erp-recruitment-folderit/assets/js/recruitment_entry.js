@@ -293,6 +293,128 @@
         $(this).siblings('.section-content').toggleClass('toggle-metabox-hide');
       });
 
+      $('.btn-internal-info').click(function () {
+        $('.btn-internal-info').hide();
+        $('.btn-internal-info-cancel').show();
+        $('.btn-internal-info-save').show();
+
+        $('#internal_info_form .metadata').prop('disabled', false);
+        $('#internal_info_form .metadata').removeClass('form-control-noborder');
+      });
+
+      $('.btn-internal-info-cancel').click(function () {
+        $('.btn-internal-info').show();
+        $('.btn-internal-info-cancel').hide();
+        $('.btn-internal-info-save').hide();
+
+        $('#internal_info_form .metadata').prop('disabled', true);
+        $('#internal_info_form .metadata').addClass('form-control-noborder');
+
+        // TODO: restaurar valores originales de campos
+      });
+
+      $('.btn-internal-info-save').click(function () {
+        // Enviar datos a backend y deshabilitar controles
+        var formData = $('#internal_info_form').serialize();
+
+        $('#internal_info_form .metadata').prop('disabled', true);
+        $('#internal_info_form .metadata').addClass('form-control-noborder');
+        $('#section-internal-info button').prop('disabled', true);
+
+        wp.ajax.send('erp-rec-update-internal-info', {
+          data: {
+            update_type: 'internal',
+            fdata: formData,
+            application_id: WeDevs_ERP_Recruitment.getApplicationId(),
+            _wpnonce: $('#_internalinfo_nonce').val()
+          },
+          success: function (res) {
+            alertify.success(res);
+            $('#section-internal-info button').prop('disabled', false);
+            $('#internal_info_form .metadata').prop('disabled', true);
+            $('#internal_info_form .metadata').addClass('form-control-noborder');
+            $('.btn-internal-info').show();
+            $('.btn-internal-info-cancel').hide();
+            $('.btn-internal-info-save').hide();
+          },
+          error: function (error) {
+            alert(error);
+            $('#section-internal-info button').prop('disabled', false);
+            $('#internal_info_form .metadata').prop('disabled', false);
+            $('#internal_info_form .metadata').removeClass('form-control-noborder');
+          }
+        });
+      });
+      
+      $('#internal_info_form input').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      $('.btn-personal-info').click(function () {
+        $('.btn-personal-info').hide();
+        $('.btn-personal-info-cancel').show();
+        $('.btn-personal-info-save').show();
+
+        $('#personal_info_form .metadata').prop('disabled', false);
+        $('#personal_info_form .metadata').removeClass('form-control-noborder');
+      });
+
+      $('.btn-personal-info-cancel').click(function () {
+        $('.btn-personal-info').show();
+        $('.btn-personal-info-cancel').hide();
+        $('.btn-personal-info-save').hide();
+
+        $('#personal_info_form .metadata').prop('disabled', true);
+        $('#personal_info_form .metadata').addClass('form-control-noborder');
+
+        // TODO: restaurar valores originales de campos
+      });
+
+      $('.btn-personal-info-save').click(function () {
+        // Enviar datos a backend y deshabilitar controles
+        var formData = $('#personal_info_form').serialize();
+
+        $('#personal_info_form .metadata').prop('disabled', true);
+        $('#personal_info_form .metadata').addClass('form-control-noborder');
+        $('#section-personal-info button').prop('disabled', true);
+
+        wp.ajax.send('erp-rec-update-personal-info', {
+          data: {
+            update_type: 'personal',
+            fdata: formData,
+            application_id: WeDevs_ERP_Recruitment.getApplicationId(),
+            _wpnonce: $('#_personalinfo_nonce').val()
+          },
+          success: function (res) {
+            alertify.success(res);
+            $('#section-personal-info button').prop('disabled', false);
+            $('#personal_info_form .metadata').prop('disabled', true);
+            $('#personal_info_form .metadata').addClass('form-control-noborder');
+            $('.btn-personal-info').show();
+            $('.btn-personal-info-cancel').hide();
+            $('.btn-personal-info-save').hide();
+          },
+          error: function (error) {
+            alert(error);
+            $('#section-personal-info button').prop('disabled', false);
+            $('#personal_info_form .metadata').prop('disabled', false);
+            $('#personal_info_form .metadata').removeClass('form-control-noborder');
+          }
+        });
+      });
+      
+      $('#personal_info_form input').on('keyup keypress', function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 13) { 
+          e.preventDefault();
+          return false;
+        }
+      });
+
       $('.btn-todo').click(function () {
         $.erpPopupBs({
           title: wpErpRec.todo_popup.title,

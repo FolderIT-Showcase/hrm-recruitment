@@ -36,7 +36,7 @@ if ( isset($applicant_information[0]) ) {
   $application_project_id = $applicant_information[0]['project_id'];
   $default_internal_type_id = erp_rec_get_app_interview_type_default();
 
-  $available_positions = erp_rec_get_available_positions();
+  $available_positions = erp_rec_get_available_positions(true);
   $all_projects = erp_rec_get_available_projects(true);
   $available_projects = erp_rec_get_available_projects();
   $application_project_title = $all_projects[$application_project_id];
@@ -273,18 +273,31 @@ if ( isset($applicant_information[0]) ) {
           <section id="section-personal-info" class="postbox section-personal-info">
             <span class="hndle-toogle-button"></span>
             <div class="section-header">
-              <h2 class="hndle"><span><?php _e('Candidate Profile', 'wp-erp-rec'); ?></span></h2>
+              <h2 class="hndle"><span><?php _e('Personal Information', 'wp-erp-rec'); ?></span></h2>
             </div>
             <div class="section-content toggle-metabox-show full-width">
               <div class="col-lg-12">
-                <dl class="dl-custom dl-horizontal">
-                  <h4><?php _e('Personal Information', 'wp-erp-rec'); ?></h4>
-                  <dt><?php _e('Name', 'wp-erp-rec'); ?></dt>
-                  <dd><span><?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>
-                    <?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?></span></dd>
+                <form id="personal_info_form" method="post" class="form-horizontal">
+                  <div class="form-group">
+                    <label class="control-label col-lg-4 col-sm-12" for="first_name"><?php _e('First Name', 'wp-erp-rec'); ?></label>
+                    <div class="col-lg-8 col-sm-12">
+                      <input disabled class="form-control form-control-noborder metadata" type="text" id="first_name" name="first_name" value="<?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>">
+                    </div>
+                  </div>
 
-                  <dt><?php _e('Email', 'wp-erp-rec'); ?></dt>
-                  <dd><span id="applicant_email_address"><?php echo $email_address; ?></span></dd>
+                  <div class="form-group">
+                    <label class="control-label col-lg-4 col-sm-12" for="last_name"><?php _e('Last Name', 'wp-erp-rec'); ?></label>
+                    <div class="col-lg-8 col-sm-12">
+                      <input disabled class="form-control form-control-noborder metadata" type="text" id="last_name" name="last_name" value="<?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>">
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="control-label col-lg-4 col-sm-12" for="email"><?php _e('Email', 'wp-erp-rec'); ?></label>
+                    <div class="col-lg-8 col-sm-12">
+                      <input disabled class="form-control form-control-noborder metadata" type="text" id="email" name="email" value="<?php echo $email_address; ?>">
+                    </div>
+                  </div>
 
                   <?php
                   $db_personal_fields = get_post_meta( $jobid, '_personal_fields', true );
@@ -298,26 +311,61 @@ if ( isset($applicant_information[0]) ) {
                   <?php if ( $all_personal_fields[$field_name]['internal'] != true ) : ?>
                   <?php
 
+                  $field_type = "text";
+
                   if( !empty($all_personal_fields[$field_name]) ) {
                     $field_label = $all_personal_fields[$field_name]['label'];
+                    $field_type = $all_personal_fields[$field_name]['type'];
 
-                    if( isset($all_personal_fields[$field_name]['options']) ) {
-                      $value = $all_personal_fields[$field_name]['options'][$value];
-                    }
+                    // if( isset($all_personal_fields[$field_name]['options']) ) {
+                    //   $value = $all_personal_fields[$field_name]['options'][$value];
+                    // }
                   } else {
-                    $field_label = $field;
+                    $field_label = $field_name;
                   }
 
                   $value = esc_html( stripslashes( $value ) );
                   ?>
-                  <dt><?php echo $field_label; ?></dt>
-                  <dd><span><?php echo $value; ?></span></dd>
+                  <div class="form-group">
+                    <label class="control-label col-lg-4 col-sm-12" for="<?php echo $field_name; ?>"><?php echo $field_label; ?></label>
+                    <div class="col-lg-8 col-sm-12">
+                      <?php if ( $field_type == 'textarea') : ?>
+                      <textarea disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
+                      <?php elseif ($field_type == 'select') : ?>
+                      <select disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
+                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
+                        <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
+                        <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
+                        <option value="<?php echo $key; ?>" <?php echo ($key == $value)?"selected":""; ?>><?php echo $option; ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                      </select>
+                      <?php else: ?>
+                      <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
+                      <?php endif; ?>
+                    </div>
+                  </div>
 
                   <?php endif; ?>
                   <?php endforeach;?>
-                </dl>
-                <dl class="dl-custom dl-horizontal">
-                  <h4><?php _e('Internal Information', 'wp-erp-rec'); ?></h4>
+                  <?php wp_nonce_field('wp_erp_rec_update_personal_info_nonce', '_personalinfo_nonce'); ?>
+                </form>
+                <button style="margin-left:6px;" class="button button-primary alignright btn-personal-info"><?php _e('Edit', 'wp-erp-rec'); ?></button>
+                <button style="margin-left:6px;display:none;" class="button button-primary alignright btn-personal-info-save"><?php _e('Save', 'wp-erp-rec'); ?></button>
+                <button style="margin-left:6px;display:none;" class="button button-secondary alignright btn-personal-info-cancel"><?php _e('Cancel', 'wp-erp-rec'); ?></button>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+          <section id="section-internal-info" class="postbox section-internal-info">
+            <span class="hndle-toogle-button"></span>
+            <div class="section-header">
+              <h2 class="hndle"><span><?php _e('Internal Information', 'wp-erp-rec'); ?></span></h2>
+            </div>
+            <div class="section-content toggle-metabox-show full-width">
+              <div class="col-lg-12">
+                <form id="internal_info_form" method="post" class="form-horizontal">
                   <?php foreach ( $db_personal_fields as $personal_data ) : ?>
                   <?php
                   $field_name = json_decode($personal_data)->field;
@@ -326,11 +374,14 @@ if ( isset($applicant_information[0]) ) {
                   <?php if ( $all_personal_fields[$field_name]['internal'] == true ) : ?>
                   <?php
 
+                  $field_type = "text";
+
                   if( !empty($all_personal_fields[$field_name]) ) {
                     $field_label = $all_personal_fields[$field_name]['label'];
+                    $field_type = $all_personal_fields[$field_name]['type'];
 
                     if( isset($all_personal_fields[$field_name]['options']) ) {
-                      $value = $all_personal_fields[$field_name]['options'][$value];
+                      // $value = $all_personal_fields[$field_name]['options'][$value];
                     }
 
                     if( isset($all_personal_fields[$field_name]['href']) ) {
@@ -351,22 +402,44 @@ if ( isset($applicant_information[0]) ) {
                           $url_target = 'target="'.$all_personal_fields[$field_name]['href']['target'].'"';
                         }
 
-                        $value = '<a href="'.$url.'" '.$url_target.'>'.$value.'</a>';
+                        // $value = '<a href="'.$url.'" '.$url_target.'>'.$value.'</a>';
                       }
                     } else {
                       $value = esc_html( stripslashes( $value ) );
                     }
                   } else {
-                    $field_label = $field;
+                    $field_label = $field_name;
                     $value = esc_html( stripslashes( $value ) );
                   }
                   ?>
-                  <dt><?php echo $field_label; ?></dt>
-                  <dd><span><?php echo $value; ?></span></dd>
+
+                  <div class="form-group">
+                    <label class="control-label col-lg-4 col-sm-12" for="<?php echo $field_name; ?>"><?php echo $field_label; ?></label>
+                    <div class="col-lg-8 col-sm-12">
+                      <?php if ( $field_type == 'textarea') : ?>
+                      <textarea disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
+                      <?php elseif ($field_type == 'select') : ?>
+                      <select disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
+                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
+                        <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
+                        <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
+                        <option value="<?php echo $key; ?>" <?php echo ($key == $value)?"selected":""; ?>><?php echo $option; ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                      </select>
+                      <?php else: ?>
+                      <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
+                      <?php endif; ?>
+                    </div>
+                  </div>
 
                   <?php endif; ?>
                   <?php endforeach;?>
-                </dl>
+                  <?php wp_nonce_field('wp_erp_rec_update_internal_info_nonce', '_internalinfo_nonce'); ?>
+                </form>
+                <button style="margin-left:6px;" class="button button-primary alignright btn-internal-info"><?php _e('Edit', 'wp-erp-rec'); ?></button>
+                <button style="margin-left:6px;display:none;" class="button button-primary alignright btn-internal-info-save"><?php _e('Save', 'wp-erp-rec'); ?></button>
+                <button style="margin-left:6px;display:none;" class="button button-secondary alignright btn-internal-info-cancel"><?php _e('Cancel', 'wp-erp-rec'); ?></button>
               </div>
             </div>
           </section>
@@ -529,8 +602,7 @@ if ( isset($applicant_information[0]) ) {
                             <article v-for="cmnt in comments">
                               <div class="row">
                                 <div class="col-xs-2 col-md-2">
-                                  <!--                                  {{{ cmnt.user_pic }}}-->
-                                  <?php echo get_avatar("{{ cmnt.ID }}", 100, '', false, ['class' => 'img-rounded img-responsive']); ?>
+                                  {{{ cmnt.user_pic_rounded }}}
                                 </div>
                                 <div class="col-xs-10 col-md-10" style="padding-left:0px;">
                                   <h6 style="margin-top:4px;"><b class="fn">{{ cmnt.display_name }}</b> {{ cmnt.comment_date }}</h6>
