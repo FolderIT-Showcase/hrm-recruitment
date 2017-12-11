@@ -226,6 +226,22 @@ class WeDevs_ERP_Recruitment_Installer {
                  `updated_at` timestamp on update CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                  PRIMARY KEY (`id`)
              ) $collate;",
+      
+      "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_terms` (
+                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                 `name` varchar(255) DEFAULT NULL,
+                 `slug` varchar(255) DEFAULT NULL,
+                 PRIMARY KEY (`id`)
+             ) $collate;",
+      
+      "CREATE TABLE IF NOT EXISTS `{$wpdb->prefix}erp_application_terms_relation` (
+                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                 `application_id` int(11) unsigned DEFAULT NULL,
+                 `term_id` int(11) unsigned DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 KEY `application_id` (`application_id`),
+                 KEY `term_id` (`term_id`)
+             ) $collate;",
 
       "INSERT INTO `{$wpdb->prefix}erp_application_stage` (`id`, `title`, `created_by`, `created_at`)
              VALUES (NULL, 'Screening', $current_user_id, NOW()),
