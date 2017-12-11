@@ -111,7 +111,7 @@ dl.dl-custom h5 {
   position: relative;
   left: -12px;
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 12px;
   background: rgba(0,0,0,0.15);
   border-radius: 3px 0 0 3px;
 }
@@ -172,6 +172,30 @@ dl.dl-custom h5 {
   float: left;
   width: 90%;
   border: 3px solid #ccc;
+}
+
+.radio label {
+  padding-left: 0px !important;
+}
+
+.radio label span {
+  padding-left: 20px;
+}
+
+@media screen and (max-width: 782px) {
+  .radio label span {
+    padding-left: 30px;
+  }  
+}
+
+.form-control {
+  margin-left: -1px !important;
+}
+
+.form-control-noborder {
+  border: 0 !important;
+  background: rgba(0,0,0,0.033) !important;
+  color: inherit !important;
 }
 
 .scrollable {
@@ -515,6 +539,29 @@ span.value-pre {
   border-bottom: 1px solid #E3E3E3;
   padding-bottom: 5px;
   padding-top: 5px;
+}
+
+@media screen and (max-width: 782px) {
+  .search-box {
+    position: relative !important;
+    float: left !important;
+  }
+
+  .widefat thead td input,
+  .widefat tfoot td input,
+  .widefat th input {
+    margin: 0 0 8px 4px !important;
+  }
+}
+
+.table-scroll {
+  white-space: nowrap;
+  overflow: auto;
+  width: 100%;
+}
+
+.table-scroll table {
+  table-layout: auto !important;
 }
 
 .page-title-action {
@@ -1277,17 +1324,47 @@ textarea#feedback_comment {
   width: 90px;
 }
 
-.erp-candidate-detail .single-information-container table.wp-list-table th#avg_rating {
-  width: 75px;
+@media screen and (max-width: 782px) {
+  .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before {
+    width: auto !important;
+  }
+  .wp-list-table td.column-interview_rrhh,
+  .wp-list-table td.column-interview_tech,
+  .wp-list-table td.column-interview_english {
+    font-size: 1em !important;
+  }
+  .wp-list-table tr:not(.inline-edit-row):not(.no-items) td.column-primary~td:not(.check-column) {
+    padding: 3px 8px 3px 30% !important;
+    text-align: start !important;
+  }
+}
+
+.erp-candidate-detail .single-information-container table.wp-list-table th#interview_rrhh,
+.erp-candidate-detail .single-information-container table.wp-list-table th#interview_tech,
+.erp-candidate-detail .single-information-container table.wp-list-table th#interview_english {
+  text-align: center;
+}
+
+.wp-list-table td.column-interview_rrhh,
+.wp-list-table td.column-interview_tech,
+.wp-list-table td.column-interview_english {
+  padding: 8px 10px !important;
+  text-align: center;
+}
+
+.erp-candidate-detail .single-information-container table.wp-list-table th#avg_rating,
+.erp-candidate-detail .single-information-container table.wp-list-table th#summary_rating {
+  width: 80px;
 }
 
 .erp-candidate-detail .single-information-container {
   float: left;
   margin-left: 1%;
   margin-top: 10px;
-  /*  width: 84%;*/
+  width: 100%;
   position: relative;
   padding-bottom: 15px;
+  padding-right: 1%;
 }
 
 .erp-candidate-detail .single-information-container #candidate-overview-zone {
