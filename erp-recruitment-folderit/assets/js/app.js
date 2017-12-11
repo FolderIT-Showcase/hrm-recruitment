@@ -200,10 +200,13 @@ if (jQuery('#comment_form_wrapper').length > 0) {
           if (response.success === true) {
             jQuery.each(response.data, function (k, v) {
               commentviewmodel.comments.push({
+                uid: v.uid,
+                user_email: v.user_email,
                 display_name: v.display_name,
                 comment_date: v.comment_date,
                 comment: v.comment,
-                user_pic: v.user_pic
+                user_pic: v.user_pic,
+                user_pic_rounded: v.user_pic_rounded
               });
             });
             jQuery('#section-comment .spinner').hide();
