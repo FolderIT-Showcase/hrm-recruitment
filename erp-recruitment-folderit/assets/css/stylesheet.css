@@ -1354,7 +1354,7 @@ textarea#feedback_comment {
 
 .erp-candidate-detail .single-information-container table.wp-list-table th#avg_rating,
 .erp-candidate-detail .single-information-container table.wp-list-table th#summary_rating {
-  width: 80px;
+/*  width: 80px;*/
 }
 
 .erp-candidate-detail .single-information-container {

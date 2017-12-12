@@ -119,7 +119,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'cb'                => '<input type="checkbox" />',
       'full_name'         => __('Name', 'wp-erp-rec'),
       'apply_date'        => __('Date', 'wp-erp-rec'),
-      'avg_rating'        => __('Rating', 'wp-erp-rec'),
+//      'avg_rating'        => __('Rating', 'wp-erp-rec'),
       'summary_rating'    => __('Summary Rating Column', 'wp-erp-rec'),
       'remote'            => __('Remote', 'wp-erp-rec'),
       'job_title'         => __('Applied Job', 'wp-erp-rec'),
@@ -245,7 +245,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     $sortable_columns = array(
       'apply_date'     => array( 'apply_date', true ),
       'full_name'      => array( 'full_name', true ),
-      'avg_rating'     => array( 'avg_rating', true ),
+//      'avg_rating'     => array( 'avg_rating', true ),
       'summary_rating' => array( 'summary_rating', true ),
       'remote'         => array( 'remote', true ),
       'project'        => array( 'project_title', true ),
