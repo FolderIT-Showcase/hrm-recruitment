@@ -1542,8 +1542,17 @@ class Ajax_Handler {
         $db_data = json_decode($db_data);
         $field_name = $db_data->field;
 
-        if(!isset($params[$field_name])) {
-          continue;
+        // Si es de tipo checkbox, setear como 0 por default
+        if($db_data->type == 'checkbox') {
+          if(!isset($params[$field_name])) {
+            $params[$field_name] = "0";
+          } else {
+            $params[$field_name] = "1";
+          }
+        } else {
+          if(!isset($params[$field_name])) {
+            continue;
+          }
         }
 
         $data = array(

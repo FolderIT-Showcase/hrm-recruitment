@@ -248,6 +248,27 @@ function erp_rec_get_personal_fields() {
       'required'    => false,
       'help'        => __( 'Let us know a little bit about yourself', 'wp-erp-rec' )
     ),
+    'remote'       => array(
+      'label'       => __( 'Remote', 'wp-erp-rec' ),
+      'name'        => 'remote',
+      'type'        => 'checkbox',
+      'placeholder' => '',
+      'required'    => false
+    ),
+    'remote_location'       => array(
+      'label'       => __( 'Remote Location', 'wp-erp-rec' ),
+      'name'        => 'remote_location',
+      'type'        => 'text',
+      'placeholder' => '',
+      'required'    => false
+    ),
+    'recommended_by'       => array(
+      'label'       => __( 'Recommended By', 'wp-erp-rec' ),
+      'name'        => 'recommended_by',
+      'type'        => 'text',
+      'placeholder' => '',
+      'required'    => false
+    ),
     'interest'         => array(
       'label'       => __( 'Interest', 'wp-erp-rec' ),
       'name'        => 'interest',
@@ -499,7 +520,10 @@ function erp_rec_get_applicants_information( $args ) {
     CONCAT( first_name, ' ', last_name ) as full_name,
     ( select meta_value
         FROM {$wpdb->prefix}erp_peoplemeta
-        WHERE erp_people_id = peopleid AND meta_key = 'status' ) as status
+        WHERE erp_people_id = peopleid AND meta_key = 'status' ) as status,
+    ( select meta_value
+        FROM {$wpdb->prefix}erp_peoplemeta
+        WHERE erp_people_id = peopleid AND meta_key = 'remote' ) as remote
     FROM {$wpdb->prefix}erp_application as application
     LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
     ON application.stage=base_stage.id

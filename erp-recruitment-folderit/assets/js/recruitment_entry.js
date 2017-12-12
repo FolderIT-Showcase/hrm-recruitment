@@ -397,6 +397,8 @@
             $('.btn-personal-info').show();
             $('.btn-personal-info-cancel').hide();
             $('.btn-personal-info-save').hide();
+            
+            $('#remote_location_span').text($('#remote_location').val());
           },
           error: function (error) {
             alert(error);

@@ -121,6 +121,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'apply_date'        => __('Date', 'wp-erp-rec'),
       'avg_rating'        => __('Rating', 'wp-erp-rec'),
       'summary_rating'    => __('Summary Rating Column', 'wp-erp-rec'),
+      'remote'            => __('Remote', 'wp-erp-rec'),
       'job_title'         => __('Applied Job', 'wp-erp-rec'),
       'stage'             => __('Stage', 'wp-erp-rec'),
       'interview_rrhh'    => __('RRHH Interview', 'wp-erp-rec'),
@@ -206,6 +207,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return number_format($item['avg_rating'], 2, '.', ',');
       case 'summary_rating':
         return number_format($item['summary_rating'], 1, '.', ',');
+      case 'remote':
+        return '<input type="checkbox" ' . ($item['remote']=="1"?"checked":"") .' disabled></input>';
       case 'job_title':
         return $item['post_title'];
       case 'stage':
@@ -244,6 +247,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'full_name'      => array( 'full_name', true ),
       'avg_rating'     => array( 'avg_rating', true ),
       'summary_rating' => array( 'summary_rating', true ),
+      'remote'         => array( 'remote', true ),
       'project'        => array( 'project_title', true ),
       'stage'          => array( 'title', true ),
       'job_title'      => array( 'post_title', true ),
