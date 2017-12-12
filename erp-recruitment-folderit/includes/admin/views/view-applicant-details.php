@@ -41,6 +41,8 @@ if ( isset($applicant_information[0]) ) {
   $available_projects = erp_rec_get_available_projects();
   $application_project_title = $all_projects[$application_project_id];
   $email_address = isset($applicant_information[0]['email']) ? $applicant_information[0]['email'] : '';
+  
+  $remote_location = erp_rec_get_applicant_single_information($applicant_id, 'remote_location');
 }
 ?>
 <nav class="navbar navbar-default navbar-static-top" style="margin-left:-20px;padding-left:10px;margin-bottom:-10px;z-index:99;">
@@ -166,6 +168,12 @@ if ( isset($applicant_information[0]) ) {
                         <p id="project"><span class="fa fa-users one" style="width:30px;"></span>
                           <?php _e('Project: ', 'wp-erp-rec'); ?>
                           <span id="change_project_title"><?php echo $application_project_title;?></span>
+                        </p>
+                      </li>
+                      <li>
+                        <p><span class="fa fa-globe one" style="width:30px;"></span>
+                          <?php _e('Remote Location: ', 'wp-erp-rec'); ?>
+                          <span id="remote_location_span"><?php echo $remote_location; ?></span>
                         </p>
                       </li>
                     </ul>
@@ -340,6 +348,8 @@ if ( isset($applicant_information[0]) ) {
                         <?php endforeach; ?>
                         <?php endif; ?>
                       </select>
+                      <?php elseif ($field_type == 'checkbox') : ?>
+                      <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                       <?php else: ?>
                       <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
                       <?php endif; ?>
@@ -427,6 +437,8 @@ if ( isset($applicant_information[0]) ) {
                         <?php endforeach; ?>
                         <?php endif; ?>
                       </select>
+                      <?php elseif ($field_type == 'checkbox') : ?>
+                      <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                       <?php else: ?>
                       <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
                       <?php endif; ?>
