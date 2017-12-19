@@ -125,6 +125,7 @@ function erp_rec_get_default_fields() {
 function erp_rec_get_personal_fields() {
 
   $country = \WeDevs\ERP\Countries::instance();
+  $terms = erp_rec_get_terms();
 
   $personal_fields = array(
     'english_level'   => array(
@@ -296,7 +297,8 @@ function erp_rec_get_personal_fields() {
     'skills'         => array(
       'label'       => __( 'Skills', 'wp-erp-rec' ),
       'name'        => 'skills',
-      'type'        => 'text',
+      'type'        => 'select2',
+      'options'     => $terms,
       'placeholder' => '',
       'required'    => false,
       'internal'    => true
@@ -423,6 +425,32 @@ function erp_rec_get_available_projects( $all = false ) {
   }
 
   return $projects;
+}
+
+/*
+ * get terms (tags)
+ * return array
+ */
+function erp_rec_get_terms( ) {
+  $terms = array();
+  
+  global $wpdb;
+
+  $query = "SELECT term.id, term.name, term.slug
+            FROM {$wpdb->prefix}erp_application_terms as term
+            ORDER BY term.name";
+
+  if ($all != true) {
+    $query .= "";
+  }
+
+  $rows = $wpdb->get_results( $query, ARRAY_A );
+  
+  foreach ( $rows as $row ) {
+    $terms[$row['slug']] = $row['name'];
+  }
+
+  return $terms;
 }
 
 /*

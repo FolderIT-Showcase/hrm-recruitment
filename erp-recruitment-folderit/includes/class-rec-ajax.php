@@ -1549,6 +1549,43 @@ class Ajax_Handler {
           } else {
             $params[$field_name] = "1";
           }
+        } else if ($db_data->type == 'select2') {
+          $values = '';
+          $isFirst = true;
+          
+          $params[$field_name] = array_unique($params[$field_name]);
+
+          foreach ( $params[$field_name] as $value ) {
+            if (!$isFirst) {
+              $values .= ', ';
+            }
+            $values .= $value;
+            $isFirst = false;
+
+            // Si son terms faltantes, ingresar a la DB
+            // TODO: de momento harcodeado a skills, parametrizar en cada field
+            if($field_name == 'skills') {
+              $query = "SELECT id FROM {$wpdb->prefix}erp_application_terms WHERE slug='{$value}'";
+              $term_id = $wpdb->get_var( $query );
+
+              $data = array(
+//                'name' => ucwords(str_replace("-", " ", $value)),
+                'name' => str_replace("-", " ", $value),
+                'slug' => $value
+              );
+
+              $data_format = array(
+                '%s',
+                '%s'
+              );
+
+              if (!isset($term_id) || $term_id <= 0) {
+                $wpdb->insert( $wpdb->prefix . 'erp_application_terms', $data, $data_format );
+              }
+            }
+          }
+
+          $params[$field_name] = $values;
         } else {
           if(!isset($params[$field_name])) {
             continue;
@@ -1581,7 +1618,7 @@ class Ajax_Handler {
 
           $wpdb->update( $wpdb->prefix . 'erp_peoplemeta', $data, $where, $data_format, $where_format );
         } else {
-          $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $format );
+          $wpdb->insert( $wpdb->prefix . 'erp_peoplemeta', $data, $data_format );
         }
       }
 

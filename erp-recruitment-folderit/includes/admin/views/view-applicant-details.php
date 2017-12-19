@@ -41,7 +41,7 @@ if ( isset($applicant_information[0]) ) {
   $available_projects = erp_rec_get_available_projects();
   $application_project_title = $all_projects[$application_project_id];
   $email_address = isset($applicant_information[0]['email']) ? $applicant_information[0]['email'] : '';
-  
+
   $remote_location = erp_rec_get_applicant_single_information($applicant_id, 'remote_location');
 }
 ?>
@@ -348,6 +348,51 @@ if ( isset($applicant_information[0]) ) {
                         <?php endforeach; ?>
                         <?php endif; ?>
                       </select>
+                      <?php elseif ($field_type == 'select2') : ?>
+                      <select disabled class="form-control select_multiple_selection form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>[]" multiple>
+                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
+                        <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
+                        <?php $options = array_map('trim', explode(',', $value)); ?>
+                        <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
+                        <option value="<?php echo $key; ?>" <?php echo (in_array($key, $options))?"selected":""; ?>><?php echo $option; ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                      </select>
+                      <script>
+                        $(document).ready(function($) {
+                          $('#personal_info_form #<?php echo $field_name; ?>').select2({
+                            tags: true,
+                            closeOnSelect: false,
+                            tokenSeparators: [','],
+                            createTag: function (params) {
+                              var term = $.trim(params.term);
+                              if (term === '') {
+                                return null;
+                              }
+
+                              return {
+                                id: term.toLowerCase().replace(/ /g,"-"),
+                                text: term,
+                                newTag: true
+                              }
+                            }
+                          });
+                          $('#personal_info_form #<?php echo $field_name; ?>').on("select2:select", function (evt) {
+                            var element = evt.params.data.element;
+                            var $element = $(element);
+
+                            $element.detach();
+                            $(this).append($element);
+                            $(this).trigger("change");
+                          });
+                          $('#personal_info_form #<?php echo $field_name; ?>').on('change', function(e) {
+                            var element = $('.select2-search--inline'); 
+                            if (element != undefined && element.children()[0] != undefined) {
+                              element.children()[0].value = '';
+                            }    
+                          });
+                        });
+                      </script>
                       <?php elseif ($field_type == 'checkbox') : ?>
                       <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                       <?php else: ?>
@@ -437,6 +482,51 @@ if ( isset($applicant_information[0]) ) {
                         <?php endforeach; ?>
                         <?php endif; ?>
                       </select>
+                      <?php elseif ($field_type == 'select2') : ?>
+                      <select disabled class="form-control select_multiple_selection form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>[]" multiple>
+                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
+                        <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
+                        <?php $options = array_map('trim', explode(',', $value)); ?>
+                        <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
+                        <option value="<?php echo $key; ?>" <?php echo (in_array($key, $options))?"selected":""; ?>><?php echo $option; ?></option>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
+                      </select>
+                      <script>
+                        $(document).ready(function($) {
+                          $('#internal_info_form #<?php echo $field_name; ?>').select2({
+                            tags: true,
+                            closeOnSelect: false,
+                            tokenSeparators: [','],
+                            createTag: function (params) {
+                              var term = $.trim(params.term);
+                              if (term === '') {
+                                return null;
+                              }
+
+                              return {
+                                id: term.toLowerCase().replace(/ /g,"-"),
+                                text: term,
+                                newTag: true
+                              }
+                            }
+                          });                          
+                          $('#internal_info_form #<?php echo $field_name; ?>').on("select2:select", function (evt) {
+                            var element = evt.params.data.element;
+                            var $element = $(element);
+
+                            $element.detach();
+                            $(this).append($element);
+                            $(this).trigger("change");
+                          });
+                          $('#internal_info_form #<?php echo $field_name; ?>').on('change', function(e) {
+                            var element = $('.select2-search--inline'); 
+                            if (element != undefined && element.children()[0] != undefined) {
+                              element.children()[0].value = '';
+                            }    
+                          });
+                        });
+                      </script>
                       <?php elseif ($field_type == 'checkbox') : ?>
                       <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                       <?php else: ?>

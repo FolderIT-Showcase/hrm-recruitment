@@ -345,7 +345,7 @@
           }
         });
       });
-      
+
       $('#internal_info_form input').on('keyup keypress', function(e) {
         var keyCode = e.keyCode || e.which;
         if (keyCode === 13) { 
@@ -397,7 +397,7 @@
             $('.btn-personal-info').show();
             $('.btn-personal-info-cancel').hide();
             $('.btn-personal-info-save').hide();
-            
+
             $('#remote_location_span').text($('#remote_location').val());
           },
           error: function (error) {
@@ -408,7 +408,7 @@
           }
         });
       });
-      
+
       $('#personal_info_form input').on('keyup keypress', function(e) {
         var keyCode = e.keyCode || e.which;
         if (keyCode === 13) { 
