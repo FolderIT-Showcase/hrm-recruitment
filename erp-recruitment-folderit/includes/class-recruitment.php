@@ -351,8 +351,6 @@ class Recruitment {
     $fields             = erp_rec_get_personal_fields();
     $db_personal_fields = get_post_meta( $post->ID, '_personal_fields', true );
 
-    // var_dump( $fields, $db_personal_fields );
-
     // check has new extra field exist or not
     $extra_fields = get_option( 'erp-employee-fields' );
 

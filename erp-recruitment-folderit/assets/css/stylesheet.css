@@ -2560,3 +2560,68 @@ section.url-wrap:after {
 .btn-arrow-left:not(.btn-individual):after { /* hide arrow tails background */
   background-color: white;
 }
+
+.btn-toggle {
+  color: #333;
+  background-color: #fff;
+  border-color: #8c8c8c;
+}
+
+.btn-toggle:focus,
+.btn-toggle.focus {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #8c8c8c;
+}
+
+.btn-toggle:hover {
+  color: #333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+
+.btn-toggle:active,
+.btn-toggle.active,
+.open > .dropdown-toggle.btn-toggle {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.btn-toggle:active:hover,
+.btn-toggle.active:hover,
+.open > .dropdown-toggle.btn-toggle:hover,
+.btn-toggle:active:focus,
+.btn-toggle.active:focus,
+.open > .dropdown-toggle.btn-toggle:focus,
+.btn-toggle:active.focus,
+.btn-toggle.active.focus,
+.open > .dropdown-toggle.btn-toggle.focus {
+  color: #fff;
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.btn-toggle:active,
+.btn-toggle.active,
+.open > .dropdown-toggle.btn-toggle {
+  background-image: none;
+}
+
+.btn-toggle.disabled:hover,
+.btn-toggle[disabled]:hover,
+fieldset[disabled] .btn-toggle:hover,
+.btn-toggle.disabled:focus,
+.btn-toggle[disabled]:focus,
+fieldset[disabled] .btn-toggle:focus,
+.btn-toggle.disabled.focus,
+.btn-toggle[disabled].focus,
+fieldset[disabled] .btn-toggle.focus {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.btn-toggle .badge {
+  color: #337ab7;
+  background-color: #fff;
+}

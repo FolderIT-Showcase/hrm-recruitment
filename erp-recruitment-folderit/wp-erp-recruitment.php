@@ -225,7 +225,7 @@ class WeDevs_ERP_Recruitment {
     /**
          * All styles goes here
          */
-    wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
+//    wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
     wp_enqueue_style( 'erp-recruitment-barrating-star-style', WPERP_REC_ASSETS . '/css/fontawesome-stars.css' );
     wp_enqueue_style( 'erp-recruitment-extra-fields-style', WPERP_REC_ASSETS . '/css/extra-fields-style.css' );
     wp_enqueue_style( 'alertify-core-style', WPERP_REC_ASSETS . '/css/alertify.core.css' );
@@ -572,6 +572,7 @@ class WeDevs_ERP_Recruitment {
       case 'recruitment_page_jobseeker_list':
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
+        wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
       case 'recruitment_page_applicant_detail':
         erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );
@@ -582,6 +583,7 @@ class WeDevs_ERP_Recruitment {
 
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
+        wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
         break;
       case 'job-openings_page_todo-calendar':

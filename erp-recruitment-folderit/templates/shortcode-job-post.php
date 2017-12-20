@@ -72,8 +72,6 @@ $permanent_job     = get_post_meta( $job_id, '_permanent_job', true);
         <fieldset class="recruitment-personal-info">
           <h3 class="job-fieldset-title"><?php _e( 'Please enter your personal information', 'wp-erp-rec'); ?></h3>
 
-          <?php // var_dump( $default_fields ); ?>
-
           <?php foreach ($default_fields as $key => $value) : ?>
           <div class="erp-rec-form-field rec-clearfix">
 
