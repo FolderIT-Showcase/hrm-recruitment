@@ -1286,3 +1286,10 @@ function erp_rec_opening_admin_progressbar( $selected ) {
 function erp_rec_include_popup_markup() {
   include_once WPERP_REC_VIEWS . '/erp-modal-bs.php';
 }
+
+function erp_rec_sanitize_string($dirty_text) {
+  $not_allowed= array (" ", ".", "á","é","í","ó","ú","Á","É","Í","Ó","Ú","ñ","À","Ã","Ì","Ò","Ù","Ã™","Ã ","Ã¨","Ã¬","Ã²","Ã¹","ç","Ç","Ã¢","ê","Ã®","Ã´","Ã»","Ã‚","ÃŠ","ÃŽ","Ã”","Ã›","ü","Ã¶","Ã–","Ã¯","Ã¤","«","Ò","Ã","Ã„","Ã‹");
+  $allowed= array ("_", "_", "a","e","i","o","u","A","E","I","O","U","n","N","A","E","I","O","U","a","e","i","o","u","c","C","a","e","i","o","u","A","E","I","O","U","u","o","O","i","a","e","U","I","A","E");
+  $clean_text = strtolower(str_replace($not_allowed, $allowed, $dirty_text));
+  return $clean_text;
+}

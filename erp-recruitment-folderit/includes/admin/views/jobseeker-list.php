@@ -103,14 +103,16 @@
                         <input type="submit" class="button" href="#" value="<?php _e('Filter Terms', 'wp-erp-rec'); ?>">
                       </form>
                     </div>
-                    <input type="hidden" name="page" value="jobseeker_list">
-                    <?php
-                    $customer_table = new \WeDevs\ERP\ERP_Recruitment\Jobseeker_List_Table();
-                    $customer_table->prepare_items();
-                    $customer_table->search_box(__('Search', 'wp-erp-rec'), 'erp-recruitment-search');
-                    $customer_table->views();
-                    $customer_table->display();
-                    ?>
+                    <form method="post">
+                      <input type="hidden" name="page" value="jobseeker_list">
+                      <?php
+                      $customer_table = new \WeDevs\ERP\ERP_Recruitment\Jobseeker_List_Table();
+                      $customer_table->prepare_items();
+                      $customer_table->search_box(__('Search', 'wp-erp-rec'), 'erp-recruitment-search');
+                      $customer_table->views();
+                      $customer_table->display();
+                      ?>
+                    </form>
                   </div>
                 </div>
               </div>
