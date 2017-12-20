@@ -238,6 +238,7 @@ class WeDevs_ERP_Recruitment_Installer {
                  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                  `application_id` int(11) unsigned DEFAULT NULL,
                  `term_id` int(11) unsigned DEFAULT NULL,
+                 `meta_key` varchar(127) DEFAULT NULL,
                  PRIMARY KEY (`id`),
                  KEY `application_id` (`application_id`),
                  KEY `term_id` (`term_id`)

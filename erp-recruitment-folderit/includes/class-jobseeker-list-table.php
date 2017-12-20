@@ -12,7 +12,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     parent::__construct(array(
       'singular' => 'jobseeker',
       'plural'   => 'jobseekers',
-      'ajax'     => false
+      'ajax'     => true
     ));
   }
 
@@ -119,9 +119,10 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'cb'                => '<input type="checkbox" />',
       'full_name'         => __('Name', 'wp-erp-rec'),
       'apply_date'        => __('Date', 'wp-erp-rec'),
-//      'avg_rating'        => __('Rating', 'wp-erp-rec'),
+      //      'avg_rating'        => __('Rating', 'wp-erp-rec'),
       'summary_rating'    => __('Summary Rating Column', 'wp-erp-rec'),
       'remote'            => __('Remote', 'wp-erp-rec'),
+      'skills'            => __('Skills', 'wp-erp-rec'),
       'job_title'         => __('Applied Job', 'wp-erp-rec'),
       'stage'             => __('Stage', 'wp-erp-rec'),
       'interview_rrhh'    => __('RRHH Interview', 'wp-erp-rec'),
@@ -159,6 +160,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['applicationid'] ), ARRAY_A );
 
     $status = erp_rec_get_hiring_status();
+    $terms = erp_rec_get_terms();
 
     $projects = erp_rec_get_available_projects(true);
 
@@ -209,6 +211,27 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return number_format($item['summary_rating'], 1, '.', ',');
       case 'remote':
         return '<input type="checkbox" ' . ($item['remote']=="1"?"checked":"") .' disabled></input>';
+      case 'skills':
+        if(!empty($item['skills'])) {
+          $terms_names = [];
+          $terms_cloud = '';
+          $terms_cloud .= '<span class="select2 select2-container select2-container--default select2-container--disabled">';
+          $terms_cloud .= '<span class="selection">';
+          $terms_cloud .= '<span class="select2-selection select2-selection--multiple" style="background-color:transparent;border-width:0px;">';
+          $terms_cloud .= '<ul class="select2-selection__rendered" style="padding:0px;">';
+          $skills = json_decode(str_replace('&quot;', '"', $item['skills']), true)['terms'];
+          foreach($skills as $skill) {
+            $terms_cloud .= '<li class="select2-selection__choice" style="margin:2px;border-color:#337ab7;color:#337ab7;background-color:#fff;">'.$terms[$skill].'</li>';
+            //            array_push($terms_names, $terms[$skill]);
+          }
+          //          return implode(", ", $terms_names);
+          $terms_cloud .= '</ul>';
+          $terms_cloud .= '</span>';
+          $terms_cloud .= '</span>';
+          $terms_cloud .= '</span>';
+          return $terms_cloud;
+        }
+        break;
       case 'job_title':
         return $item['post_title'];
       case 'stage':
@@ -219,9 +242,6 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return '<input type="checkbox" ' . $interview_tech . ' style="' . $interview_tech_style. '" disabled></input>';
       case 'interview_english':
         return '<input type="checkbox" ' . $interview_english . ' style="' . $interview_english_style. '" disabled></input>';
-        //      case 'action':
-        //        $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
-        //        return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a><div>%s</div>'), $jobseeker_preview_url, $jobseeker_email_url, erp_people_get_meta($item['id'], 'ip', true ) );
       case 'action':
         $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
         return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a>'), $jobseeker_preview_url, $jobseeker_email_url);
@@ -245,7 +265,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
     $sortable_columns = array(
       'apply_date'     => array( 'apply_date', true ),
       'full_name'      => array( 'full_name', true ),
-//      'avg_rating'     => array( 'avg_rating', true ),
+      //      'avg_rating'     => array( 'avg_rating', true ),
       'summary_rating' => array( 'summary_rating', true ),
       'remote'         => array( 'remote', true ),
       'project'        => array( 'project_title', true ),
@@ -400,6 +420,17 @@ class Jobseeker_List_Table extends \WP_List_Table {
 
     if ( isset($_REQUEST['s']) ) {
       $args['search_key'] = $_REQUEST['s'];
+    }
+
+    $skills = [];
+    foreach($_GET as $key => $value) {
+      if (strpos($key, 'skills_') === 0) {
+        array_push($skills, substr($key, strlen('skills_')));
+      }
+    }
+
+    if ( !empty($skills) ) {
+      $args['skills'] = $skills;
     }
 
     $this->items = erp_rec_get_applicants_information($args);

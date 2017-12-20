@@ -301,7 +301,8 @@ function erp_rec_get_personal_fields() {
       'options'     => $terms,
       'placeholder' => '',
       'required'    => false,
-      'internal'    => true
+      'internal'    => true,
+      'terms'       => true
     ),
     'linkedin'         => array(
       'label'       => __( 'LinkedIn', 'wp-erp-rec' ),
@@ -433,7 +434,7 @@ function erp_rec_get_available_projects( $all = false ) {
  */
 function erp_rec_get_terms( ) {
   $terms = array();
-  
+
   global $wpdb;
 
   $query = "SELECT term.id, term.name, term.slug
@@ -445,7 +446,7 @@ function erp_rec_get_terms( ) {
   }
 
   $rows = $wpdb->get_results( $query, ARRAY_A );
-  
+
   foreach ( $rows as $row ) {
     $terms[$row['slug']] = $row['name'];
   }
@@ -486,11 +487,17 @@ function erp_rec_total_applicant_counter( $args ) {
   $filter_stage       = isset( $args['stage'] ) ? $args['stage'] : 0;
   $filter_added_by_me = isset( $args['added_by_me'] ) ? $args['added_by_me'] : 0;
 
-  $query = "SELECT COUNT(app.applicant_id)
-              FROM {$wpdb->prefix}erp_application as app";
+  $query = "SELECT count(DISTINCT app.applicant_id)
+          FROM {$wpdb->prefix}erp_application as app";
 
   if ( isset( $args['status'] ) ) {
     $query .= " LEFT JOIN {$wpdb->prefix}erp_peoplemeta as peoplemeta ON app.applicant_id = peoplemeta.erp_people_id";
+  }
+  if ( isset( $args['skills'] ) && !empty($args['skills']) ) {
+    $query .= " LEFT JOIN {$wpdb->prefix}erp_application_terms_relation as tr
+    ON app.id = tr.application_id
+    LEFT JOIN {$wpdb->prefix}erp_application_terms as terms
+    ON tr.term_id = terms.id";
   }
 
   if ( isset( $args['status'] ) && $args['status'] == 'hired' ) {
@@ -499,6 +506,10 @@ function erp_rec_total_applicant_counter( $args ) {
     $query .= " WHERE app.status=0";
   }
 
+  if ( isset( $args['skills'] ) && !empty($args['skills']) ) {
+    $slugs = "'" . implode("', '", $args['skills']) . "'";
+    $query .= " AND tr.meta_key = 'skills' AND terms.slug IN (" . $slugs .") ";
+  }
   if ( $args['jobid'] != 0 ) {
     $query .= " AND app.job_id='" . $job_id . "'";
   }
@@ -551,7 +562,10 @@ function erp_rec_get_applicants_information( $args ) {
         WHERE erp_people_id = peopleid AND meta_key = 'status' ) as status,
     ( select meta_value
         FROM {$wpdb->prefix}erp_peoplemeta
-        WHERE erp_people_id = peopleid AND meta_key = 'remote' ) as remote
+        WHERE erp_people_id = peopleid AND meta_key = 'remote' ) as remote,
+    ( select meta_value
+        FROM {$wpdb->prefix}erp_peoplemeta
+        WHERE erp_people_id = peopleid AND meta_key = 'skills' ) as skills
     FROM {$wpdb->prefix}erp_application as application
     LEFT JOIN {$wpdb->prefix}erp_application_stage as base_stage
     ON application.stage=base_stage.id
@@ -562,7 +576,11 @@ function erp_rec_get_applicants_information( $args ) {
     LEFT JOIN {$wpdb->prefix}erp_application_job_stage_relation as stage
     ON application.job_id=stage.jobid
     LEFT JOIN {$wpdb->prefix}erp_peoples as people
-    ON people.id=application.applicant_id";
+    ON people.id=application.applicant_id
+    LEFT JOIN {$wpdb->prefix}erp_application_terms_relation as tr
+    ON application.id = tr.application_id
+    LEFT JOIN {$wpdb->prefix}erp_application_terms as terms
+    ON tr.term_id = terms.id";
 
   if( $plugin_projects ) {
     $query .= " LEFT JOIN {$wpdb->prefix}erp_projects as project
@@ -592,6 +610,10 @@ function erp_rec_get_applicants_information( $args ) {
   }
   if ( isset( $args['search_key'] ) && $args['search_key'] != '' ) { //search is not empty
     $query .= " AND people.first_name LIKE '%" . $args['search_key'] . "%' OR people.last_name LIKE '%" . $args['search_key'] . "%'";
+  }
+  if ( isset( $args['skills'] ) && !empty($args['skills']) ) {
+    $slugs = "'" . implode("', '", $args['skills']) . "'";
+    $query .= " AND tr.meta_key = 'skills' AND terms.slug IN (" . $slugs .") ";
   }
 
   if ( isset( $args['orderby'] ) ) {

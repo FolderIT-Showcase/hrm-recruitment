@@ -350,9 +350,8 @@ if ( isset($applicant_information[0]) ) {
                       </select>
                       <?php elseif ($field_type == 'select2') : ?>
                       <select disabled class="form-control select_multiple_selection form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>[]" multiple>
-                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
                         <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
-                        <?php $options = array_map('trim', explode(',', $value)); ?>
+                        <?php $options = (!empty($value))?json_decode(str_replace('&quot;', '"', $value), true)['terms']:[]; ?>
                         <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
                         <option value="<?php echo $key; ?>" <?php echo (in_array($key, $options))?"selected":""; ?>><?php echo $option; ?></option>
                         <?php endforeach; ?>
@@ -484,9 +483,8 @@ if ( isset($applicant_information[0]) ) {
                       </select>
                       <?php elseif ($field_type == 'select2') : ?>
                       <select disabled class="form-control select_multiple_selection form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>[]" multiple>
-                        <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
                         <?php if( isset($all_personal_fields[$field_name]['options']) ) : ?>
-                        <?php $options = array_map('trim', explode(',', $value)); ?>
+                        <?php $options = (!empty($value))?json_decode(str_replace('&quot;', '"', $value), true)['terms']:[]; ?>
                         <?php foreach ( $all_personal_fields[$field_name]['options'] as $key => $option) : ?>
                         <option value="<?php echo $key; ?>" <?php echo (in_array($key, $options))?"selected":""; ?>><?php echo $option; ?></option>
                         <?php endforeach; ?>

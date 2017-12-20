@@ -1503,6 +1503,7 @@ class Ajax_Handler {
       $job_id = $applicant_information[0]['job_id'];
 
       $db_personal_fields = get_post_meta( $job_id, '_personal_fields' );
+      $all_personal_fields = erp_rec_get_personal_fields();
 
       // convert object to array
       $db_personal_fields_array = [];
@@ -1550,42 +1551,65 @@ class Ajax_Handler {
             $params[$field_name] = "1";
           }
         } else if ($db_data->type == 'select2') {
-          $values = '';
-          $isFirst = true;
-          
-          $params[$field_name] = array_unique($params[$field_name]);
-
-          foreach ( $params[$field_name] as $value ) {
-            if (!$isFirst) {
-              $values .= ', ';
+          if( !empty($all_personal_fields[$field_name]) && $all_personal_fields[$field_name]['terms'] === true ) {
+            if(!empty($params[$field_name])) {
+              $params[$field_name] = array_unique($params[$field_name]);
             }
-            $values .= $value;
-            $isFirst = false;
 
-            // Si son terms faltantes, ingresar a la DB
-            // TODO: de momento harcodeado a skills, parametrizar en cada field
-            if($field_name == 'skills') {
+            $tr_ids = [];
+            foreach ( $params[$field_name] as $value ) {
+              // Si son terms faltantes, ingresar a la DB
               $query = "SELECT id FROM {$wpdb->prefix}erp_application_terms WHERE slug='{$value}'";
               $term_id = $wpdb->get_var( $query );
 
-              $data = array(
-//                'name' => ucwords(str_replace("-", " ", $value)),
-                'name' => str_replace("-", " ", $value),
-                'slug' => $value
-              );
-
-              $data_format = array(
-                '%s',
-                '%s'
-              );
-
               if (!isset($term_id) || $term_id <= 0) {
-                $wpdb->insert( $wpdb->prefix . 'erp_application_terms', $data, $data_format );
-              }
-            }
-          }
+                $data = array(
+                  //                'name' => ucwords(str_replace("-", " ", $value)),
+                  'name' => str_replace("-", " ", $value),
+                  'slug' => str_replace(".", "_", $value)
+                );
 
-          $params[$field_name] = $values;
+                $data_format = array(
+                  '%s',
+                  '%s'
+                );
+                $wpdb->insert( $wpdb->prefix . 'erp_application_terms', $data, $data_format );
+                $term_id = $wpdb->insert_id;
+              }
+
+              // Insertar nueva relación, si no existe
+              $query = "SELECT id FROM {$wpdb->prefix}erp_application_terms_relation
+                          WHERE term_id={$term_id} AND application_id={$application_id} AND meta_key='{$field_name}' ";
+              $tr_id = $wpdb->get_var( $query );
+              if (!isset($tr_id) || $tr_id <= 0) {
+                $data = array(
+                  'application_id' => $application_id,
+                  'term_id' => $term_id,
+                  'meta_key' => $field_name
+                );
+
+                $data_format = array(
+                  '%d',
+                  '%d',
+                  '%s'
+                );
+                $wpdb->insert( $wpdb->prefix . 'erp_application_terms_relation', $data, $data_format );
+                $tr_id = $wpdb->insert_id;
+              }
+              array_push($tr_ids, $tr_id);
+            }
+
+            // Eliminar todos los terms que ya no pertenecen
+            $query = "DELETE FROM {$wpdb->prefix}erp_application_terms_relation
+              WHERE application_id = {$application_id} AND meta_key = '{$field_name}' ";
+            if(!empty($tr_ids)) {
+              $tr_ids = implode(', ', $tr_ids);
+              $query .= " AND id NOT IN ({$tr_ids}) ";
+            }
+            $wpdb->query( $query );
+
+            $params[$field_name] = (empty($params[$field_name]))?"":json_encode(array('terms' => $params[$field_name]));
+          }
         } else {
           if(!isset($params[$field_name])) {
             continue;
