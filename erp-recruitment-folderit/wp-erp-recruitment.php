@@ -225,7 +225,7 @@ class WeDevs_ERP_Recruitment {
     /**
          * All styles goes here
          */
-//    wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
+    //    wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
     wp_enqueue_style( 'erp-recruitment-barrating-star-style', WPERP_REC_ASSETS . '/css/fontawesome-stars.css' );
     wp_enqueue_style( 'erp-recruitment-extra-fields-style', WPERP_REC_ASSETS . '/css/extra-fields-style.css' );
     wp_enqueue_style( 'alertify-core-style', WPERP_REC_ASSETS . '/css/alertify.core.css' );
@@ -403,6 +403,12 @@ class WeDevs_ERP_Recruitment {
 
     add_submenu_page( 'options.php', __( 'Make Employee', 'wp-erp-rec' ), __( 'Make Employee', 'wp-erp-rec' ),
                      $capability, 'make_employee', array( $this, 'make_employee' ) );
+
+    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Terms', 'wp-erp-rec' ), __( 'Terms', 'wp-erp-rec' ),
+                     $capability, 'terms_list', array( $this, 'terms_list_page' ) );
+    
+    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Term Details', 'wp-erp-rec' ), __( 'Term Details', 'wp-erp-rec' ),
+                     $capability, 'term_detail', array( $this, 'term_detail' ) );
   }
 
   /*
@@ -445,6 +451,7 @@ class WeDevs_ERP_Recruitment {
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][7] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][9] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][10] );
+    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][13] );
     //unset( $submenu['edit.php?post_type=erp_hr_questionnaire'] );
   }
 
@@ -558,6 +565,24 @@ class WeDevs_ERP_Recruitment {
   public function add_candidate() {
     require_once WPERP_REC_VIEWS . '/add-candidate.php';
   }
+  
+  /*
+     * Lista de tags (terms)
+     * @since 1.0.8
+     * @return void
+     */
+  public function terms_list_page() {
+    require_once WPERP_REC_VIEWS . '/terms-list.php';
+  }
+  
+  /*
+     * Include term detail page
+     * @since 1.0.8
+     * @return void
+     */
+  public function term_detail() {
+    require_once WPERP_REC_VIEWS . '/view-term-details.php';
+  }
 
   /**
      * Print JS templates in footer
@@ -568,11 +593,11 @@ class WeDevs_ERP_Recruitment {
     global $current_screen;
 
     switch ( $current_screen->base ) {
-        //case 'admin_page_applicant_detail':
       case 'recruitment_page_jobseeker_list':
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
+        break;
 
       case 'recruitment_page_applicant_detail':
         erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );
@@ -585,6 +610,13 @@ class WeDevs_ERP_Recruitment {
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
+        break;
+      case 'recruitment_page_term_detail':
+      case 'recruitment_page_terms_list':
+        wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
+        wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
+        wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
+        
         break;
       case 'job-openings_page_todo-calendar':
         erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );
