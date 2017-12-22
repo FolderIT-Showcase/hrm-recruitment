@@ -231,6 +231,18 @@ dl.dl-custom h5 {
   background-color: #0085ba;
 }
 
+@media (min-width: 768px) {
+  .panel .nav-tabs.nav-justified > li > a {
+    border-bottom-width: 0px;
+  }
+}
+
+@media (min-width: 768px) {
+  .nav-tabs.nav-justified > li {
+    vertical-align: bottom;
+  }
+}
+
 .panel-heading-overflow {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1354,7 +1366,7 @@ textarea#feedback_comment {
 
 .erp-candidate-detail .single-information-container table.wp-list-table th#avg_rating,
 .erp-candidate-detail .single-information-container table.wp-list-table th#summary_rating {
-/*  width: 80px;*/
+  /*  width: 80px;*/
 }
 
 .erp-candidate-detail .single-information-container {
