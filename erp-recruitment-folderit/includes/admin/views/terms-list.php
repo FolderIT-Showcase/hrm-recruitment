@@ -87,10 +87,12 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
     <div class="container-fluid" style="margin:10px 0px;">
       <div class="row">
         <div class="col-lg-12">
-          <form class="form-inline" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+          <form class="form-horizontal" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
             <div class="form-group">
-              <label for="term_name"><?php _e('Term Name', 'wp-erp-rec'); ?></label>
-              <input type="text" class="form-control-plaintext" name="term_name" id="term_name" value="" required/>
+              <label for="term_name" class="col-sm-3 col-lg-2"><?php _e('Term Name', 'wp-erp-rec'); ?></label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" name="term_name" id="term_name" value="" required/>
+              </div>
             </div>
             <input type="submit" name="insert" value="<?php _e('Insert', 'wp-erp-rec'); ?>" class="button"/>
           </form>
