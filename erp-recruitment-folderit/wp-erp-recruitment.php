@@ -409,6 +409,12 @@ class WeDevs_ERP_Recruitment {
     
     add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Term Details', 'wp-erp-rec' ), __( 'Term Details', 'wp-erp-rec' ),
                      $capability, 'term_detail', array( $this, 'term_detail' ) );
+
+    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Statuses', 'wp-erp-rec' ), __( 'Statuses', 'wp-erp-rec' ),
+                     $capability, 'status_list', array( $this, 'status_list_page' ) );
+    
+    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Status Details', 'wp-erp-rec' ), __( 'Status Details', 'wp-erp-rec' ),
+                     $capability, 'status_detail', array( $this, 'status_detail' ) );
   }
 
   /*
@@ -452,6 +458,7 @@ class WeDevs_ERP_Recruitment {
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][9] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][10] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][13] );
+    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][15] );
     //unset( $submenu['edit.php?post_type=erp_hr_questionnaire'] );
   }
 
@@ -583,6 +590,24 @@ class WeDevs_ERP_Recruitment {
   public function term_detail() {
     require_once WPERP_REC_VIEWS . '/view-term-details.php';
   }
+  
+  /*
+     * Lista de estados
+     * @since 1.0.8
+     * @return void
+     */
+  public function status_list_page() {
+    require_once WPERP_REC_VIEWS . '/status-list.php';
+  }
+  
+  /*
+     * Include status detail page
+     * @since 1.0.9
+     * @return void
+     */
+  public function status_detail() {
+    require_once WPERP_REC_VIEWS . '/view-status-details.php';
+  }
 
   /**
      * Print JS templates in footer
@@ -613,6 +638,8 @@ class WeDevs_ERP_Recruitment {
         break;
       case 'recruitment_page_term_detail':
       case 'recruitment_page_terms_list':
+      case 'recruitment_page_status_detail':
+      case 'recruitment_page_status_list':
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
