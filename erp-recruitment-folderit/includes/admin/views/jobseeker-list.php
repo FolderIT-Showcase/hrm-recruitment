@@ -100,7 +100,14 @@
                           <?php endforeach;?>
                         </div>
 
-                        <input type="submit" class="button" href="#" value="<?php _e('Filter Terms', 'wp-erp-rec'); ?>">
+                        <input type="submit" class="button" value="<?php _e('Filter Terms', 'wp-erp-rec'); ?>">
+                        <button id="candidate-tags-clear" class="button"><?php _e('Clear Terms', 'wp-erp-rec'); ?></button>
+                        <script>
+                          $('#candidate-tags-clear').click(function(e) {
+                            $('#candidate-tags-zone input:checked').removeAttr('checked').trigger('click');
+                            e.preventDefault();
+                          });
+                        </script>
                       </form>
                     </div>
                     <form method="post">
