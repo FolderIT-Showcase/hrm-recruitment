@@ -390,14 +390,23 @@ class Form_Handler {
 
     if ( $action ) {
       switch ($action) {
-        case 'filter_status' :
+        case 'filter_button' :
           $redirect_to = remove_query_arg( 'paged', $_SERVER['REQUEST_URI'] );
-          $redirect_to = add_query_arg( 'filter_status', $_REQUEST['filter_status'], $redirect_to );
-          wp_redirect( $redirect_to );
-          exit();
-        case 'filter_project' :
-          $redirect_to = remove_query_arg( 'paged', $_SERVER['REQUEST_URI'] );
-          $redirect_to = add_query_arg( 'filter_project', $_REQUEST['filter_project'], $redirect_to );
+          if(!empty($_REQUEST['statusslug'])) {
+            $redirect_to = add_query_arg( 'statusslug', $_REQUEST['statusslug'], $redirect_to );
+          } else {
+            $redirect_to = remove_query_arg( 'statusslug', $redirect_to);
+          }
+          if(!empty($_REQUEST['projectid'])) {
+            $redirect_to = add_query_arg( 'projectid', $_REQUEST['projectid'], $redirect_to );
+          } else {
+            $redirect_to = remove_query_arg( 'projectid', $redirect_to);
+          }
+          if(!empty($_REQUEST['jobid'])) {
+            $redirect_to = add_query_arg( 'jobid', $_REQUEST['jobid'], $redirect_to );
+          } else {
+            $redirect_to = remove_query_arg( 'jobid', $redirect_to);
+          }
           wp_redirect( $redirect_to );
           exit();
         case 'bulk-email' :

@@ -66,32 +66,34 @@ class Jobseeker_List_Table extends \WP_List_Table {
       return;
     }
 
-    $selected_status = (isset($_REQUEST['filter_status'])) ? $_REQUEST['filter_status'] : -1;
-    $selected_project = (isset($_REQUEST['filter_project'])) ? $_REQUEST['filter_project'] : -1;
-    $jobid = (isset($_REQUEST['jobid'])) ? $_REQUEST['jobid'] : 0;
+    $selected_status = (isset($_REQUEST['statusslug'])) ? $_REQUEST['statusslug'] : null;
+    $selected_project = (isset($_REQUEST['projectid'])) ? $_REQUEST['projectid'] : null;
+    $jobid = (isset($_REQUEST['jobid'])) ? $_REQUEST['jobid'] : null;
 
 ?>
 <div class="alignleft actions">
-  <label class="screen-reader-text" for="new_role"><?php _e('Filter by Status', 'wp-erp-rec') ?></label>
-  <select name="filter_status" id="filter_status_select">
-    <option value="-1"><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
+  <label class="screen-reader-text" for="statusslug_select"><?php _e('Filter by Status', 'wp-erp-rec') ?></label>
+  <select name="statusslug" id="statusslug_select">
+    <option value=""><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
     <?php echo erp_hr_get_status_dropdown($selected_status); ?>
   </select>
-
-  <?php submit_button(__('Filter'), 'button', 'filter_status_button', false); ?>
 </div>
 <div class="alignleft actions">
-  <label class="screen-reader-text" for="new_role"><?php _e('Filter by Project', 'wp-erp-rec') ?></label>
-  <select name="filter_project" id="filter_project_select">
-    <option value="-1"><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
+  <label class="screen-reader-text" for="projectid_select"><?php _e('Filter by Project', 'wp-erp-rec') ?></label>
+  <select name="projectid" id="projectid_select">
+    <option value=""><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
     <?php echo erp_hr_get_projects_dropdown($selected_project); ?>
   </select>
 
-  <?php submit_button(__('Filter'), 'button', 'filter_project_button', false); ?>
-
-  <input type="hidden" name="jobid" value="<?php echo $jobid;?>">
 </div>
-<input type="hidden" name="jobid" value="<?php echo $jobid;?>">
+<div class="alignleft actions">
+  <label class="screen-reader-text" for="jobid_select"><?php _e('Filter by Position', 'wp-erp-rec') ?></label>
+  <select name="jobid" id="jobid_select">
+    <option value=""><?php _e('- Select All -', 'wp-erp-rec'); ?></option>
+    <?php echo erp_hr_get_positions_dropdown($jobid); ?>
+  </select>
+</div>
+<?php submit_button(__('Filter'), 'button', 'filter_button', false); ?>
 <?php
   }
 
@@ -315,12 +317,8 @@ class Jobseeker_List_Table extends \WP_List_Table {
      */
   public function current_action() {
 
-    if ( isset( $_REQUEST['filter_status_button'] ) ) {
-      return 'filter_status';
-    }
-
-    if ( isset( $_REQUEST['filter_project_button'] ) ) {
-      return 'filter_project';
+    if ( isset( $_REQUEST['filter_button'] ) ) {
+      return 'filter_button';
     }
 
     if ( isset( $_REQUEST['recruitment_search'] ) ) {
@@ -397,12 +395,16 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'jobid'  => $jobid
     );
 
-    if ( isset($_REQUEST['filter_status']) && $_REQUEST['filter_status'] ) {
-      $args['status'] = $_REQUEST['filter_status'];
+    if ( isset($_REQUEST['statusslug']) && $_REQUEST['statusslug'] ) {
+      $args['status'] = $_REQUEST['statusslug'];
     }
 
-    if ( isset($_REQUEST['filter_project']) && $_REQUEST['filter_project'] ) {
-      $args['project_id'] = $_REQUEST['filter_project'];
+    if ( isset($_REQUEST['projectid']) && $_REQUEST['projectid'] ) {
+      $args['project_id'] = $_REQUEST['projectid'];
+    }
+
+    if ( isset($_REQUEST['jobid']) && $_REQUEST['jobid'] ) {
+      $args['jobid'] = $_REQUEST['jobid'];
     }
 
     if ( isset($_REQUEST['filter_stage']) && $_REQUEST['filter_stage'] ) {

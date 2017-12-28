@@ -9,7 +9,6 @@ if (isset($_POST['update'])) {
   $status_description = $_POST["status_description"];
   $status_order = $_POST["status_order"];
   $status_old_code = $_POST["status_old_code"];
-  var_dump($status_old_code);
   $status_code = erp_rec_sanitize_string($status_name);
   $wpdb->update(
     $status_table_name, //table

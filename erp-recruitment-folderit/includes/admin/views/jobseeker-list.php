@@ -36,15 +36,15 @@
                         <span id="menu-added-by-me" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&filter_added_by_me=added_by_me';?>"><?php _e('Added by me', 'wp-erp-rec');?></a></span>
                       </li>
                       <li>
-                        <?php $selected_class = (isset($_GET['filter_status']) && $_GET['filter_status'] == 'shortlisted') ? 'left-menu-current-item' : '' ;?>
-                        <span id="menu-shortlisted" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&filter_status=shortlisted';?>"><?php _e('Short-Listed', 'wp-erp-rec');?></a></span>
+                        <?php $selected_class = (isset($_GET['statusslug']) && $_GET['statusslug'] == 'shortlisted') ? 'left-menu-current-item' : '' ;?>
+                        <span id="menu-shortlisted" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&statusslug=shortlisted';?>"><?php _e('Short-Listed', 'wp-erp-rec');?></a></span>
                       </li>
                       <li>
-                        <?php $selected_class = (isset($_GET['filter_status']) && $_GET['filter_status'] == 'hired') ? 'left-menu-current-item' : '' ;?>
-                        <span id="menu-hired" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&filter_status=hired';?>"><?php _e('Hired', 'wp-erp-rec');?></a></span></li>
+                        <?php $selected_class = (isset($_GET['statusslug']) && $_GET['statusslug'] == 'hired') ? 'left-menu-current-item' : '' ;?>
+                        <span id="menu-hired" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&statusslug=hired';?>"><?php _e('Hired', 'wp-erp-rec');?></a></span></li>
                       <li>
-                        <?php $selected_class = (isset($_GET['filter_status']) && $_GET['filter_status'] == 'rejected') ? 'left-menu-current-item' : '' ;?>
-                        <span id="menu-rejected" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&filter_status=rejected';?>"><?php _e('Rejected', 'wp-erp-rec');?></a></span>
+                        <?php $selected_class = (isset($_GET['statusslug']) && $_GET['statusslug'] == 'rejected') ? 'left-menu-current-item' : '' ;?>
+                        <span id="menu-rejected" class="<?php echo $selected_class;?>"><a href="<?php echo $all_candidate_link.'&statusslug=rejected';?>"><?php _e('Rejected', 'wp-erp-rec');?></a></span>
                       </li>
                     </ul>
                   </div>
@@ -52,7 +52,7 @@
 
                 <div class="col-lg-12">
                   <div class="single-information-container">
-                    <?php if ( $jobid != 0 ) : ?>
+                    <?php if ( !empty($jobid) ) : ?>
                     <h4><?php echo __('Filtering by position: ', 'wp-erp-rec') . ' ' . $job_title; ?> <small><a href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list'.$filter_url); ?>">[<?php _e('Remove filter', 'wp-erp-rec'); ?>]</a></small></h4>
                     <?php endif; ?>
                     <div id="candidate-overview-zone">
@@ -60,7 +60,7 @@
                         <span class="icon-arrow-right"><b><?php echo $total_applicants;?></b><br/><small><?php _e(' Candidates', 'wp-erp-rec'); ?></small></span>
                       </a>
                       <?php
-                      if($jobid == 0) {
+                      if(empty($jobid)) {
                         $stages = erp_rec_get_all_stages();
                       } else {
                         $stages = erp_rec_get_this_job_stages($jobid);

@@ -55,11 +55,32 @@ function erp_hr_get_status_dropdown( $selected = '' ) {
  * @return string the drop down
  */
 function erp_hr_get_projects_dropdown( $selected = '' ) {
-  $projects   = erp_rec_get_available_projects();
+  $projects   = erp_rec_get_available_projects( true );
   $dropdown = '';
 
   if ( $projects ) {
     foreach ( $projects as $key => $title ) {
+      $dropdown .= sprintf( "<option value='%s'%s>%s</option>\n", $key, selected( $selected, $key, false ), $title );
+    }
+  }
+
+  return $dropdown;
+}
+
+/**
+ * Get recruitment positions drop down
+ *
+ * @param  int  status id
+ * @param  string  selected status
+ *
+ * @return string the drop down
+ */
+function erp_hr_get_positions_dropdown( $selected = '' ) {
+  $positions = erp_rec_get_available_positions( true );
+  $dropdown = '';
+
+  if ( $positions ) {
+    foreach ( $positions as $key => $title ) {
       $dropdown .= sprintf( "<option value='%s'%s>%s</option>\n", $key, selected( $selected, $key, false ), $title );
     }
   }
@@ -396,33 +417,26 @@ function erp_rec_get_position( $jobid ) {
  * return array
  */
 function erp_rec_get_available_projects( $all = false ) {
+  global $wpdb;
   $projects = array();
-  if( is_plugin_active( 'administrador-de-proyectos/administrador-de-proyectos.php' ) ) {
-    global $wpdb;
 
-    $query = "SELECT project.ID, project.project_title
-            FROM {$wpdb->prefix}erp_projects as project
-            ORDER BY project.project_title";
+  $query = "SELECT post.ID as ID, post.post_title as post_title,
+            (SELECT meta.meta_value FROM {$wpdb->prefix}postmeta as meta WHERE meta.post_id = post.ID AND meta.meta_key = '_project_active') as project_active
 
-    if ($all != true) {
-      $query .= "";
-    }
+            FROM {$wpdb->prefix}posts as post
 
-    $rows = $wpdb->get_results( $query, ARRAY_A );
+            WHERE post.post_type = 'cpm_project' ";
 
-    foreach ( $rows as $row ) {
-      $projects[$row['ID']] = $row['project_title'];
-    }
-  } else {
-    $projects[100] = 'Proyecto público de prueba 100';
-    $projects[200] = 'Proyecto público de prueba 200';
-    $projects[300] = 'Proyecto público de prueba 300';
+  if ($all !== true) {
+    $query .= " HAVING (project_active = 'yes' OR project_active is null) ";
+  }
 
-    if ($all === true) {
-      $projects[400] = 'Proyecto PRIVADO de prueba 400';
-      $projects[500] = 'Proyecto PRIVADO de prueba 500';
-      $projects[600] = 'Proyecto PRIVADO de prueba 600';
-    }
+  $query .= " ORDER BY post.menu_order, post.post_title ";
+
+  $rows = $wpdb->get_results( $query, ARRAY_A );
+
+  foreach ( $rows as $row ) {
+    $projects[$row['ID']] = $row['post_title'];
   }
 
   return $projects;
@@ -518,6 +532,12 @@ function erp_rec_total_applicant_counter( $args ) {
   }
   if ( isset( $args['status'] ) ) { //has status
     $query .= " AND peoplemeta.meta_key='status' AND peoplemeta.meta_value='" . $args['status'] . "'";
+  }
+  if ( isset( $args['status'] ) && $args['status'] != '' && $args['status'] != '-1' ) { //has status
+    $query .= " AND peoplemeta.meta_key='status' AND peoplemeta.meta_value='" . $args['status'] . "'";
+  }
+  if ( isset( $args['project_id'] ) && $args['project_id'] != '' && $args['project_id'] != '-1' ) { //has projcct
+    $query .= " AND application.project_id=" . $args['project_id'];
   }
   if ( isset( $filter_added_by_me ) && $filter_added_by_me != '' ) { //has status
     $query .= " AND app.added_by='" . get_current_user_id() . "'";
@@ -624,7 +644,7 @@ function erp_rec_get_applicants_information( $args ) {
   } else {
     $query .= " GROUP BY applicationid ORDER BY application.apply_date DESC LIMIT {$args['offset']}, {$args['number']}";
   }
-
+  
   return $wpdb->get_results( $query, ARRAY_A );
 }
 
@@ -1055,7 +1075,7 @@ function erp_rec_get_all_stages() {
 function erp_rec_get_candidate_number_in_this_stages( $job_id, $stage_id ) {
   global $wpdb;
 
-  if ( $job_id == 0 ) {
+  if ( empty($job_id) ) {
     $query = "SELECT COUNT(app.id)
                 FROM {$wpdb->prefix}erp_application as app
                 WHERE app.status=0
