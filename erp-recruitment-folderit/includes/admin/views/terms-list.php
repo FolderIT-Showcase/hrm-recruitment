@@ -1,80 +1,12 @@
 <?php
 global $wpdb;
 $term_table_name = $wpdb->prefix . "erp_application_terms";
-$term_relation_table_name = $wpdb->prefix . "erp_application_terms_relation";
-$peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
-
-if (isset($_POST['delete'])) {
-  $term_id = $_POST["term_id"];
-  $term_name = $_POST["term_name"];
-  $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM $term_table_name WHERE id = %s", $term_id));
-  // Eliminar el term
-  $wpdb->query($wpdb->prepare("DELETE FROM $term_table_name WHERE id = %s", $term_id));
-  // Eliminar term de todas las relations
-  $wpdb->query($wpdb->prepare("DELETE FROM $term_relation_table_name WHERE term_id = %s", $term_id));
-  // Obtener exclusivamente fields que utilizan terms
-  $personal_fields = erp_rec_get_personal_fields();
-  foreach($personal_fields as $field_name => $field) {
-    if(!isset($field['terms']) || $field['terms'] !== true) {
-      unset($personal_fields[$field_name]);
-    }
-  }
-  // Obtener todos los peoplemeta de cada field que utiliza terms
-  foreach($personal_fields as $field_name => $field) {
-    $terms_meta = $wpdb->get_results($wpdb->prepare("SELECT meta_id,meta_value FROM $peoplemeta_table_name WHERE meta_key=%s",$field_name), ARRAY_A);
-    // Eliminar el slug de cada peoplemeta
-    foreach($terms_meta as $tm) {
-      $value = $tm['meta_value'];
-      if(empty($value)) {
-        continue;
-      }
-      $meta_values = (!empty($value))?json_decode(str_replace('&quot;', '"', $value), true)['terms']:[];
-      if(empty($meta_values)) {
-        continue;
-      }
-      foreach($meta_values as $i => $mv) {
-        if($mv === $term_slug) {
-          unset($meta_values[$i]);
-        }
-      }
-      // Re-encode JSON. Si el campo queda vacío, poner un string vacio
-      $meta_values_json = (empty($meta_values))?"":json_encode(array('terms' => $meta_values));
-
-      $data = array(
-        'meta_value'    => $meta_values_json
-      );
-
-      $data_format = array(
-        '%s'
-      );
-
-      $where = array(
-        'meta_id' => $tm['meta_id']
-      );
-
-      $where_format = array(
-        '%d'
-      );
-
-      $wpdb->update( $wpdb->prefix . 'erp_peoplemeta', $data, $where, $data_format, $where_format );
-    }
-  }
-} else if (isset($_POST['insert'])) {
-  $term_name = $_POST["term_name"];
-  $term_slug = erp_rec_sanitize_string($term_name);
-  $wpdb->insert(
-    $term_table_name, //table
-    array('name' => $term_name, 'slug' => $term_slug), //data
-    array('%s', '%s') //data format			
-  );
-}
 
 $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY name");
 ?>
 
 <div class="wrap">
-  <h1><?php _e('Add Term', 'wp-erp-rec');?></h1>
-
+  <h1><?php _e('Terms', 'wp-erp-rec');?></h1>
   <?php if ($_POST['delete']) : ?>
   <div><p><?php echo $term_name . ' - ' . __('Term deleted', 'wp-erp-rec'); ?></p></div>
   <?php endif; ?>
@@ -84,49 +16,190 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
   <?php endif; ?>
 
   <div class="postbox">
-    <div class="container-fluid" style="margin:10px 0px;">
-      <div class="row">
-        <div class="col-lg-12">
-          <form class="form-horizontal" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-            <div class="form-group">
-              <label for="term_name" class="col-sm-3 col-lg-2"><?php _e('Term Name', 'wp-erp-rec'); ?></label>
-              <div class="col-sm-5">
-                <input type="text" class="form-control" name="term_name" id="term_name" value="" required/>
-              </div>
-            </div>
-            <input type="submit" name="insert" value="<?php _e('Insert', 'wp-erp-rec'); ?>" class="button"/>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h1><?php _e('Terms', 'wp-erp-rec');?></h1>
-
-  <div class="postbox">
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-12" style="margin:10px 0px;">
-          <table class='wp-list-table widefat fixed striped posts'>
-            <tr>
-              <th><?php _e('Term Name','wp-erp-rec'); ?></th>
-              <th><?php _e('Term Slug','wp-erp-rec'); ?></th>
-              <th><?php _e('Actions','wp-erp-rec'); ?></th>
-            </tr>
-            <?php foreach ($rows as $row) : ?>
-            <tr>
-              <td><a href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=term_detail&term_id=' . $row->id); ?>"><?php echo $row->name; ?></a></td>
-              <td><?php echo $row->slug; ?></td>
-              <td>
-                <form method="post">
-                  <input type="hidden" name="term_id" value="<?php echo $row->id; ?>">
-                  <input type="hidden" name="term_name" value="<?php echo $row->name; ?>">
-                  <input type='submit' name="delete" value='<?php _e('Delete', 'wp-erp-rec'); ?>' class='button' onclick="return confirm('<?php _e('Please confirm Term deletion', 'wp-erp-rec'); ?>')">
+          <table id="terms_table" class='wp-list-table widefat fixed striped posts table table-responsive'>
+            <thead>
+              <tr>
+                <th><?php _e('Term Name','wp-erp-rec'); ?></th>
+                <th><?php _e('Term Slug','wp-erp-rec'); ?></th>
+                <th><?php _e('Actions','wp-erp-rec'); ?></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="term_new">
+                <form class="form-terms-new" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+                  <?php wp_nonce_field('wp_erp_rec_term_create_nonce', '_term_create_nonce'); ?>
+                  <td><input type="text" class="form-control" name="term_name" value="" required/></td>
+                  <td><input type="text" class="form-control" name="term_slug" value="" disabled/></td>
                 </form>
-              </td>
-            </tr>
-            <?php endforeach; ?>
+                <td><input type="button" value="<?php _e('Insert', 'wp-erp-rec'); ?>" class="button button-primary button-new"/></td>
+              </tr>
+              <?php foreach ($rows as $row) : ?>
+              <tr id="term_id_<?php echo $row->id; ?>">
+                <form method="post" class="form-terms">
+                  <input type="hidden" name="term_id" value="<?php echo $row->id; ?>">
+                  <?php wp_nonce_field('wp_erp_rec_term_nonce', '_term_nonce'); ?>
+                  <td><input type="text" class="form-control form-control-nobg" name="term_name" defaultValue="<?php echo $row->name; ?>" value="<?php echo $row->name; ?>" disabled required/></td>
+                  <td><input type="text" class="form-control form-control-nobg" name="term_slug" value="<?php echo $row->slug; ?>" disabled/></td>
+                </form>
+                <td>
+                  <input type="button" value='<?php _e('Edit', 'wp-erp-rec'); ?>' class='button button-enable'>
+                  <input type="button" value='<?php _e('Save', 'wp-erp-rec'); ?>' class='button-primary button-update' style="display:none;">
+                  <input type="button" value='<?php _e('Cancel', 'wp-erp-rec'); ?>' class='button button-cancel' style="display:none;">
+                  <input type="button" value='<?php _e('Delete', 'wp-erp-rec'); ?>' class='button button-danger button-remove'>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+            </tbody>
           </table>
+          <script>
+            $(document).on("click", ".button-new", function () {
+              var that = $(this);
+              var formData = that.parent().parent().find("input").serialize();
+              var nonce = that.parent().parent().find('input[name="_term_create_nonce"]').val();
+
+              that.prop("disabled", true);
+              that.parent().parent().find("[name='term_name']").prop("disabled", true);
+
+              wp.ajax.send('erp-rec-create-term', {
+                data: {
+                  fdata: formData,
+                  op: 'create',
+                  _wpnonce: nonce
+                },
+                success: function (res) {
+                  res = $.parseJSON(res);
+                  alertify.success(res.message);
+
+                  $newRow = '<tr id="term_id_'+res.data.term_id+'"><form method="post" class="form-terms">';
+                  $newRow += '<input type="hidden" name="term_id" value="'+res.data.term_id+'">';
+                  $newRow += '<?php wp_nonce_field('wp_erp_rec_term_nonce', '_term_nonce'); ?>';
+                  $newRow += '<td><input type="text" class="form-control form-control-nobg" name="term_name" defaultValue="'+res.data.term_name+'" value="'+res.data.term_name+'" disabled required/></td>';
+                  $newRow += '<td><input type="text" class="form-control form-control-nobg" name="term_slug" value="'+res.data.term_slug+'" disabled/></td></form>';
+                  $newRow += '<td>';
+                  $newRow += '<input type="button" value="<?php _e('Edit', 'wp-erp-rec'); ?>" class="button button-enable" style="margin-right:4px;">';
+                  $newRow += '<input type="button" value="<?php _e('Save', 'wp-erp-rec'); ?>" class="button-primary button-update" style="margin-right:4px;display:none;">';
+                  $newRow += '<input type="button" value="<?php _e('Cancel', 'wp-erp-rec'); ?>" class="button button-cancel" style="margin-right:4px;display:none;">';
+                  $newRow += '<input type="button" value="<?php _e('Delete', 'wp-erp-rec'); ?>" class="button button-danger button-remove" style="margin-right:4px;">';
+                  $newRow += '</td></tr>';
+
+                  $('#terms_table tr').eq(1).after($newRow);
+
+                  that.prop("disabled", false);
+                  that.parent().parent().find("[name='term_name']").prop("disabled", false).val('');
+                },
+                error: function (error) {
+                  alert(error);
+
+                  that.prop("disabled", false);
+                  that.parent().parent().find("[name='term_name']").prop("disabled", false);
+                }
+              });
+            });
+
+            $(document).on("click", ".button-cancel", function () {
+              var that = $(this);
+              that.hide();
+              that.siblings("input.button-primary.button-update").hide();
+              that.siblings("input.button.button-remove").show();
+              that.siblings("input.button.button-enable").show();
+
+              that.parent().parent().find("[name='term_name']").prop("disabled", true);
+              that.parent().parent().find("[type='text']").addClass("form-control-nobg");
+
+              // Restaurar valores originales de campos
+              that.parent().parent().find("[name='term_name']").val($(this).parent().parent().find("[name='term_name']").attr("defaultvalue"));
+            });
+
+            $(document).on("click", ".button-remove", function () {
+              if(!confirm("<?php _e('Please confirm Term deletion', 'wp-erp-rec');?>")) {
+                return;
+              }
+
+              var that = $(this);
+              var formData = that.parent().parent().find("input").serialize();
+              var nonce = that.parent().parent().find('input[name="_term_nonce"]').val();
+              var termId = that.parent().parent().find('input[name="term_id"]').val();
+
+              that.prop("disabled", true);
+              that.siblings().prop("disabled", true);  
+
+              wp.ajax.send('erp-rec-delete-term', {
+                data: {
+                  fdata: formData,
+                  op: 'delete',
+                  _wpnonce: nonce
+                },
+                success: function (res) {
+                  alertify.success(res);
+
+                  // Quitar fila
+                  $("#term_id_"+termId).remove();
+                  that.prop("disabled", false);
+                  that.siblings().prop("disabled", false);
+                },
+                error: function (error) {
+                  alert(error);
+                  that.prop("disabled", false);
+                  that.siblings().prop("disabled", false);
+                }
+              });
+            });
+
+            $(document).on("click", ".button-enable", function () {
+              var that = $(this);
+              that.hide();
+              that.siblings("input.button.button-remove").hide();
+              that.siblings("input.button.button-cancel").show();
+              that.siblings("input.button-primary.button-update").show();
+
+              that.parent().parent().find("[name='term_name']").prop("disabled", false);
+              that.parent().parent().find("[type='text']").removeClass("form-control-nobg");
+            });
+
+            $(document).on("click", ".button-update", function () {
+              var that = $(this);
+              var formData = that.parent().parent().find("input").serialize();
+              var nonce = that.parent().parent().find('input[name="_term_nonce"]').val();
+
+              that.parent().parent().find("[name='term_name']").prop("disabled", true);
+              that.prop("disabled", true);
+              that.siblings().prop("disabled", true);             
+
+              wp.ajax.send('erp-rec-update-term', {
+                data: {
+                  fdata: formData,
+                  op: 'update',
+                  _wpnonce: nonce
+                },
+                success: function (res) {
+                  res = $.parseJSON(res);
+                  alertify.success(res.message);
+
+                  that.hide();
+                  that.siblings("input.button.button-cancel").hide();
+                  that.siblings("input.button.button-remove").show();
+                  that.siblings("input.button.button-enable").show();
+
+                  that.parent().parent().find("[name='term_name']").prop("disabled", true).attr("defaultvalue", res.data.term_name);
+                  that.parent().parent().find("[name='term_slug']").val(res.data.term_slug);
+                  that.parent().parent().find("[type='text']").addClass("form-control-nobg");
+                  that.prop("disabled", false);
+                  that.siblings().prop("disabled", false);
+                },
+                error: function (error) {
+                  alert(error);
+
+                  that.parent().parent().find("[name='term_name']").prop("disabled", false);
+                  that.parent().parent().find("[type='text']").removeClass("form-control-nobg");
+                  that.prop("disabled", false);
+                  that.siblings().prop("disabled", false);
+                }
+              });
+            });
+          </script>
         </div>
       </div>
     </div>

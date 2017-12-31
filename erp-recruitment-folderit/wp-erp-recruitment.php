@@ -406,15 +406,9 @@ class WeDevs_ERP_Recruitment {
 
     add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Terms', 'wp-erp-rec' ), __( 'Terms', 'wp-erp-rec' ),
                      $capability, 'terms_list', array( $this, 'terms_list_page' ) );
-    
-    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Term Details', 'wp-erp-rec' ), __( 'Term Details', 'wp-erp-rec' ),
-                     $capability, 'term_detail', array( $this, 'term_detail' ) );
 
     add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Statuses', 'wp-erp-rec' ), __( 'Statuses', 'wp-erp-rec' ),
                      $capability, 'status_list', array( $this, 'status_list_page' ) );
-    
-    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Status Details', 'wp-erp-rec' ), __( 'Status Details', 'wp-erp-rec' ),
-                     $capability, 'status_detail', array( $this, 'status_detail' ) );
   }
 
   /*
@@ -457,8 +451,6 @@ class WeDevs_ERP_Recruitment {
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][7] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][9] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][10] );
-    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][13] );
-    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][15] );
     //unset( $submenu['edit.php?post_type=erp_hr_questionnaire'] );
   }
 

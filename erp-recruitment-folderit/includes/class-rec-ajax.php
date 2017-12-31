@@ -51,6 +51,14 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_erp-rec-update-personal-info', 'update_candidate_info' );
     $this->action( 'wp_ajax_erp-rec-update-summary', 'update_summary' );
 
+    // metadatos
+    $this->action( 'wp_ajax_erp-rec-create-term', 'create_term' );
+    $this->action( 'wp_ajax_erp-rec-update-term', 'update_term' );
+    $this->action( 'wp_ajax_erp-rec-delete-term', 'delete_term' );
+    $this->action( 'wp_ajax_erp-rec-create-status', 'create_status' );
+    $this->action( 'wp_ajax_erp-rec-update-status', 'update_status' );
+    $this->action( 'wp_ajax_erp-rec-delete-status', 'delete_status' );
+
     // interview
     $this->action( 'wp_ajax_erp-rec-create-interview', 'create_interview' );
     $this->action( 'wp_ajax_erp-rec-get-interview', 'get_interview' );
@@ -1653,6 +1661,316 @@ class Ajax_Handler {
       } else {
         $this->send_success( __( 'Info updated successfully', 'wp-erp-rec' ) );
       }
+    }
+  }
+
+  /**
+     * Terms CRUD
+     *
+     * @since  1.0.8
+     *
+     * @return void
+     */
+  public function update_term() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_term_nonce' );
+
+    $term_table_name = $wpdb->prefix . "erp_application_terms";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    $term_id = $params["term_id"];
+
+    if (isset($_POST['op']) && $_POST['op'] === 'update') {
+      $term_name = $params["term_name"];
+      $term_old_slug = $params["term_old_slug"];
+      $term_slug = erp_rec_sanitize_string($term_name);
+      $wpdb->update(
+        $term_table_name, //table
+        array('name' => $term_name, 'slug' => $term_slug), //data
+        array('ID' => $term_id), //where
+        array('%s', '%s'), //data format
+        array('%d') //where format
+      );  
+
+      // Obtener exclusivamente fields que utilizan terms
+      $personal_fields = erp_rec_get_personal_fields();
+      foreach($personal_fields as $field_name => $field) {
+        if(!isset($field['terms']) || $field['terms'] !== true) {
+          unset($personal_fields[$field_name]);
+        }
+      }
+
+      // Obtener todos los peoplemeta de cada field que utiliza terms
+      foreach($personal_fields as $field_name => $field) {
+        $terms_meta = $wpdb->get_results($wpdb->prepare("SELECT meta_id,meta_value FROM $peoplemeta_table_name WHERE meta_key=%s",$field_name), ARRAY_A);
+        // Actualizar el slug de cada peoplemeta
+        foreach($terms_meta as $tm) {
+          $value = $tm['meta_value'];
+          if(empty($value)) {
+            continue;
+          }
+          $meta_values = (!empty($value))?json_decode(str_replace('&quot;', '"', $value), true)['terms']:[];
+          if(empty($meta_values)) {
+            continue;
+          }
+          foreach($meta_values as $i => $mv) {
+            if($mv === $term_old_slug) {
+              $meta_values[$i] = $term_slug;
+            }
+          }
+          // Re-encode JSON. Si el campo queda vacío, poner un string vacio
+          $meta_values_json = (empty($meta_values))?"":json_encode(array('terms' => $meta_values));
+
+          $data = array(
+            'meta_value'    => $meta_values_json
+          );
+
+          $data_format = array(
+            '%s'
+          );
+
+          $where = array(
+            'meta_id' => $tm['meta_id']
+          );
+
+          $where_format = array(
+            '%d'
+          );
+
+          $wpdb->update( $wpdb->prefix . 'erp_peoplemeta', $data, $where, $data_format, $where_format );
+        }
+      }
+
+      $res = array(
+        "message" => __( 'Term updated successfully', 'wp-erp-rec' ),
+        "data" => array(
+          "term_id" => $term_id,
+          "term_name" => $term_name,
+          "term_slug" => $term_slug
+        )
+      );
+
+      $this->send_success( json_encode($res) );
+    }
+  }
+
+  public function delete_term() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_term_nonce' );
+
+    $term_table_name = $wpdb->prefix . "erp_application_terms";
+    $term_relation_table_name = $wpdb->prefix . "erp_application_terms_relation";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    if (isset($_POST['op']) && isset($_POST['op']) == 'delete') {
+      $term_id = $params["term_id"];
+      $term_name = $params["term_name_deletion"];
+      $term_slug = $wpdb->get_var($wpdb->prepare("SELECT slug FROM $term_table_name WHERE id = %s", $term_id));
+      // Eliminar el term
+      $wpdb->query($wpdb->prepare("DELETE FROM $term_table_name WHERE id = %s", $term_id));
+      // Eliminar term de todas las relations
+      $wpdb->query($wpdb->prepare("DELETE FROM $term_relation_table_name WHERE term_id = %s", $term_id));
+      // Obtener exclusivamente fields que utilizan terms
+      $personal_fields = erp_rec_get_personal_fields();
+      foreach($personal_fields as $field_name => $field) {
+        if(!isset($field['terms']) || $field['terms'] !== true) {
+          unset($personal_fields[$field_name]);
+        }
+      }
+      // Obtener todos los peoplemeta de cada field que utiliza terms
+      foreach($personal_fields as $field_name => $field) {
+        $terms_meta = $wpdb->get_results($wpdb->prepare("SELECT meta_id,meta_value FROM $peoplemeta_table_name WHERE meta_key=%s",$field_name), ARRAY_A);
+        // Eliminar el slug de cada peoplemeta
+        foreach($terms_meta as $tm) {
+          $value = $tm['meta_value'];
+          if(empty($value)) {
+            continue;
+          }
+          $meta_values = (!empty($value))?json_decode(str_replace('&quot;', '"', $value), true)['terms']:[];
+          if(empty($meta_values)) {
+            continue;
+          }
+          foreach($meta_values as $i => $mv) {
+            if($mv === $term_slug) {
+              unset($meta_values[$i]);
+            }
+          }
+          // Re-encode JSON. Si el campo queda vacío, poner un string vacio
+          $meta_values_json = (empty($meta_values))?"":json_encode(array('terms' => $meta_values));
+
+          $data = array(
+            'meta_value'    => $meta_values_json
+          );
+
+          $data_format = array(
+            '%s'
+          );
+
+          $where = array(
+            'meta_id' => $tm['meta_id']
+          );
+
+          $where_format = array(
+            '%d'
+          );
+
+          $wpdb->update( $wpdb->prefix . 'erp_peoplemeta', $data, $where, $data_format, $where_format );
+        }
+      }
+
+      $this->send_success( __( 'Term deleted successfully', 'wp-erp-rec' ) );
+    }
+  }
+
+  public function create_term() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_term_create_nonce' );
+
+    $term_table_name = $wpdb->prefix . "erp_application_terms";
+    $term_relation_table_name = $wpdb->prefix . "erp_application_terms_relation";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    if (isset($_POST['op']) && $_POST['op'] == 'create') {
+      $term_name = $params["term_name"];
+      $term_slug = erp_rec_sanitize_string($term_name);
+      $wpdb->insert(
+        $term_table_name, //table
+        array('name' => $term_name, 'slug' => $term_slug), //data
+        array('%s', '%s') //data format			
+      );
+      $term_id = $wpdb->insert_id;
+
+      $res = array(
+        "message" => __( 'Term created successfully', 'wp-erp-rec' ),
+        "data" => array(
+          "term_id" => $term_id,
+          "term_name" => $term_name,
+          "term_slug" => $term_slug
+        )
+      );
+
+      $this->send_success( json_encode($res) );
+    }
+  }
+
+  /**
+     * Statuses CRUD
+     *
+     * @since  1.0.8
+     *
+     * @return void
+     */
+  public function update_status() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_status_nonce' );
+
+    $status_table_name = $wpdb->prefix . "erp_application_status";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    $status_id = $params["status_id"];
+
+    if (isset($_POST['op']) && $_POST['op'] === 'update') {
+      $status_name = $params["status_name"];
+      $status_description = $params["status_description"];
+      $status_order = $params["status_order"];
+      $status_old_code = $params["status_old_code"];
+      $status_code = erp_rec_sanitize_string($status_name);
+      $wpdb->update(
+        $status_table_name, //table
+        array('code' => $status_code, 'title' => $status_name, 'description' => $status_description, 'status_order' => $status_order), //data
+        array('ID' => $status_id), //where
+        array('%s', '%s', '%s', '%d'), //data format
+        array('%d') //where format
+      );
+
+      // Actualizar referencias en peoplemeta
+      $wpdb->query($wpdb->prepare("UPDATE $peoplemeta_table_name SET meta_value = %s WHERE meta_key = 'status' AND meta_value = %s", $status_code, $status_old_code));
+
+      $res = array(
+        "message" => __( 'Status updated successfully', 'wp-erp-rec' ),
+        "data" => array(
+          "status_id" => $status_id,
+          "status_name" => $status_name,
+          "status_description" => $status_description,
+          "status_order" => $status_order,
+          "status_code" => $status_code
+        )
+      );
+
+      $this->send_success( json_encode($res) );
+    }
+  }
+
+  public function delete_status() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_status_nonce' );
+
+    $status_table_name = $wpdb->prefix . "erp_application_status";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    if (isset($_POST['op']) && $_POST['op'] == 'delete') {
+      $status_id = $params["status_id"];
+      $status_name = $params["status_name"];
+      $status_code = $wpdb->get_var($wpdb->prepare("SELECT code FROM $status_table_name WHERE id = %s", $status_id));
+      // Eliminar el status
+      $wpdb->query($wpdb->prepare("DELETE FROM $status_table_name WHERE id = %s", $status_id));
+      // Limpiar peoplemeta
+      $wpdb->query($wpdb->prepare("UPDATE $peoplemeta_table_name SET meta_value = '' WHERE meta_key = 'status' AND meta_value = %s", $status_code));
+
+      $this->send_success( __( 'Status deleted successfully', 'wp-erp-rec' ) );
+    }
+  }
+
+  public function create_status() {
+    global $wpdb;
+    $this->verify_nonce( 'wp_erp_rec_status_create_nonce' );
+
+    $status_table_name = $wpdb->prefix . "erp_application_status";
+    $peoplemeta_table_name = $wpdb->prefix . "erp_peoplemeta";
+
+    $params = [];
+    parse_str( $_POST['fdata'], $params );
+
+    if (isset($_POST['op']) && $_POST['op'] == 'create') {
+      $status_name = $params["status_name"];
+      $status_description = $params["status_description"];
+      $status_order = $params["status_order"];
+      $status_code = erp_rec_sanitize_string($status_name);
+      $wpdb->insert(
+        $status_table_name, //table
+        array('code' => $status_code, 'title' => $status_name, 'description' => $status_description, 'status_order' => $status_order), //data
+        array('%s', '%s', '%s', '%d') //data format			
+      );
+      
+      $status_id = $wpdb->insert_id;
+
+      $res = array(
+        "message" => __( 'Status created successfully', 'wp-erp-rec' ),
+        "data" => array(
+          "status_id" => $status_id,
+          "status_name" => $status_name,
+          "status_description" => $status_description,
+          "status_order" => $status_order,
+          "status_code" => $status_code
+        )
+      );
+
+      $this->send_success( json_encode($res) );
     }
   }
 
