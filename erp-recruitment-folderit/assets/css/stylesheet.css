@@ -198,6 +198,12 @@ dl.dl-custom h5 {
   color: inherit !important;
 }
 
+.form-control-nobg {
+  border: 0 !important;
+  background: inherit !important;
+  color: inherit !important;
+}
+
 .scrollable {
   max-height: 600px;
   overflow-y: auto;
@@ -2636,4 +2642,56 @@ fieldset[disabled] .btn-toggle.focus {
 .btn-toggle .badge {
   color: #337ab7;
   background-color: #fff;
+}
+
+input[type="number"] {
+  height: 30px;
+}
+
+.button.button-danger {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 13px;
+  line-height: 26px;
+  height: 28px;
+  margin: 0;
+  padding: 0 10px 1px;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  -webkit-appearance: none;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  white-space: nowrap;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.button.button-danger {
+  color: #fff;
+  border-color: #d43f3a;
+  background: #d9534f;
+  text-decoration: none;
+  text-shadow: 0 -1px 1px #C4302C, 1px 0 1px #C4302C, 0 1px 1px #C4302C, -1px 0 1px #C4302C;
+  box-shadow: 0 1px 0 #C4302C;
+  vertical-align: top;
+}
+
+.button.button-danger:hover,
+.button.button-danger:focus {
+  background: #c9302c;
+  border-color: #ac2925;
+  color: #fff;
+}
+
+.button.button-danger:active:hover {
+  color: #fff;
+  background-color: #ac2925;
+  border-color: #761c19;
+}
+
+.button.button-danger:focus {
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.2);
+  box-shadow: 1px 1px 1px rgba(0,0,0,.2);
 }
