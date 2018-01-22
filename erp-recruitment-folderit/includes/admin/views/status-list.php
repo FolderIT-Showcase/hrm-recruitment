@@ -82,6 +82,7 @@ $rows = $wpdb->get_results("SELECT id,code,title,description,status_order FROM {
 
                   $newRow = '<tr id="status_id_'+res.data.status_id+'"><form method="post" class="form-statuses">';
                   $newRow += '<input type="hidden" name="status_id" value="'+res.data.status_id+'">';
+                  $newRow += '<input type="hidden" name="status_old_code" value="'+res.data.status_code+'">';
                   $newRow += '<?php wp_nonce_field('wp_erp_rec_status_nonce', '_status_nonce'); ?>';
                   $newRow += '<td><input type="text" class="form-control form-control-nobg" name="status_name" defaultValue="'+res.data.status_name+'" value="'+res.data.status_name+'" disabled required/></td>';
                   $newRow += '<td><input type="text" class="form-control form-control-nobg" name="status_description" defaultValue="'+res.data.status_description+'" value="'+res.data.status_description+'" disabled required/></td>';

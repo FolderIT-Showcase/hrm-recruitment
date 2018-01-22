@@ -40,6 +40,7 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
               <tr id="term_id_<?php echo $row->id; ?>">
                 <form method="post" class="form-terms">
                   <input type="hidden" name="term_id" value="<?php echo $row->id; ?>">
+                  <input type="hidden" name="term_old_slug" value="<?php echo $row->slug; ?>"/>
                   <?php wp_nonce_field('wp_erp_rec_term_nonce', '_term_nonce'); ?>
                   <td><input type="text" class="form-control form-control-nobg" name="term_name" defaultValue="<?php echo $row->name; ?>" value="<?php echo $row->name; ?>" disabled required/></td>
                   <td><input type="text" class="form-control form-control-nobg" name="term_slug" value="<?php echo $row->slug; ?>" disabled/></td>
@@ -75,6 +76,7 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
 
                   $newRow = '<tr id="term_id_'+res.data.term_id+'"><form method="post" class="form-terms">';
                   $newRow += '<input type="hidden" name="term_id" value="'+res.data.term_id+'">';
+                  $newRow += '<input type="hidden" name="term_old_slug" value="'+res.data.term_slug+'">';
                   $newRow += '<?php wp_nonce_field('wp_erp_rec_term_nonce', '_term_nonce'); ?>';
                   $newRow += '<td><input type="text" class="form-control form-control-nobg" name="term_name" defaultValue="'+res.data.term_name+'" value="'+res.data.term_name+'" disabled required/></td>';
                   $newRow += '<td><input type="text" class="form-control form-control-nobg" name="term_slug" value="'+res.data.term_slug+'" disabled/></td></form>';
@@ -185,6 +187,7 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
 
                   that.parent().parent().find("[name='term_name']").prop("disabled", true).attr("defaultvalue", res.data.term_name);
                   that.parent().parent().find("[name='term_slug']").val(res.data.term_slug);
+                  that.parent().parent().find("[name='term_old_slug']").val(res.data.term_slug);
                   that.parent().parent().find("[type='text']").addClass("form-control-nobg");
                   that.prop("disabled", false);
                   that.siblings().prop("disabled", false);
