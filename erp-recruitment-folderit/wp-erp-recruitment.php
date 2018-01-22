@@ -201,6 +201,24 @@ class WeDevs_ERP_Recruitment {
       $emails['HR_Manager'] = new WeDevs\ERP\ERP_Recruitment\Emails\HR_Manager();
       return apply_filters('erp_hrm_email_classes', $emails);
     });
+
+    add_filter('erp_settings_email_section_fields', function($fields) {
+      array_pop($fields['smtp']);
+
+      $fields['smtp'][] = [
+        'title' => __( 'Default Subject', 'wp-erp-rec' ),
+        'id'    => 'default_subject',
+        'type'  => 'text',
+        'desc'  => __( 'Default Subject', 'wp-erp-rec' ),
+      ];
+
+      $fields['smtp'][] = [
+        'type' => 'sectionend',
+        'id'   => 'script_styling_options'
+      ];
+
+      return $fields;
+    });
   }
 
   /**
@@ -564,7 +582,7 @@ class WeDevs_ERP_Recruitment {
   public function add_candidate() {
     require_once WPERP_REC_VIEWS . '/add-candidate.php';
   }
-  
+
   /*
      * Lista de tags (terms)
      * @since 1.0.8
@@ -573,7 +591,7 @@ class WeDevs_ERP_Recruitment {
   public function terms_list_page() {
     require_once WPERP_REC_VIEWS . '/terms-list.php';
   }
-  
+
   /*
      * Include term detail page
      * @since 1.0.8
@@ -582,7 +600,7 @@ class WeDevs_ERP_Recruitment {
   public function term_detail() {
     require_once WPERP_REC_VIEWS . '/view-term-details.php';
   }
-  
+
   /*
      * Lista de estados
      * @since 1.0.8
@@ -591,7 +609,7 @@ class WeDevs_ERP_Recruitment {
   public function status_list_page() {
     require_once WPERP_REC_VIEWS . '/status-list.php';
   }
-  
+
   /*
      * Include status detail page
      * @since 1.0.9
@@ -635,7 +653,7 @@ class WeDevs_ERP_Recruitment {
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
-        
+
         break;
       case 'job-openings_page_todo-calendar':
         erp_get_js_template( WPERP_REC_JS_TMPL . '/todo-template.php', 'erp-rec-todo-template' );

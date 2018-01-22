@@ -566,7 +566,7 @@
           extraClass: 'medium',
           onReady: function (modal) {
             modal.enableButton();
-            $('#email_to').val($('#applicant_email_address').text());
+            $('#email_to').val($('#email').val());
           },
           onSubmit: function (modal) {
             modal.disableButton();

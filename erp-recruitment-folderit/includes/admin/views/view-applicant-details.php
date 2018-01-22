@@ -769,10 +769,10 @@ if ( isset($applicant_information[0]) ) {
                     <div class="panel panel-default calendar-list-item" v-for="rt in interviewData">
                       <div class="panel-heading clearfix">
                         <div class="row">
-                          <div class="col-lg-4 col-xs-12 text-center-xs">
+                          <div class="col-lg-6 col-xs-12 text-center-xs">
                             <h3 id="interview-type-title-{{rt.id}}" style="margin:10px;">{{ rt.type_detail }}</h3>
                           </div>
-                          <div class="col-lg-4 col-xs-12 text-right-not-xs text-center-xs pull-right">
+                          <div class="col-lg-6 col-xs-12 text-right-not-xs text-center-xs pull-right">
                             <div class="" style="margin:10px 0px 0px 0px;">
                               <button class="btn btn-primary btn-labeled btn-sm" v-on:click="feedbackInterview(rt.id)">
                                 <input id="interviewfeedbackid-{{rt.id}}" type="hidden" value="{{rt.id}}">

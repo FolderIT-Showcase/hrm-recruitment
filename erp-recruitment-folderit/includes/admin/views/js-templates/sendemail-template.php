@@ -1,31 +1,41 @@
 <div class="row">
   <div class="col-lg-12 form-group">
-    <?php erp_html_form_input(array(
-  'label'       => __('Subject', 'wp-erp-rec'),
-  'name'        => 'email_subject',
-  'value'       => '',
-  'type'        => 'text',
-  'id'          => 'email_subject',
-  'class'       => 'form-control',
-  'required'    => true
-)); ?>
+    <?php
+
+    $erp_email_settings = get_option( 'erp_settings_erp-email_smtp', [] );
+
+    if ( ! isset( $erp_email_settings['default_subject'] ) ) {
+      $default_subject = '';
+    } else {
+      $default_subject = $erp_email_settings['default_subject'];
+    }
+
+    erp_html_form_input(array(
+      'label'       => __('Subject', 'wp-erp-rec'),
+      'name'        => 'email_subject',
+      'value'       => $default_subject,
+      'type'        => 'text',
+      'id'          => 'email_subject',
+      'class'       => 'form-control',
+      'required'    => true
+    )); ?>
   </div>
 
   <div class="col-lg-12 form-group">
     <?php erp_html_form_input(array(
-      'label'       => __('Message', 'wp-erp-rec'),
-      'name'        => 'email_message',
-      'value'       => '',
-      'type'        => 'textarea',
-      'id'          => 'email_message',
-      'class'       => 'form-control',
-      'custom_attr' => array(
-          'rows'  => 10,
-          'media' => true,
-          'teeny' => false
-      ),
-      'required'    => true
-    )); ?>
+  'label'       => __('Message', 'wp-erp-rec'),
+  'name'        => 'email_message',
+  'value'       => '',
+  'type'        => 'textarea',
+  'id'          => 'email_message',
+  'class'       => 'form-control',
+  'custom_attr' => array(
+    'rows'  => 10,
+    'media' => true,
+    'teeny' => false
+  ),
+  'required'    => true
+)); ?>
   </div>
 </div>
 

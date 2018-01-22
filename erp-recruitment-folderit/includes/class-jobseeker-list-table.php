@@ -220,10 +220,10 @@ class Jobseeker_List_Table extends \WP_List_Table {
 //          $terms_cloud .= '<span class="select2 select2-container select2-container--default select2-container--disabled">';
 //          $terms_cloud .= '<span class="selection">';
 //          $terms_cloud .= '<span class="select2-selection select2-selection--multiple" style="background-color:transparent;border-width:0px;">';
-          $terms_cloud .= '<ul style="padding:0px;margin:0px;">';
+          $terms_cloud .= '<ul class="skills-list">';
           $skills = json_decode(str_replace('&quot;', '"', $item['skills']), true)['terms'];
           foreach($skills as $skill) {
-            $terms_cloud .= '<li style="margin:2px;padding:0px 5px;border:1px solid #337ab7;border-radius:4px;color:#337ab7;background-color:#fff;display:inline-block;">'.$terms[$skill].'</li>';
+            $terms_cloud .= '<li>'.$terms[$skill].'</li>';
             //            array_push($terms_names, $terms[$skill]);
           }
           //          return implode(", ", $terms_names);
