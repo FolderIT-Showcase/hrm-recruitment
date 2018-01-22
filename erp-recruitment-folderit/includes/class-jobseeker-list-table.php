@@ -124,7 +124,6 @@ class Jobseeker_List_Table extends \WP_List_Table {
       //      'avg_rating'        => __('Rating', 'wp-erp-rec'),
       'summary_rating'    => __('Summary Rating Column', 'wp-erp-rec'),
       'remote'            => __('Remote', 'wp-erp-rec'),
-      'skills'            => __('Skills', 'wp-erp-rec'),
       'job_title'         => __('Applied Job', 'wp-erp-rec'),
       'stage'             => __('Stage', 'wp-erp-rec'),
       'interview_rrhh'    => __('RRHH Interview', 'wp-erp-rec'),
@@ -132,6 +131,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'interview_english' => __('English Interview', 'wp-erp-rec'),
       'project'           => __('Project', 'wp-erp-rec'),
       'status'            => __('Status', 'wp-erp-rec'),
+      'skills'            => __('Skills', 'wp-erp-rec'),
       'action'            => __('Action', 'wp-erp-rec')
     );
 
@@ -217,20 +217,20 @@ class Jobseeker_List_Table extends \WP_List_Table {
         if(!empty($item['skills'])) {
           $terms_names = [];
           $terms_cloud = '';
-          $terms_cloud .= '<span class="select2 select2-container select2-container--default select2-container--disabled">';
-          $terms_cloud .= '<span class="selection">';
-          $terms_cloud .= '<span class="select2-selection select2-selection--multiple" style="background-color:transparent;border-width:0px;">';
-          $terms_cloud .= '<ul class="select2-selection__rendered" style="padding:0px;">';
+//          $terms_cloud .= '<span class="select2 select2-container select2-container--default select2-container--disabled">';
+//          $terms_cloud .= '<span class="selection">';
+//          $terms_cloud .= '<span class="select2-selection select2-selection--multiple" style="background-color:transparent;border-width:0px;">';
+          $terms_cloud .= '<ul style="padding:0px;margin:0px;">';
           $skills = json_decode(str_replace('&quot;', '"', $item['skills']), true)['terms'];
           foreach($skills as $skill) {
-            $terms_cloud .= '<li class="select2-selection__choice" style="margin:2px;border-color:#337ab7;color:#337ab7;background-color:#fff;">'.$terms[$skill].'</li>';
+            $terms_cloud .= '<li style="margin:2px;padding:0px 5px;border:1px solid #337ab7;border-radius:4px;color:#337ab7;background-color:#fff;display:inline-block;">'.$terms[$skill].'</li>';
             //            array_push($terms_names, $terms[$skill]);
           }
           //          return implode(", ", $terms_names);
           $terms_cloud .= '</ul>';
-          $terms_cloud .= '</span>';
-          $terms_cloud .= '</span>';
-          $terms_cloud .= '</span>';
+//          $terms_cloud .= '</span>';
+//          $terms_cloud .= '</span>';
+//          $terms_cloud .= '</span>';
           return $terms_cloud;
         }
         break;
