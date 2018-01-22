@@ -56,9 +56,11 @@
                     <h4><?php echo __('Filtering by position: ', 'wp-erp-rec') . ' ' . $job_title; ?> <small><a href="<?php echo admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list'.$filter_url); ?>">[<?php _e('Remove filter', 'wp-erp-rec'); ?>]</a></small></h4>
                     <?php endif; ?>
                     <div id="candidate-overview-zone">
+<!--
                       <a type="button" class="btn btn-default btn-arrow-right" href="<?php echo $all_candidate_link; ?>">
                         <span class="icon-arrow-right"><b><?php echo $total_applicants;?></b><br/><small><?php _e(' Candidates', 'wp-erp-rec'); ?></small></span>
                       </a>
+-->
                       <?php
                       if(empty($jobid)) {
                         $stages = erp_rec_get_all_stages();
