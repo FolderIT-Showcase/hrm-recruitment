@@ -2736,3 +2736,14 @@ input[type="number"] {
   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
   background-color: #0085ba;
 }
+
+.table-scroll-top-sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding-top: 49px;
+}
+
+.table-scroll-top-sticky + .table-scroll {
+  padding-top: 20px;
+}

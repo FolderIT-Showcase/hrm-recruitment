@@ -23,6 +23,9 @@ class Jobseeker_List_Table extends \WP_List_Table {
 
     $this->screen->render_screen_reader_content( 'heading_list' );
 ?>
+<div id="table-scroll-top-navbar" class="table-scroll-top" style="height:20px;width:100%;overflow-x:auto;overflow-y:hidden;">
+  <div class="table-scroll-top-div" style="height:20px;"></div>
+</div>
 <div class="table-scroll">
   <table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
     <thead>
@@ -46,6 +49,36 @@ class Jobseeker_List_Table extends \WP_List_Table {
 
   </table>
 </div>
+<script>
+  $(function () {
+    $('.table-scroll-top').on('scroll', function (e) {
+      $('.table-scroll').scrollLeft($('.table-scroll-top').scrollLeft());
+    }); 
+    $('.table-scroll').on('scroll', function (e) {
+      $('.table-scroll-top').scrollLeft($('.table-scroll').scrollLeft());
+    });
+  });
+  $(window).on('load', function (e) {
+    $('.table-scroll-top-div').width($('.table-scroll > table').width());
+  });
+</script>
+<script>
+  window.onscroll = function() {myFunction()};
+
+  var navbar = document.getElementById("table-scroll-top-navbar");
+  var sticky = navbar.offsetTop;
+
+  function myFunction() {
+    var parentWidth = navbar.parentElement.scrollWidth;
+    if (window.pageYOffset >= sticky + 27) {
+      navbar.classList.add("table-scroll-top-sticky");
+      navbar.style.width = parentWidth + "px";
+    } else {
+      navbar.classList.remove("table-scroll-top-sticky");
+      navbar.style.width = "100%";
+    }
+  }
+</script>
 <?php
     $this->display_tablenav( 'bottom' );
   }
@@ -217,20 +250,12 @@ class Jobseeker_List_Table extends \WP_List_Table {
         if(!empty($item['skills'])) {
           $terms_names = [];
           $terms_cloud = '';
-//          $terms_cloud .= '<span class="select2 select2-container select2-container--default select2-container--disabled">';
-//          $terms_cloud .= '<span class="selection">';
-//          $terms_cloud .= '<span class="select2-selection select2-selection--multiple" style="background-color:transparent;border-width:0px;">';
           $terms_cloud .= '<ul class="skills-list">';
           $skills = json_decode(str_replace('&quot;', '"', $item['skills']), true)['terms'];
           foreach($skills as $skill) {
             $terms_cloud .= '<li>'.$terms[$skill].'</li>';
-            //            array_push($terms_names, $terms[$skill]);
           }
-          //          return implode(", ", $terms_names);
           $terms_cloud .= '</ul>';
-//          $terms_cloud .= '</span>';
-//          $terms_cloud .= '</span>';
-//          $terms_cloud .= '</span>';
           return $terms_cloud;
         }
         break;
