@@ -521,16 +521,20 @@ if (jQuery('#section-interview').length > 0) {
             jQuery('#interview_application_id').val(application_id);
 
             // Feedback de la entrevista
-            var feedbackCommentText = jQuery('#feedback-comment-text-' + invID).text();
-            jQuery('#feedback_comment').val(feedbackCommentText);
+            var intv_type = jQuery('#interview-type-name-' + invID).val();
+              var feedbackCommentText = jQuery('#feedback-comment-text-' + invID).text();
+              jQuery('#feedback_comment').val(feedbackCommentText);
 
-            var feedbackEnglishLevel = jQuery('#feedback-english-level-' + invID).val();
-            console.log('feedbackEnglishLevel: ' + feedbackEnglishLevel);
-            jQuery("#feedback_english_level").val(feedbackEnglishLevel);
+            if(intv_type !== 'english') {
+              jQuery('#feedback_english_level').parent().remove();
+              jQuery('#feedback_english_conversation').parent().remove();
+            } else {
+              var feedbackEnglishLevel = jQuery('#feedback-english-level-' + invID).val();
+              jQuery("#feedback_english_level").val(feedbackEnglishLevel);
 
-            var feedbackEnglishConversation = jQuery('#feedback-english-conversation-' + invID).val();
-            console.log('feedbackEnglishConversation: ' + feedbackEnglishConversation);
-            jQuery('#feedback_english_conversation').val(feedbackEnglishConversation);
+              var feedbackEnglishConversation = jQuery('#feedback-english-conversation-' + invID).val();
+              jQuery('#feedback_english_conversation').val(feedbackEnglishConversation);
+            }
           },
           onSubmit: function (modal) {
             modal.disableButton();

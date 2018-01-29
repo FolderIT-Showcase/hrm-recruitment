@@ -609,6 +609,7 @@
           onReady: function (modal) {
             modal.enableButton();
             $('#email_to').val($('#email').val());
+            $('#email_to_name').val($('#first_name').val() + " " + $('#last_name').val());
           },
           onSubmit: function (modal) {
             modal.disableButton();
