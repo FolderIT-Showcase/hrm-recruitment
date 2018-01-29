@@ -221,7 +221,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
       $interview_type_name = $this->interview_types_names[$column_name];
       $interview_type_identifier = $this->interview_types_identifiers[$column_name];
 
-      $query = "SELECT app_iv.id, app_iv.feedback_comment,
+      $query = "SELECT app_iv.id, app_iv.feedback_comment, app_iv.application_id,
         app_iv.feedback_english_level, app_iv.feedback_english_conversation, app_iv.start_date_time, 
         types.type_detail, types.type_identifier,
         (SELECT group_concat(user.display_name SEPARATOR ', ')
@@ -234,40 +234,47 @@ class Jobseeker_List_Table extends \WP_List_Table {
         ON app_iv.interview_internal_type_id = types.id
         WHERE app_iv.application_id=%d
         AND types.type_identifier='%s'
-        ORDER BY app_iv.id";
+        ORDER BY app_iv.start_date_time";
 
       $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['applicationid'], $interview_type_identifier ), ARRAY_A );
 
-      $interview_tooltip = 'title="' . sprintf(__('Missing %s Interview', "wp-erp-rec"), $interview_type_name) . '"';
+      $interview_tooltip = 'title="' . sprintf(__('Missing %s Interview', "wp-erp-rec"), $interview_type_name);
       $interview_count = 0;
       $interview_checked = "";
+      $interview_feedback = "";
 
       foreach ( $idata as $intv ) {
         $intv_date = date('d/m/Y g:i A', strtotime($intv["start_date_time"]));
         $interview_active_style = $this->interview_style;
         $interview_count++;
-        $interview_tooltip = 'title="';
-        $interview_tooltip .= __('Date and Time : ', 'wp-erp-rec').$intv_date.'<br/>';
-        $interview_tooltip .= __('Interviewers : ', 'wp-erp-rec').$intv["interviewers_names"].'<hr/>';
 
-        if (trim($intv['feedback_comment']) !== '') {
+        if (trim($intv['feedback_comment']) !== '' && !empty($intv['feedback_comment'])) {
           $interview_checked = "checked";
+          $interview_tooltip = 'title="';
+          $interview_tooltip .= __('Date and Time : ', 'wp-erp-rec').$intv_date.'<br/>';
+          $interview_tooltip .= __('Interviewers : ', 'wp-erp-rec').$intv["interviewers_names"].'<hr/>';
+          $interview_feedback = "";
           if ($intv['type_identifier'] == "english") {
-            $interview_tooltip .= __('Feedback English Level : ', 'wp-erp-rec').$this->english_levels[$intv["feedback_english_level"]].'<br/>';
-            $interview_tooltip .= __('Feedback English Conversation : ', 'wp-erp-rec').$this->english_conversation[$intv["feedback_english_conversation"]].'<hr/>';
+            $interview_feedback .= __('Feedback English Level : ', 'wp-erp-rec').$this->english_levels[$intv["feedback_english_level"]].'<br/>';
+            $interview_feedback .= __('Feedback English Conversation : ', 'wp-erp-rec').$this->english_conversation[$intv["feedback_english_conversation"]].'<hr/>';
           }
-          $interview_tooltip .= nl2br(trim(htmlspecialchars($intv["feedback_comment"])));
-        } else {
-          $interview_tooltip .= sprintf(__('%s Interview Scheduled', "wp-erp-rec"),$this->interview_types_names[$column_name]);
+          $interview_feedback .= nl2br(trim(htmlspecialchars($intv["feedback_comment"])));
+          $interview_tooltip .= $interview_feedback;
+        } else if (trim($interview_feedback) === "") {
+          $interview_tooltip = 'title="';
+          $interview_tooltip .= __('Date and Time : ', 'wp-erp-rec').$intv_date.'<br/>';
+          $interview_tooltip .= __('Interviewers : ', 'wp-erp-rec').$intv["interviewers_names"].'<hr/>';
+          $interview_feedback = sprintf(__('%s Interview Scheduled', "wp-erp-rec"),$this->interview_types_names[$column_name]);
+          $interview_tooltip .= $interview_feedback;
         }
-
-        if($interview_count > 1) {
-          $interview_count_more = $interview_count - 1;
-          $interview_tooltip .= '<br/><i><small>'.sprintf($interview_count_more==1?__("%d more interview...", "wp-erp-rec"):__("%d more interviews...", "wp-erp-rec"),$interview_count_more).'</i></small>';
-        }
-
-        $interview_tooltip .= '"';
       }
+
+      if($interview_count > 1) {
+        $interview_count_more = $interview_count - 1;
+        $interview_tooltip .= '<br/><i><small>'.sprintf($interview_count_more==1?__("%d more interview...", "wp-erp-rec"):__("%d more interviews...", "wp-erp-rec"),$interview_count_more).'</i></small>';
+      }
+
+      $interview_tooltip .= '"';
 
       return '<input type="checkbox" ' . $interview_checked . ' style="zoom:1.3;' . $interview_active_style. '" disabled/><div data-html="true" data-toggle="tooltip"'. $interview_tooltip .' style="position:absolute;z-index:99;width:24px;height:24px;float:left;display:inline;margin-left:-24px;"></div>';
     }
