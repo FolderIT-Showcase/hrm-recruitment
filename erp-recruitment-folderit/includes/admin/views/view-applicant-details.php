@@ -560,23 +560,29 @@ if ( isset($applicant_information[0]) ) {
             <div class="col-lg-6 col-xs-12">
               <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
                 <section id="section-comms" class="postbox">
-                  <span class="hndle-toogle-button"></span>
+                  <span class="hndle-toogle-button" style="width:27px;padding:8px 2px;"></span>
                   <div class="section-header">
-                    <h2 class="hndle"><span><?php _e('Comms', 'wp-erp-rec'); ?></span></h2>
+                    <h2 class="hndle">
+                      <span><?php _e('Comms', 'wp-erp-rec'); ?></span>
+                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
+                      <span class="spinner" style="margin-top:0px;"></span>
+                    </h2>
                   </div>
                   <div class="section-content toggle-metabox-show full-width">
                     <div id="comms_form_wrapper" class="not-loaded">
                       <div class="col-lg-12 application-comms-list scrollable">
                         <article v-for="comm in comms">
                           <div class="panel panel-default panel-comms">
-                            <div class="panel-heading">
-                              <span class="pull-right" style="line-height:1.2;">{{ comm.comm_date }}</span>
-                              <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?>{{ comm.comm_author }}</b> <span>({{ comm.comm_from }})</span></h5>
-                              <h5 class="panel-heading-overflow" style="margin-top:4px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); echo $applicant_information[0]['first_name'] . ' ' . $applicant_information[0]['last_name']; ?></b> <span>({{ comm.comm_to }})</span></h5>
-                              <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                            <div class="panel-heading" data-toggle="collapse" data-target="#comm-collapse-{{comm.id}}">
+                                <span class="pull-right" style="line-height:1.2;">{{ comm.comm_date }}</span>
+                                <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?>{{ comm.comm_author }}</b> <span>({{ comm.comm_from }})</span></h5>
+                                <h5 class="panel-heading-overflow" style="margin-top:4px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); ?>{{ comm.comm_to_name }}</b> <span>({{ comm.comm_to }})</span></h5>
+                                <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
                             </div>
-                            <div class="panel-body">
-                              <p>{{ comm.comm_message }}</p>
+                            <div id="comm-collapse-{{comm.id}}" class="panel-collapse collapse">
+                              <div class="panel-body" style="max-height:300px;overflow-y:auto;">
+                                <div style="white-space:pre;" v-html="comm.comm_message"></div>
+                              </div>
                             </div>
                           </div>
                         </article>

@@ -296,6 +296,21 @@ dl.dl-custom h5 {
   float: right;
 }
 
+.panel-comms .panel-heading {
+  cursor: pointer;
+  transition: 0.2s all;
+}
+
+.panel-comms .panel-heading:hover {
+  background-color: #0085ba;
+  color: white;
+}
+
+.panel-comms .panel-heading:hover li b.fn,
+.panel-comms .panel-heading:hover b.fn {
+  color: white;
+}
+
 .application-comment-list li .comment-content {
   float: left;
   width: 94%;

@@ -5,6 +5,7 @@ use WeDevs\ERP\Framework\Traits\Ajax;
 use WeDevs\ERP\Framework\Traits\Hooker;
 use \DateTime;
 use \DateTimeZone;
+use \JJG\Imap as Imap;
 
 /**
  * Ajax handler
@@ -37,6 +38,9 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_wp-erp-rec-manager-comment', 'manager_comment' );
     $this->action( 'wp_ajax_recruitment_form_builder', 'recruitment_form_builder_handler' );
     $this->action( 'wp_ajax_wp-erp-rec-serial-personal-fields', 'sort_personal_fields' );
+
+    // emails
+    $this->action( 'wp_ajax_wp-erp-rec-retrieve-emails', 'retrieve_imap_emails_from' );    
     $this->action( 'wp_ajax_wp-erp-rec-send-email', 'send_email' );
 
     // to-do
@@ -341,7 +345,7 @@ class Ajax_Handler {
      *
      * @return void
      */
-  public function get_comms() {    
+  public function get_comms() {
     if ( isset( $_GET['application_id'] ) ) {
       global $wpdb;
 
@@ -374,6 +378,123 @@ class Ajax_Handler {
     } else {
       $this->send_success( [ ] );
     }
+  }
+
+  /**
+     * Read all emails from specified address
+     *
+     * @since  1.0.9
+     *
+     * @return void
+     */
+  public function retrieve_imap_emails_from() {
+    global $wpdb;
+
+    if(isset( $_POST['application_id'] )) {
+      $application_id = $_POST['application_id'];
+    }
+
+    // Conexión via IMAP
+    $erp_email_settings = get_option( 'erp_settings_erp-email_imap', [] );
+
+    if (!isset($application_id) || empty($application_id)) {
+      $this->send_error(__('Missing Application ID','wp-erp-rec'));
+    } else if (!isset($erp_email_settings['enable_imap']) || $erp_email_settings['enable_imap'] !== 'yes') {
+      $this->send_error(__('IMAP settings not enabled','wp-erp-rec'));
+    }
+
+    $query = "SELECT people.email as email, meta.meta_value as other_email
+      FROM {$wpdb->prefix}erp_application as app
+      LEFT JOIN {$wpdb->prefix}erp_peoples as people
+      ON app.applicant_id=people.id
+      LEFT JOIN {$wpdb->prefix}erp_peoplemeta as meta
+      ON app.applicant_id=meta.erp_people_id AND meta_key='other_email'
+      WHERE app.id={$application_id}";
+
+    $applicant_info = $wpdb->get_row( $query, ARRAY_A );
+
+    $applicant_main_email = $applicant_info['email'];
+    $applicant_other_email = $applicant_info['other_email'];
+
+    if(empty($applicant_main_email)) {
+      $this->send_error(__('Missing Applicant Email','wp-erp-rec'));
+    }
+
+    if($applicant_main_email === $applicant_other_email) {
+      $applicant_other_email = '';
+    }
+
+    $mailbox = new Imap(
+      $erp_email_settings['mail_server'],
+      $erp_email_settings['username'],
+      $erp_email_settings['password'],
+      $erp_email_settings['port'],
+      (isset($erp_email_settings['authentication'])?true:false), // Protocolo SSL
+      "INBOX",
+      false, // No validar certificado
+      true); // Sólo lectura
+
+    function retrieve_messages($mailbox, $email, $application_id) {
+      global $wpdb;
+      $criteria = 'FROM "'.$email.'"';
+      $emails_seq = $mailbox->searchMessages($criteria);
+      $current_user = wp_get_current_user();
+
+      if($emails_seq) {
+        //rsort($emails_seq);
+
+        foreach($emails_seq as $email_number) {
+          $message = $mailbox->getMessage($email_number);
+
+          $query = "SELECT comms.id
+          FROM {$wpdb->prefix}erp_application_comms as comms
+          WHERE comms.comm_uid={$message['uid']} AND comms.application_id={$application_id}";
+
+          if ( $wpdb->get_var( $query ) <= 0 ) {
+            $data = array(
+              'application_id' => $application_id,
+              'user_id'        => $current_user->ID,
+
+              'comm_uid'       => $message['uid'],
+              'comm_from'      => $message['from'],
+              'comm_to'        => $message['to'],
+              'comm_author'    => $message['sender'],
+              'comm_to_name'   => $message['receiver'],
+              'comm_subject'   => $message['subject'],
+              'comm_message'   => $message['body'],
+              'comm_date'      => date("Y-m-d H:i:s", strtotime($message['date_sent']))
+            );
+
+            $format = array(
+              '%d',
+              '%d',
+
+              '%d',
+              '%s',
+              '%s',
+              '%s',
+              '%s',
+              '%s',
+              '%s',
+              '%s'
+            );
+
+            $wpdb->insert( $wpdb->prefix . 'erp_application_comms', $data, $format );
+            $comm_id = $wpdb->insert_id;
+          }
+        }
+      }
+    }
+
+    retrieve_messages($mailbox, $applicant_main_email, $application_id);
+
+    if(!empty($applicant_other_email)) {
+      retrieve_messages($mailbox, $applicant_other_email, $application_id);
+    }
+
+    $mailbox->disconnect();
+
+    $this->send_success(__('Emails succesfully retrieved', 'wp-erp-rec'));
   }
 
   /**

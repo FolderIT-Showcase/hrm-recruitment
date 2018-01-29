@@ -218,10 +218,10 @@ if (jQuery('#comment_form_wrapper').length > 0) {
   });
 }
 
-if (jQuery('#comms_form_wrapper').length > 0) {
+if (jQuery('#section-comms').length > 0) {
 
   var commsviewmodel = new Vue({
-    el: "#comms_form_wrapper",
+    el: "#section-comms",
 
     data: {
       comms: [],
@@ -248,10 +248,36 @@ if (jQuery('#comms_form_wrapper').length > 0) {
         }, function (response) {
           if (response.success === true) {
             commsviewmodel.comms = [];
+            var collapseIds = [];
             jQuery.each(response.data, function (k, v) {
               commsviewmodel.comms.push(v);
+              if([0,1,2].indexOf(k) >= 0) {
+                collapseIds.push(v.id);
+              }
+            });
+            $(document).ready(function() {
+              setTimeout(function() {
+                jQuery.each(collapseIds, function(k, v) {
+                  $('#comm-collapse-' + v).collapse('toggle');
+                });
+              }, 1);
             });
             jQuery('#section-comms .spinner').hide();
+          }
+        });
+      },
+      retrieveEmails: function() {
+        jQuery('#section-comms .spinner').show();
+        jQuery('#section-comms .spinner').css({
+          'visibility': 'visible'
+        });
+        jQuery.post(ajaxurl, {
+          action: 'wp-erp-rec-retrieve-emails',
+          application_id: jQuery('#application_id').val()
+        }, function (response) {
+          if (response.success === true) {
+            jQuery('#section-comms .spinner').hide();
+            commsviewmodel.getAllComms();
           }
         });
       }
