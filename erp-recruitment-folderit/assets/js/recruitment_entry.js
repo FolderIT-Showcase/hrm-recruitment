@@ -293,21 +293,30 @@
         $(this).siblings('.section-content').toggleClass('toggle-metabox-hide');
       });
 
-      $('.btn-internal-info').click(function () {
-        $('.btn-internal-info').hide();
-        $('.btn-internal-info-cancel').show();
-        $('.btn-internal-info-save').show();
+      function form_enable(form) {
+        $('.btn-'+form+'-info').hide();
+        $('.btn-'+form+'-info-cancel').show();
+        $('.btn-'+form+'-info-save').show();
 
-        $('#internal_info_form .metadata').prop('disabled', false);
-        $('#internal_info_form .metadata').removeClass('form-control-noborder');
-      });
+        $('#'+form+'_info_form input.metadata').prop('readonly', false);
+        $('#'+form+'_info_form textarea.metadata').prop('readonly', false);
+        $('#'+form+'_info_form select.metadata').prop('disabled', false);
+        $('#'+form+'_info_form input[type="checkbox"].metadata').prop('disabled', false);
+        $('#'+form+'_info_form .metadata').removeClass('form-control-noborder');
+      }
+
+      $('.btn-internal-info').on("click", function() { form_enable('internal'); });
+      $('#internal_info_form .form-control').on("dblclick", function() { form_enable('internal'); });
 
       $('.btn-internal-info-cancel').click(function () {
         $('.btn-internal-info').show();
         $('.btn-internal-info-cancel').hide();
         $('.btn-internal-info-save').hide();
 
-        $('#internal_info_form .metadata').prop('disabled', true);
+        $('#internal_info_form input.metadata').prop('readonly', true);
+        $('#internal_info_form textarea.metadata').prop('readonly', true);
+        $('#internal_info_form select.metadata').prop('disabled', true);
+        $('#internal_info_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#internal_info_form .metadata').addClass('form-control-noborder');
 
         // TODO: restaurar valores originales de campos
@@ -317,7 +326,10 @@
         // Enviar datos a backend y deshabilitar controles
         var formData = $('#internal_info_form').serialize();
 
-        $('#internal_info_form .metadata').prop('disabled', true);
+        $('#internal_info_form input.metadata').prop('readonly', true);
+        $('#internal_info_form textarea.metadata').prop('readonly', true);
+        $('#internal_info_form select.metadata').prop('disabled', true);
+        $('#internal_info_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#internal_info_form .metadata').addClass('form-control-noborder');
         $('#section-internal-info button').prop('disabled', true);
 
@@ -331,7 +343,10 @@
           success: function (res) {
             alertify.success(res);
             $('#section-internal-info button').prop('disabled', false);
-            $('#internal_info_form .metadata').prop('disabled', true);
+            $('#internal_info_form input.metadata').prop('readonly', true);
+            $('#internal_info_form textarea.metadata').prop('readonly', true);
+            $('#internal_info_form select.metadata').prop('disabled', true);
+            $('#internal_info_form input[type="checkbox"].metadata').prop('disabled', true);
             $('#internal_info_form .metadata').addClass('form-control-noborder');
             $('.btn-internal-info').show();
             $('.btn-internal-info-cancel').hide();
@@ -340,7 +355,10 @@
           error: function (error) {
             alert(error);
             $('#section-internal-info button').prop('disabled', false);
-            $('#internal_info_form .metadata').prop('disabled', false);
+            $('#internal_info_form input.metadata').prop('readonly', false);
+            $('#internal_info_form textarea.metadata').prop('readonly', false);
+            $('#internal_info_form select.metadata').prop('disabled', false);
+            $('#internal_info_form input[type="checkbox"].metadata').prop('disabled', false);
             $('#internal_info_form .metadata').removeClass('form-control-noborder');
           }
         });
@@ -354,21 +372,18 @@
         }
       });
 
-      $('.btn-personal-info').click(function () {
-        $('.btn-personal-info').hide();
-        $('.btn-personal-info-cancel').show();
-        $('.btn-personal-info-save').show();
-
-        $('#personal_info_form .metadata').prop('disabled', false);
-        $('#personal_info_form .metadata').removeClass('form-control-noborder');
-      });
+      $('.btn-personal-info').on("click", function() { form_enable('personal'); });
+      $('#personal_info_form .form-control').on("dblclick", function() { form_enable('personal'); });
 
       $('.btn-personal-info-cancel').click(function () {
         $('.btn-personal-info').show();
         $('.btn-personal-info-cancel').hide();
         $('.btn-personal-info-save').hide();
 
-        $('#personal_info_form .metadata').prop('disabled', true);
+        $('#personal_info_form input.metadata').prop('readonly', true);
+        $('#personal_info_form textarea.metadata').prop('readonly', true);
+        $('#personal_info_form select.metadata').prop('disabled', true);
+        $('#personal_info_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#personal_info_form .metadata').addClass('form-control-noborder');
 
         // TODO: restaurar valores originales de campos
@@ -378,7 +393,10 @@
         // Enviar datos a backend y deshabilitar controles
         var formData = $('#personal_info_form').serialize();
 
-        $('#personal_info_form .metadata').prop('disabled', true);
+        $('#personal_info_form input.metadata').prop('readonly', true);
+        $('#personal_info_form textarea.metadata').prop('readonly', true);
+        $('#personal_info_form select.metadata').prop('disabled', true);
+        $('#personal_info_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#personal_info_form .metadata').addClass('form-control-noborder');
         $('#section-personal-info button').prop('disabled', true);
 
@@ -392,7 +410,10 @@
           success: function (res) {
             alertify.success(res);
             $('#section-personal-info button').prop('disabled', false);
-            $('#personal_info_form .metadata').prop('disabled', true);
+            $('#personal_info_form input.metadata').prop('readonly', true);
+            $('#personal_info_form textarea.metadata').prop('readonly', true);
+            $('#personal_info_form select.metadata').prop('disabled', true);
+            $('#personal_info_form input[type="checkbox"].metadata').prop('disabled', true);
             $('#personal_info_form .metadata').addClass('form-control-noborder');
             $('.btn-personal-info').show();
             $('.btn-personal-info-cancel').hide();
@@ -403,7 +424,10 @@
           error: function (error) {
             alert(error);
             $('#section-personal-info button').prop('disabled', false);
-            $('#personal_info_form .metadata').prop('disabled', false);
+            $('#personal_info_form input.metadata').prop('readonly', false);
+            $('#personal_info_form textarea.metadata').prop('readonly', false);
+            $('#personal_info_form select.metadata').prop('disabled', false);
+            $('#personal_info_form input[type="checkbox"].metadata').prop('disabled', false);
             $('#personal_info_form .metadata').removeClass('form-control-noborder');
           }
         });
@@ -417,21 +441,30 @@
         }
       });
 
-      $('.btn-summary').click(function () {
+      function summary_enable() {
         $('.btn-summary').hide();
         $('.btn-summary-cancel').show();
         $('.btn-summary-save').show();
 
-        $('#summary_form .metadata').prop('disabled', false);
+        $('#summary_form input.metadata').prop('readonly', false);
+        $('#summary_form textarea.metadata').prop('readonly', false);
+        $('#summary_form select.metadata').prop('disabled', false);
+        $('#summary_form input[type="checkbox"].metadata').prop('disabled', false);
         $('#summary_form .metadata').removeClass('form-control-noborder');
-      });
+      }
+
+      $('.btn-summary').on("click", summary_enable);
+      $('#summary_form .form-control').on("dblclick", summary_enable);
 
       $('.btn-summary-cancel').click(function () {
         $('.btn-summary').show();
         $('.btn-summary-cancel').hide();
         $('.btn-summary-save').hide();
 
-        $('#summary_form .metadata').prop('disabled', true);
+        $('#summary_form input.metadata').prop('readonly', true);
+        $('#summary_form textarea.metadata').prop('readonly', true);
+        $('#summary_form select.metadata').prop('disabled', true);
+        $('#summary_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#summary_form .metadata').addClass('form-control-noborder');
 
         // TODO: restaurar valores originales de campos
@@ -441,7 +474,10 @@
         // Enviar datos a backend y deshabilitar controles
         var formData = $('#summary_form').serialize();
 
-        $('#summary_form .metadata').prop('disabled', true);
+        $('#summary_form input.metadata').prop('readonly', true);
+        $('#summary_form textarea.metadata').prop('readonly', true);
+        $('#summary_form select.metadata').prop('disabled', true);
+        $('#summary_form input[type="checkbox"].metadata').prop('disabled', true);
         $('#summary_form .metadata').addClass('form-control-noborder');
         $('#section-summary button').prop('disabled', true);
 
@@ -454,7 +490,10 @@
           success: function (res) {
             alertify.success(res);
             $('#section-summary button').prop('disabled', false);
-            $('#summary_form .metadata').prop('disabled', true);
+            $('#summary_form input.metadata').prop('readonly', true);
+            $('#summary_form textarea.metadata').prop('readonly', true);
+            $('#summary_form select.metadata').prop('disabled', true);
+            $('#summary_form input[type="checkbox"].metadata').prop('disabled', true);
             $('#summary_form .metadata').addClass('form-control-noborder');
             $('.btn-summary').show();
             $('.btn-summary-cancel').hide();
@@ -463,7 +502,10 @@
           error: function (error) {
             alert(error);
             $('#section-summary button').prop('disabled', false);
-            $('#summary_form .metadata').prop('disabled', false);
+            $('#summary_form input.metadata').prop('readonly', false);
+            $('#summary_form textarea.metadata').prop('readonly', false);
+            $('#summary_form select.metadata').prop('disabled', false);
+            $('#summary_form input[type="checkbox"].metadata').prop('disabled', false);
             $('#summary_form .metadata').removeClass('form-control-noborder');
           }
         });

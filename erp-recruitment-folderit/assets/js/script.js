@@ -23,9 +23,6 @@
         }
     }
 
-    // Should be removed in production
-    //console.log(serverData);
-
     // Vue Component for Single Field
     Vue.component('questions-field', {
 

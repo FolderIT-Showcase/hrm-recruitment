@@ -477,13 +477,13 @@ if (jQuery('#section-interview').length > 0) {
             var application_id = interviewModel.getApplicationId();
             jQuery('#interview_application_id').val(application_id);
             // end of set interview time
-            jQuery('.erp-time-field').timepicker();
-            jQuery('.erp-date-field').datepicker({
-              dateFormat: 'yy-mm-dd',
-              changeMonth: true,
-              changeYear: true,
-              yearRange: '-100:+0'
-            });
+            //            jQuery('.erp-time-field').timepicker();
+            //            jQuery('.erp-date-field').datepicker({
+            //              dateFormat: 'yy-mm-dd',
+            //              changeMonth: true,
+            //              changeYear: true,
+            //              yearRange: '-100:+0'
+            //            });
           },
           onSubmit: function (modal) {
             modal.disableButton();

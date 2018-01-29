@@ -239,21 +239,21 @@ if ( isset($applicant_information[0]) ) {
                         <div class="form-group">
                           <label class="control-label col-lg-4 col-sm-12" for="first_name"><?php _e('First Name', 'wp-erp-rec'); ?></label>
                           <div class="col-lg-8 col-sm-12">
-                            <input disabled class="form-control form-control-noborder metadata" type="text" id="first_name" name="first_name" value="<?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>">
+                            <input readonly class="form-control form-control-noborder metadata" type="text" id="first_name" name="first_name" value="<?php echo isset($applicant_information[0]['first_name']) ? esc_html( $applicant_information[0]['first_name'] ) : ''; ?>">
                           </div>
                         </div>
 
                         <div class="form-group">
                           <label class="control-label col-lg-4 col-sm-12" for="last_name"><?php _e('Last Name', 'wp-erp-rec'); ?></label>
                           <div class="col-lg-8 col-sm-12">
-                            <input disabled class="form-control form-control-noborder metadata" type="text" id="last_name" name="last_name" value="<?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>">
+                            <input readonly class="form-control form-control-noborder metadata" type="text" id="last_name" name="last_name" value="<?php echo isset($applicant_information[0]['last_name']) ? esc_html( $applicant_information[0]['last_name'] ) : ''; ?>">
                           </div>
                         </div>
 
                         <div class="form-group">
                           <label class="control-label col-lg-4 col-sm-12" for="email"><?php _e('Email', 'wp-erp-rec'); ?></label>
                           <div class="col-lg-8 col-sm-12">
-                            <input disabled class="form-control form-control-noborder metadata" type="text" id="email" name="email" value="<?php echo $email_address; ?>">
+                            <input readonly class="form-control form-control-noborder metadata" type="text" id="email" name="email" value="<?php echo $email_address; ?>">
                           </div>
                         </div>
 
@@ -288,7 +288,7 @@ if ( isset($applicant_information[0]) ) {
                           <label class="control-label col-lg-4 col-sm-12" for="<?php echo $field_name; ?>"><?php echo $field_label; ?></label>
                           <div class="col-lg-8 col-sm-12">
                             <?php if ( $field_type == 'textarea') : ?>
-                            <textarea disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
+                            <textarea readonly class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
                             <?php elseif ($field_type == 'select') : ?>
                             <select disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
                               <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
@@ -345,7 +345,7 @@ if ( isset($applicant_information[0]) ) {
                             <?php elseif ($field_type == 'checkbox') : ?>
                             <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                             <?php else: ?>
-                            <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
+                            <input readonly class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
                             <?php endif; ?>
                           </div>
                         </div>
@@ -423,7 +423,7 @@ if ( isset($applicant_information[0]) ) {
                           <label class="control-label col-lg-4 col-sm-12" for="<?php echo $field_name; ?>"><?php echo $field_label; ?></label>
                           <div class="col-lg-8 col-sm-12">
                             <?php if ( $field_type == 'textarea') : ?>
-                            <textarea disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
+                            <textarea readonly class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" rows="<?php echo $value != ''? '5' : ''; ?>"><?php echo $value; ?></textarea>
                             <?php elseif ($field_type == 'select') : ?>
                             <select disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>">
                               <option value="" <?php echo ($value == "" || !isset($value))?"selected":""; ?>></option>
@@ -480,7 +480,7 @@ if ( isset($applicant_information[0]) ) {
                             <?php elseif ($field_type == 'checkbox') : ?>
                             <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" <?php echo ($value=="1"?"checked":""); ?>>
                             <?php else: ?>
-                            <input disabled class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
+                            <input readonly class="form-control form-control-noborder metadata" id="<?php echo $field_name; ?>" name="<?php echo $field_name; ?>" type="<?php echo $field_type; ?>" value="<?php echo $value; ?>">
                             <?php endif; ?>
                           </div>
                         </div>
@@ -735,11 +735,11 @@ if ( isset($applicant_information[0]) ) {
                       <form id="summary_form" method="post">
                         <div class="col-md-2 col-sm-12 form-group">
                           <label class="control-label" for="summary_rating"><?php _e('Summary Rating', 'wp-erp-rec'); ?></label>
-                          <input disabled style="font-size:4em;height:2em;text-align:center;" class="form-control form-control-noborder metadata" type="number" step="0.1" min="0" max="10" id="summary_rating" name="summary_rating" value="<?php echo $applicant_information[0]['summary_rating']; ?>">
+                          <input readonly style="font-size:4em;height:2em;text-align:center;" class="form-control form-control-noborder metadata" type="number" step="0.1" min="0" max="10" id="summary_rating" name="summary_rating" value="<?php echo $applicant_information[0]['summary_rating']; ?>">
                         </div>
                         <div class="col-md-10 col-sm-12 form-group">
                           <label class="control-label" for="summary_comment"><?php _e('Summary Comment', 'wp-erp-rec'); ?></label>
-                          <textarea disabled rows="10" cols="10" class="form-control form-control-noborder metadata" id="summary_comment" name="summary_comment"><?php echo $applicant_information[0]['summary_comment']; ?></textarea>
+                          <textarea readonly rows="10" cols="10" class="form-control form-control-noborder metadata" id="summary_comment" name="summary_comment"><?php echo $applicant_information[0]['summary_comment']; ?></textarea>
                         </div>
                         <?php wp_nonce_field('wp_erp_rec_update_summary_nonce', '_summary_nonce'); ?>
                       </form>
