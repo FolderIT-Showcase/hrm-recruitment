@@ -137,6 +137,7 @@ class WeDevs_ERP_Recruitment {
     require_once WPERP_REC_INCLUDES . '/emails/class-email-candidate-report.php';
     require_once WPERP_REC_INCLUDES . '/emails/class-email-job-application.php';
     require_once WPERP_REC_INCLUDES . '/emails/class-email-hr-manager.php';
+    require_once WPERP_REC_INCLUDES . '/emails/class-imap-handler.php';
 
     // Setup/welcome
     if ( !empty( $_GET['page'] ) ) {
@@ -180,6 +181,7 @@ class WeDevs_ERP_Recruitment {
     add_action( 'admin_menu', array( $this, 'set_recruitment_menu' ) );
     add_action( 'admin_footer', array( $this, 'admin_rec_js_templates' ) );
     add_action( 'admin_footer', 'erp_rec_include_popup_markup' );
+    add_action( 'admin_footer', array( $this, 'dequeue_scripts' ) );
     add_action( 'admin_menu', [ $this, 'hide_add_opening_menu_item' ] );
   }
 
@@ -266,7 +268,8 @@ class WeDevs_ERP_Recruitment {
     wp_enqueue_script( 'erp-timepicker' );
     wp_enqueue_script( 'erp-fullcalendar' );
     wp_enqueue_script( 'bootstrap-js', WPERP_REC_ASSETS . '/js/bootstrap.min.js', array( 'jquery' ), false, true );
-    wp_enqueue_script( 'bootstrap-datetimepicker-js', WPERP_REC_ASSETS . '/js/bootstrap-datetimepicker.min.js', array( 'jquery' ), false, true );
+    wp_enqueue_script( 'moment-js', WPERP_REC_ASSETS . '/js/moment.min.js', array( 'jquery' ), false, true );
+    wp_enqueue_script( 'bootstrap-datetimepicker-js', WPERP_REC_ASSETS . '/js/bootstrap-datetimepicker.min.js', array( 'jquery', 'bootstrap-js', 'moment-js' ), false, true );
     wp_enqueue_script( 'multi-step-form-script', WPERP_REC_ASSETS . '/js/openingFormToWizard.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'alertify-lib', WPERP_REC_ASSETS . '/js/alertify.min.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'erp-popup-bootstrap', WPERP_REC_ASSETS . '/js/jquery-popup-bootstrap.js', array( 'jquery' ), false, true );
@@ -326,6 +329,12 @@ class WeDevs_ERP_Recruitment {
     ];
 
     wp_localize_script( 'erp-recruitment-app-script', 'wpErpRec', $localize_scripts );
+  }
+
+  public function dequeue_scripts() {
+    wp_dequeue_script('cpm-timepicker');
+
+    //    global $wp_scripts; var_dump($wp_scripts);
   }
 
 
