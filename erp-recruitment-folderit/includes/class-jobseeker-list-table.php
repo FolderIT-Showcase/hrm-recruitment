@@ -6,6 +6,15 @@ namespace WeDevs\ERP\ERP_Recruitment;
  */
 class Jobseeker_List_Table extends \WP_List_Table {
 
+  private $english_levels;
+  private $english_conversation;
+  private $interview_style;
+  private $interview_types_names;
+  private $interview_types_identifiers;
+  private $projects;
+  private $statuses;
+  private $terms;
+
   function __construct() {
     global $status, $page;
 
@@ -14,6 +23,23 @@ class Jobseeker_List_Table extends \WP_List_Table {
       'plural'   => 'jobseekers',
       'ajax'     => true
     ));
+
+    $this->english_levels = erp_rec_get_feedback_english_levels();
+    $this->english_conversation = erp_rec_get_feedback_english_conversation();
+    $this->interview_style = "border:1px #1e8cbe solid;";
+    $this->interview_types_names = array(
+      "interview_rrhh" => __("HR", "wp-erp-rec"),
+      "interview_english" => __("English", "wp-erp-rec"),
+      "interview_tech" => __("Technical", "wp-erp-rec"),
+    );
+    $this->interview_types_identifiers = array(
+      "interview_rrhh" => "rrhh",
+      "interview_english" => "english",
+      "interview_tech" => "tech",
+    );
+    $this->projects = erp_rec_get_available_projects(true);
+    $this->statuses = erp_rec_get_hiring_status();
+    $this->terms = erp_rec_get_terms();
   }
 
   public function display() {
@@ -78,6 +104,11 @@ class Jobseeker_List_Table extends \WP_List_Table {
       navbar.style.width = "100%";
     }
   }
+</script>
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+  });
 </script>
 <?php
     $this->display_tablenav( 'bottom' );
@@ -183,56 +214,62 @@ class Jobseeker_List_Table extends \WP_List_Table {
      */
   public function column_default( $item, $column_name ) {
     global $wpdb;
-
     $jobseeker_preview_url = admin_url('edit.php?post_type=erp_hr_recruitment&page=applicant_detail&application_id=' . $item['applicationid']);
     $jobseeker_email_url = admin_url('edit.php?post_type=erp_hr_recruitment&page=jobseeker_list_email');
 
-    $query = "SELECT app_iv.id, app_iv.feedback_comment, app_iv.feedback_english_level, app_iv.feedback_english_conversation, types.type_detail, types.type_identifier
-      FROM {$wpdb->prefix}erp_application_interview as app_iv
-      LEFT JOIN {$wpdb->prefix}erp_application_interview_types as types
-      ON app_iv.interview_internal_type_id = types.id
-      WHERE app_iv.application_id=%d";
-    $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['applicationid'] ), ARRAY_A );
+    if(array_key_exists($column_name, $this->interview_types_names)) {
+      $interview_type_name = $this->interview_types_names[$column_name];
+      $interview_type_identifier = $this->interview_types_identifiers[$column_name];
 
-    $status = erp_rec_get_hiring_status();
-    $terms = erp_rec_get_terms();
+      $query = "SELECT app_iv.id, app_iv.feedback_comment,
+        app_iv.feedback_english_level, app_iv.feedback_english_conversation, app_iv.start_date_time, 
+        types.type_detail, types.type_identifier,
+        (SELECT group_concat(user.display_name SEPARATOR ', ')
+          FROM {$wpdb->prefix}erp_application_interviewer_relation as app_inv_relation
+          LEFT JOIN {$wpdb->base_prefix}users as user
+          ON app_inv_relation.interviewer_id=user.ID
+          WHERE app_inv_relation.interview_id=app_iv.id) as interviewers_names
+        FROM {$wpdb->prefix}erp_application_interview as app_iv
+        LEFT JOIN {$wpdb->prefix}erp_application_interview_types as types
+        ON app_iv.interview_internal_type_id = types.id
+        WHERE app_iv.application_id=%d
+        AND types.type_identifier='%s'
+        ORDER BY app_iv.id";
 
-    $projects = erp_rec_get_available_projects(true);
+      $idata = $wpdb->get_results( $wpdb->prepare( $query, $item['applicationid'], $interview_type_identifier ), ARRAY_A );
 
-    $interview_rrhh = "";
-    $interview_tech = "";
-    $interview_english = "";
+      $interview_tooltip = 'title="' . sprintf(__('Missing %s Interview', "wp-erp-rec"), $interview_type_name) . '"';
+      $interview_count = 0;
+      $interview_checked = "";
 
-    $interview_rrhh_style = "";
-    $interview_tech_style = "";
-    $interview_english_style = "";
-
-    $interview_style = "border:1px #1e8cbe solid;";
-
-    foreach ( $idata as $intv ) {
-      if ($intv['type_identifier'] == "rrhh") {
-        $interview_rrhh_style = $interview_style;
+      foreach ( $idata as $intv ) {
+        $intv_date = date('d/m/Y g:i A', strtotime($intv["start_date_time"]));
+        $interview_active_style = $this->interview_style;
+        $interview_count++;
+        $interview_tooltip = 'title="';
+        $interview_tooltip .= __('Date and Time : ', 'wp-erp-rec').$intv_date.'<br/>';
+        $interview_tooltip .= __('Interviewers : ', 'wp-erp-rec').$intv["interviewers_names"].'<hr/>';
 
         if (trim($intv['feedback_comment']) !== '') {
-          $interview_rrhh = "checked";
+          $interview_checked = "checked";
+          if ($intv['type_identifier'] == "english") {
+            $interview_tooltip .= __('Feedback English Level : ', 'wp-erp-rec').$this->english_levels[$intv["feedback_english_level"]].'<br/>';
+            $interview_tooltip .= __('Feedback English Conversation : ', 'wp-erp-rec').$this->english_conversation[$intv["feedback_english_conversation"]].'<hr/>';
+          }
+          $interview_tooltip .= nl2br(trim(htmlspecialchars($intv["feedback_comment"])));
+        } else {
+          $interview_tooltip .= sprintf(__('%s Interview Scheduled', "wp-erp-rec"),$this->interview_types_names[$column_name]);
         }
+
+        if($interview_count > 1) {
+          $interview_count_more = $interview_count - 1;
+          $interview_tooltip .= '<br/><i><small>'.sprintf($interview_count_more==1?__("%d more interview...", "wp-erp-rec"):__("%d more interviews...", "wp-erp-rec"),$interview_count_more).'</i></small>';
+        }
+
+        $interview_tooltip .= '"';
       }
 
-      if ($intv['type_identifier'] == "tech") {
-        $interview_tech_style = $interview_style;
-
-        if (trim($intv['feedback_comment']) !== '') {
-          $interview_tech = "checked";
-        }
-      }
-
-      if ($intv['type_identifier'] == "english") {
-        $interview_english_style = $interview_style;
-
-        if (trim($intv['feedback_comment']) !== '' && trim($intv['feedback_english_level']) !== '' && trim($intv['feedback_english_conversation']) !== '') {
-          $interview_english = "checked";
-        }
-      }
+      return '<input type="checkbox" ' . $interview_checked . ' style="zoom:1.3;' . $interview_active_style. '" disabled/><div data-html="true" data-toggle="tooltip"'. $interview_tooltip .' style="position:absolute;z-index:99;width:24px;height:24px;float:left;display:inline;margin-left:-24px;"></div>';
     }
 
     switch ($column_name) {
@@ -243,9 +280,29 @@ class Jobseeker_List_Table extends \WP_List_Table {
       case 'avg_rating':
         return number_format($item['avg_rating'], 2, '.', ',');
       case 'summary_rating':
-        return number_format($item['summary_rating'], 1, '.', ',');
+        $summary_comment_style = "background-color:transparent;";
+        $summary_comment_tooltip = 'data-toggle="tooltip" title="' . __('Missing Summary Comment', "wp-erp-rec") . '"';
+        $summary_width = 30;
+
+        if (!empty($item["summary_comment"])) {
+          $summary_comment_style = "background-color:#1e8cbe;";
+          $summary_comment_tooltip = 'data-toggle="tooltip" title="'.nl2br(trim(htmlspecialchars($item["summary_comment"]))).'"';
+        }
+
+        $output = '<div data-html="true" '.$summary_comment_tooltip.' style="text-align:center;">';
+        if(empty($item["summary_comment"]) && (empty($item["summary_rating"]) || $item["summary_rating"] == 0)) {
+          $output .= "—";
+        } else {
+          $output .= number_format($item['summary_rating'], 1, '.', ',');
+        }
+
+        $output .= '<div data-toggle="tooltip" style="width:'.$summary_width.'px;height:6px;border:1px solid #1e8cbe;border-radius:6px;margin:auto;background-color:white;">';
+        $output .= '<div style="width:'.round($item['summary_rating'] * $summary_width / 10).'px;height:100%;'.$summary_comment_style.'"></div>';
+        $output .= '</div></div>';
+
+        return $output;
       case 'remote':
-        return '<input type="checkbox" ' . ($item['remote']=="1"?"checked":"") .' disabled></input>';
+        return '<input type="checkbox" style="zoom:1.3;" ' . ($item['remote']=="1"?"checked":"") .' disabled></input>';
       case 'skills':
         if(!empty($item['skills'])) {
           $terms_names = [];
@@ -253,7 +310,7 @@ class Jobseeker_List_Table extends \WP_List_Table {
           $terms_cloud .= '<ul class="skills-list">';
           $skills = json_decode(str_replace('&quot;', '"', $item['skills']), true)['terms'];
           foreach($skills as $skill) {
-            $terms_cloud .= '<li>'.$terms[$skill].'</li>';
+            $terms_cloud .= '<li>'.$this->terms[$skill].'</li>';
           }
           $terms_cloud .= '</ul>';
           return $terms_cloud;
@@ -263,21 +320,16 @@ class Jobseeker_List_Table extends \WP_List_Table {
         return $item['post_title'];
       case 'stage':
         return $item['title'];
-      case 'interview_rrhh':
-        return '<input type="checkbox" ' . $interview_rrhh . ' style="' . $interview_rrhh_style. '" disabled></input>';
-      case 'interview_tech':
-        return '<input type="checkbox" ' . $interview_tech . ' style="' . $interview_tech_style. '" disabled></input>';
-      case 'interview_english':
-        return '<input type="checkbox" ' . $interview_english . ' style="' . $interview_english_style. '" disabled></input>';
       case 'action':
         $jobseeker_email_url .= '&email_ids[0]=' . $item['email'];
         return sprintf(__('<a class="fa" href="%s"><span class="dashicons dashicons-visibility"></span></a> | <a class="fa" href="%s"><span class="dashicons dashicons-email-alt"></span></a>'), $jobseeker_preview_url, $jobseeker_email_url);
       case 'project':
-        return $projects[$item['project_id']];
+        return $this->projects[$item['project_id']];
       case 'status':
-        return $status[$item['status']];
+        return $this->statuses[$item['status']];
       default:
     }
+
     return $item[$column_name];
   }
 
