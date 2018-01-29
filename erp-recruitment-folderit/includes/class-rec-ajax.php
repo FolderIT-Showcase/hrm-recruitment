@@ -359,9 +359,11 @@ class Ajax_Handler {
           'id'              => $ud['id'],
           'application_id'  => $ud['application_id'],
           'user_id'         => $ud['uid'],
+          'comm_uid'        => $ud['comm_uid'],
           'comm_from'       => $ud['comm_from'],
           'comm_to'         => $ud['comm_to'],
           'comm_author'     => $ud['comm_author'],
+          'comm_to_name'    => $ud['comm_to_name'],
           'comm_subject'    => $ud['comm_subject'],
           'comm_message'    => $ud['comm_message'],
           'comm_date'       => $ud['comm_date']
@@ -1114,10 +1116,12 @@ class Ajax_Handler {
 
       $application_id = $params['email_aplication_id'];
       $to             = $params['email_to'];
+      $toname         = $params['email_to_name'];
       $subject        = $params['email_subject'];
       $message        = $params['email_message'];
     } else {
       $to      = isset( $_POST['to'] ) ? $_POST['to'] : '';
+      $toname  = isset( $_POST['toname'] ) ? $_POST['toname'] : '';
       $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
       $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
     }
@@ -1139,12 +1143,27 @@ class Ajax_Handler {
         if(isset($application_id)) {
           $current_user = wp_get_current_user();
 
+          $erp_email_settings = get_option( 'erp_settings_erp-email_general', [] );
+
+          if ( ! isset( $erp_email_settings['from_email'] ) ) {
+            $from_email = get_option( 'admin_email' );
+          } else {
+            $from_email = $erp_email_settings['from_email'];
+          }
+
+          if ( ! isset( $erp_email_settings['from_name'] ) ) {
+            $from_name = get_bloginfo( 'name' );
+          } else {
+            $from_name = $erp_email_settings['from_name'];
+          }
+
           $data = array(
             'application_id' => $application_id,
             'user_id'        => $current_user->ID,
-            'comm_from'      => $current_user->user_email,
+            'comm_from'      => $from_email,
             'comm_to'        => $to,
-            'comm_author'    => $current_user->display_name,
+            'comm_author'    => $from_name,
+            'comm_to_name'   => $toname,
             'comm_subject'   => $subject,
             'comm_message'   => $message,
           );
@@ -1152,6 +1171,7 @@ class Ajax_Handler {
           $format = array(
             '%d',
             '%d',
+            '%s',
             '%s',
             '%s',
             '%s',
@@ -1956,7 +1976,7 @@ class Ajax_Handler {
         array('code' => $status_code, 'title' => $status_name, 'description' => $status_description, 'status_order' => $status_order), //data
         array('%s', '%s', '%s', '%d') //data format			
       );
-      
+
       $status_id = $wpdb->insert_id;
 
       $res = array(

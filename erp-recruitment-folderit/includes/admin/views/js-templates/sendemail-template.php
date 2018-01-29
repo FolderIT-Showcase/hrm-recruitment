@@ -1,4 +1,13 @@
 <div class="row">
+  <div class="col-lg-6 form-group">
+    <label for="email_to"><?php _e('To', 'wp-erp-rec'); ?></label>
+    <input type="text" readonly value="" id="email_to" name="email_to" class="form-control">
+  </div>
+  <div class="col-lg-6 form-group">
+    <label for="email_to_name"><?php _e('Addressee', 'wp-erp-rec'); ?></label>
+    <input type="text" readonly value="" id="email_to_name" name="email_to_name" class="form-control">
+  </div>
+
   <div class="col-lg-12 form-group">
     <?php
 
@@ -39,6 +48,5 @@
   </div>
 </div>
 
-<input type="hidden" value="" id="email_to" name="email_to">
 <input type="hidden" value="<?php echo $_GET['application_id']; ?>" id="email_aplication_id" name="email_aplication_id">
 <?php wp_nonce_field('wp_erp_rec_send_email_nonce', '_sendemail_nonce'); ?>
