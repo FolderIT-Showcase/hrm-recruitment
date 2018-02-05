@@ -259,6 +259,13 @@ class Jobseeker_List_Table extends \WP_List_Table {
             $interview_feedback .= __('Feedback English Conversation : ', 'wp-erp-rec').$this->english_conversation[$intv["feedback_english_conversation"]].'<hr/>';
           }
           $interview_feedback .= nl2br(trim(htmlspecialchars($intv["feedback_comment"])));
+          
+          if (strlen($interview_feedback) > 200) {
+            $interview_feedback = substr($interview_feedback, 0, 200);
+            $cutoff = strrpos($interview_feedback, " ");
+            $interview_feedback = substr($interview_feedback, 0, $cutoff) . '… ' . __("(continues)","wp-erp-rec");
+          }
+          
           $interview_tooltip .= $interview_feedback;
         } else if (trim($interview_feedback) === "") {
           $interview_tooltip = 'title="';
@@ -293,7 +300,14 @@ class Jobseeker_List_Table extends \WP_List_Table {
 
         if (!empty($item["summary_comment"])) {
           $summary_comment_style = "background-color:#1e8cbe;";
-          $summary_comment_tooltip = 'data-toggle="tooltip" title="'.nl2br(trim(htmlspecialchars($item["summary_comment"]))).'"';
+          $summary_comment = nl2br(trim(htmlspecialchars($item["summary_comment"])));
+          if (strlen($summary_comment) > 200) {
+            $summary_comment = substr($summary_comment, 0, 200);
+            $cutoff = strrpos($summary_comment, " ");
+            $summary_comment = substr($summary_comment, 0, $cutoff) . '… ' . __("(continues)","wp-erp-rec");
+          }
+          
+          $summary_comment_tooltip = 'data-toggle="tooltip" title="'.$summary_comment.'"';
         }
 
         $output = '<div data-html="true" '.$summary_comment_tooltip.' style="text-align:center;">';
