@@ -225,6 +225,7 @@ if (jQuery('#section-comms').length > 0) {
 
     data: {
       comms: [],
+      loading: false,
       success_notice_class: 'success_notice',
       error_notice_class: 'error_notice',
       isError: false,
@@ -242,28 +243,29 @@ if (jQuery('#section-comms').length > 0) {
         jQuery('#section-comms .spinner').css({
           'visibility': 'visible'
         });
+        var that = this;
+        that.loading = true;
         jQuery.get(ajaxurl, {
           action: 'wp-erp-rec-get-comms',
           application_id: jQuery('#application_id').val()
         }, function (response) {
+          that.loading = false;
           if (response.success === true) {
             commsviewmodel.comms = [];
             var collapseIds = [];
             jQuery.each(response.data, function (k, v) {
               commsviewmodel.comms.push(v);
-              if([0,1,2].indexOf(k) >= 0) {
-                collapseIds.push(v.id);
-              }
-            });
-            $(document).ready(function() {
-              setTimeout(function() {
-                jQuery.each(collapseIds, function(k, v) {
-                  $('#comm-collapse-' + v).collapse('toggle');
-                });
-              }, 1);
             });
             jQuery('#section-comms .spinner').hide();
+          } else {
+            alertify.error(response.data);
+            jQuery('#section-comms .spinner').hide();
           }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+          jQuery('#section-comms .spinner').hide();
+        }).always(function() {
         });
       },
       retrieveEmails: function() {
@@ -271,15 +273,84 @@ if (jQuery('#section-comms').length > 0) {
         jQuery('#section-comms .spinner').css({
           'visibility': 'visible'
         });
+        var that = this;
+        that.loading = true;
         jQuery.post(ajaxurl, {
           action: 'wp-erp-rec-retrieve-emails',
           application_id: jQuery('#application_id').val()
         }, function (response) {
+          that.loading = false;
           if (response.success === true) {
             jQuery('#section-comms .spinner').hide();
             commsviewmodel.getAllComms();
+            alertify.success(response.data);
+          } else {
+            jQuery('#section-comms .spinner').hide();
+            alertify.error(response.data);
           }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+          jQuery('#section-comms .spinner').hide();
+        }).always(function() {
         });
+      }
+    }
+  });
+}
+
+
+if (jQuery('#section-testing').length > 0) {
+  var testingviewmodel = new Vue({
+    el: "#section-testing",
+
+    data: {
+      comms: [],
+      success_notice_class: 'success_notice',
+      error_notice_class: 'error_notice',
+      isError: false,
+      isVisible: false,
+      response_message: ''
+    },
+
+    ready: function () {
+      this.getAllComms();
+    },
+
+    methods: {
+      getAllComms: function () {
+        //        jQuery('#section-testing .spinner').show();
+        //        jQuery('#section-testing .spinner').css({
+        //          'visibility': 'visible'
+        //        });
+        //        jQuery.get(ajaxurl, {
+        //          action: 'wp-erp-rec-get-comms',
+        //          application_id: jQuery('#application_id').val()
+        //        }, function (response) {          
+        //          if (response.success === true) {
+        //            testingviewmodel.comms = [];
+        //            var collapseIds = [];
+        //            jQuery.each(response.data, function (k, v) {
+        //              testingviewmodel.comms.push(v);
+        //            });
+        //            jQuery('#section-testing .spinner').hide();
+        //          }
+        //        });
+      },
+      retrieveEmails: function() {
+        //        jQuery('#section-testing .spinner').show();
+        //        jQuery('#section-testing .spinner').css({
+        //          'visibility': 'visible'
+        //        });
+        //        jQuery.post(ajaxurl, {
+        //          action: 'wp-erp-rec-retrieve-emails',
+        //          application_id: jQuery('#application_id').val()
+        //        }, function (response) {
+        //          if (response.success === true) {
+        //            jQuery('#section-testing .spinner').hide();
+        //            testingviewmodel.getAllComms();
+        //          }
+        //        });
       }
     }
   });
@@ -548,8 +619,8 @@ if (jQuery('#section-interview').length > 0) {
 
             // Feedback de la entrevista
             var intv_type = jQuery('#interview-type-name-' + invID).val();
-              var feedbackCommentText = jQuery('#feedback-comment-text-' + invID).text();
-              jQuery('#feedback_comment').val(feedbackCommentText);
+            var feedbackCommentText = jQuery('#feedback-comment-text-' + invID).text();
+            jQuery('#feedback_comment').val(feedbackCommentText);
 
             if(intv_type !== 'english') {
               jQuery('#feedback_english_level').parent().remove();
@@ -1222,3 +1293,4 @@ if (jQuery('#candidate-reports-wrapper').length > 0) {
 
   });
 }
+

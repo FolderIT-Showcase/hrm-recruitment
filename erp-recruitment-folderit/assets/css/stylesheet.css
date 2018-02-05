@@ -283,6 +283,10 @@ dl.dl-custom h5 {
   color: #0073aa;
 }
 
+.application-comms-list .comm-subject b.fn {
+  color: #888;
+}
+
 .application-comment-list li .vcard .avatar,
 .application-comms-list .vcard .avatar {
   border-radius: 50%;
@@ -299,16 +303,58 @@ dl.dl-custom h5 {
 .panel-comms .panel-heading {
   cursor: pointer;
   transition: 0.2s all;
+  padding-bottom: 0px;
 }
 
-.panel-comms .panel-heading:hover {
+.panel-comms .panel-heading:hover,
+.panel-comms .panel-heading:not(.collapsed) {
   background-color: #0085ba;
   color: white;
 }
 
 .panel-comms .panel-heading:hover li b.fn,
-.panel-comms .panel-heading:hover b.fn {
+.panel-comms .panel-heading:hover b.fn,
+.panel-comms .panel-heading:not(.collapsed) li b.fn,
+.panel-comms .panel-heading:not(.collapsed) b.fn {
   color: white;
+}
+
+.panel-comms .comm-subject {
+  background-color: rgba(0,0,0,0.025);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.05);
+  padding-bottom: 5px;
+  padding-top: 1px;
+  border-top-color: #ddd;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+
+.panel-comms .comm-date {
+  line-height: 1.2;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+}
+
+.panel-comms .comm-direction {
+  line-height: 1.2;
+  position: absolute;
+  top: -10px;
+  left: 0px;
+  width: 30px;
+  padding-left: 10px;
+  height: calc(100% + 10px);
+  border-top-left-radius: 4px;
+  padding-top: 9px;
+  font-size: 14px;
+}
+
+.panel-comms .comm-direction.in {
+  background-color: rgba(0,255,0,0.25);
+}
+
+.panel-comms .comm-direction.out {
+  background-color: rgba(255,0,0,0.25);
 }
 
 .application-comment-list li .comment-content {

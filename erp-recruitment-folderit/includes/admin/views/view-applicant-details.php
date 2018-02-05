@@ -216,11 +216,13 @@ if ( isset($applicant_information[0]) ) {
       <div class="panel-heading" style="padding:5px 5px 0px 5px;">
         <ul class="nav nav-tabs nav-justified">
           <li class="active"><a data-toggle="tab" href="#tab-personal-information"><?php _e('Personal Information', 'wp-erp-rec'); ?></a></li>
+          <li><a data-toggle="tab" href="#tab-comms"><?php _e('Comms', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-comments"><?php _e('Comments', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-ratings"><?php _e('Ratings', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-evaluation-summary"><?php _e('Evaluation Summary', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-interviews"><?php _e('Interviews', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-resumes"><?php _e('Resumes', 'wp-erp-rec'); ?></a></li>
+          <li><a data-toggle="tab" href="#tab-testing">— NO USAR —</a></li>
         </ul>
       </div>
       <div class="tab-content panel-body">
@@ -501,7 +503,7 @@ if ( isset($applicant_information[0]) ) {
         </div>
         <div id="tab-comments" class="tab-pane fade">
           <div class="row">
-            <div class="col-lg-6 col-xs-12">
+            <div class="col-lg-6 col-md-12">
               <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
                 <section id="section-comment" class="postbox">
                   <span class="hndle-toogle-button"></span>
@@ -557,39 +559,125 @@ if ( isset($applicant_information[0]) ) {
                 </section>
               </div>
             </div>
-            <div class="col-lg-6 col-xs-12">
+            <div class="col-lg-6 col-md-12">
+              <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+                <section id="section-todo" class="postbox">
+                  <span class="hndle-toogle-button"></span>
+                  <div class="section-header">
+                    <h2 class="hndle"><span><?php _e('To-Do List', 'wp-erp-rec'); ?></span></h2>
+                  </div>
+                  <div class="section-content toggle-metabox-show full-width">
+                    <h3 class="no-interview-todo-caption" v-if="hasTodo">
+                      <?php _e('No To-do set', 'wp-erp-rec');?>
+                    </h3>
+                    <ul id="calendar_list" class="calendar-list not-loaded">
+                      <li class="calendar-list-item" v-for="rt in todoData">
+                        <div class="interview_type">
+                          <span class="todo-handler" v-on:click="handleTodo(rt.id, 0)" v-if=" rt.status == '1' "><i class="fa fa-lg fa-check-square-o"></i></span>
+                          <span class="todo-handler" v-on:click="handleTodo(rt.id, 1)" v-if=" rt.status == '0' "><i class="fa fa-lg fa-square-o"></i></span>
+                          <label class="todo-title">{{ rt.title }}</label>
+                        </div>
+                        <div class="interviewers">
+                          <i class="fa fa-lg fa-user"></i>&nbsp;
+                          <?php _e('Todo handlers : ', 'wp-erp-rec'); ?>{{ rt.display_name }}
+                        </div>
+                        <div class="interview_time">
+                          <span title="click to undo" class="todo-status-done-button" v-if=" rt.status == '1' ">
+                            <i class="fa fa-lg fa-check"></i><?php _e('Done', 'wp-erp-rec'); ?>
+                          </span>
+                          <span title="click to undo" class="todo-status-overdue-button" v-if=" rt.is_overdue == '1' ">
+                            <?php _e('Overdue', 'wp-erp-rec'); ?>
+                          </span>
+                          <i class="fa fa-lg fa-clock-o"></i>&nbsp;<span>{{ rt.deadline_date }}</span>
+                          <span class="todo-delete" v-on:click="deleteTodo(rt.id)"><i class="fa fa-lg fa-trash-o"></i></span>
+                        </div>
+                      </li>
+                    </ul>
+                    <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
+                    <button style="margin-right:1%" class="button button-primary btn-todo alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
+                    <?php endif;?>
+                    <span class="spinner"></span>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="tab-comms" class="tab-pane fade">
+          <div class="row">
+            <div class="col-md-12">
               <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
                 <section id="section-comms" class="postbox">
                   <span class="hndle-toogle-button" style="width:27px;padding:8px 2px;"></span>
                   <div class="section-header">
                     <h2 class="hndle">
                       <span><?php _e('Comms', 'wp-erp-rec'); ?></span>
-                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
+                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;" :disabled="loading === true"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
                       <span class="spinner" style="margin-top:0px;"></span>
                     </h2>
                   </div>
                   <div class="section-content toggle-metabox-show full-width">
                     <div id="comms_form_wrapper" class="not-loaded">
-                      <div class="col-lg-12 application-comms-list scrollable">
-                        <article v-for="comm in comms">
-                          <div class="panel panel-default panel-comms">
-                            <div class="panel-heading" data-toggle="collapse" data-target="#comm-collapse-{{comm.id}}">
-                                <span class="pull-right" style="line-height:1.2;">{{ comm.comm_date }}</span>
-                                <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?>{{ comm.comm_author }}</b> <span>({{ comm.comm_from }})</span></h5>
-                                <h5 class="panel-heading-overflow" style="margin-top:4px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); ?>{{ comm.comm_to_name }}</b> <span>({{ comm.comm_to }})</span></h5>
-                                <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                      <div class="col-lg-12 application-comms-list scrollable scrollable-lg">
+                        <div class="panel-group" id="accordion-comms" style="margin-bottom:0px;">
+                          <div class="panel panel-default panel-comms" v-for="(index, comm) in comms">
+                            <div class="panel-heading" v-bind:class="{ collapsed: (index!==0) }" data-toggle="collapse" data-target="#comm-collapse-{{comm.id}}" data-parent="#accordion-comms">
+                              <div class="row" style="position:relative;padding-left:22px;">
+                                <span class="pull-right comm-date">{{ comm.comm_date }}</span>
+                                <span class="pull-left comm-direction" v-bind:class="[ comm.comm_uid ? 'in' : 'out' ]"><i v-bind:class="[ comm.comm_uid ? 'fa-angle-double-left' : 'fa-angle-double-right' ]" class="fa fa-lg"></i></span>
+
+                                <template v-if="comm.comm_from_raw">
+                                  <div class="col-xl-4 col-lg-12" style="width:auto;">
+                                    <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?></b> <span>{{ comm.comm_from_raw }}</span></h5>
+                                  </div>
+                                </template>
+                                <template v-else="comm.comm_from">
+                                  <div class="col-xl-4 col-lg-12" style="width:auto;">
+                                    <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?></b>{{ comm.comm_author }} <span>({{ comm.comm_from }})</span></h5>
+                                  </div>
+                                </template>
+
+                                <template v-if="comm.comm_to_raw">
+                                  <div class="col-xl-4 col-lg-12" style="width:auto;" v-if="comm.comm_to_raw">
+                                    <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); ?></b> <span>{{ comm.comm_to_raw }} </span></h5>
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  <div class="col-xl-4 col-lg-12" style="width:auto;" v-else-if="comm.comm_to">
+                                    <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); ?></b>{{ comm.comm_to_name }} <span>({{ comm.comm_to }})</span></h5>
+                                  </div>
+                                </template>
+
+                                <template v-if="comm.comm_cc_raw">
+                                  <div class="col-xl-4 col-lg-12" style="width:auto;">
+                                    <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('CC: ','wp-erp-rec'); ?></b> <span>{{ comm.comm_cc_raw }} </span></h5>
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  <template v-if="comm.comm_cc">
+                                    <div class="col-xl-4 col-lg-12" style="width:auto;">
+                                      <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('CC: ','wp-erp-rec'); ?></b>{{ comm.comm_cc_name }} <span>({{ comm.comm_cc }})</span></h5>
+                                    </div>
+                                  </template>
+                                </template>                                
+                              </div>
+                              <div class="row">
+                                <div class="comm-subject col-lg-12">
+                                  <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                                </div>
+                              </div>
                             </div>
-                            <div id="comm-collapse-{{comm.id}}" class="panel-collapse collapse">
-                              <div class="panel-body" style="max-height:300px;overflow-y:auto;">
-                                <div style="white-space:pre;" v-html="comm.comm_message"></div>
+                            <div id="comm-collapse-{{comm.id}}" class="panel-collapse collapse" v-bind:class="{ in: (index===0) }">
+                              <div class="panel-body" style="max-height:600px;overflow-y:auto;">
+                                <div style="white-space:pre-line;line-height:1.2;" v-html="comm.comm_message"></div>
                               </div>
                             </div>
                           </div>
-                        </article>
+                        </div>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-top:10px;">
-                      <button class="button button-primary alignright btn-sendemail"><?php _e('Send Email', 'wp-erp-rec'); ?></button>
+                      <button class="button button-primary alignright btn-sendemail" :disabled="loading === true"><?php _e('Send Email', 'wp-erp-rec'); ?></button>
                       <span class="spinner"></span>
                     </div>
                   </div>
@@ -664,6 +752,8 @@ if ( isset($applicant_information[0]) ) {
                   </div>
                 </section>
               </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
               <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
                 <section id="section-exam-detail" class="postbox">
                   <span class="hndle-toogle-button"></span>
@@ -678,48 +768,6 @@ if ( isset($applicant_information[0]) ) {
                         <div class="answers_here"><label><?php _e('A', 'wp-erp-rec'); ?>.&nbsp;</label>{{ edata.answer }}</div>
                       </li>
                     </ul>
-                    <span class="spinner"></span>
-                  </div>
-                </section>
-              </div>
-            </div>
-            <div class="col-lg-6 col-xs-12">
-              <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
-                <section id="section-todo" class="postbox">
-                  <span class="hndle-toogle-button"></span>
-                  <div class="section-header">
-                    <h2 class="hndle"><span><?php _e('To-Do List', 'wp-erp-rec'); ?></span></h2>
-                  </div>
-                  <div class="section-content toggle-metabox-show full-width">
-                    <h3 class="no-interview-todo-caption" v-if="hasTodo">
-                      <?php _e('No To-do set', 'wp-erp-rec');?>
-                    </h3>
-                    <ul id="calendar_list" class="calendar-list not-loaded">
-                      <li class="calendar-list-item" v-for="rt in todoData">
-                        <div class="interview_type">
-                          <span class="todo-handler" v-on:click="handleTodo(rt.id, 0)" v-if=" rt.status == '1' "><i class="fa fa-lg fa-check-square-o"></i></span>
-                          <span class="todo-handler" v-on:click="handleTodo(rt.id, 1)" v-if=" rt.status == '0' "><i class="fa fa-lg fa-square-o"></i></span>
-                          <label class="todo-title">{{ rt.title }}</label>
-                        </div>
-                        <div class="interviewers">
-                          <i class="fa fa-lg fa-user"></i>&nbsp;
-                          <?php _e('Todo handlers : ', 'wp-erp-rec'); ?>{{ rt.display_name }}
-                        </div>
-                        <div class="interview_time">
-                          <span title="click to undo" class="todo-status-done-button" v-if=" rt.status == '1' ">
-                            <i class="fa fa-lg fa-check"></i><?php _e('Done', 'wp-erp-rec'); ?>
-                          </span>
-                          <span title="click to undo" class="todo-status-overdue-button" v-if=" rt.is_overdue == '1' ">
-                            <?php _e('Overdue', 'wp-erp-rec'); ?>
-                          </span>
-                          <i class="fa fa-lg fa-clock-o"></i>&nbsp;<span>{{ rt.deadline_date }}</span>
-                          <span class="todo-delete" v-on:click="deleteTodo(rt.id)"><i class="fa fa-lg fa-trash-o"></i></span>
-                        </div>
-                      </li>
-                    </ul>
-                    <?php if ( $hire_status == 0 && $application_status != 'rejected' ) : ?>
-                    <button style="margin-right:1%" class="button button-primary btn-todo alignright"><?php _e('Add To-Do', 'wp-erp-rec');?></button>
-                    <?php endif;?>
                     <span class="spinner"></span>
                   </div>
                 </section>
@@ -923,7 +971,63 @@ if ( isset($applicant_information[0]) ) {
             </div>
           </div>
         </div>
+        <div id="tab-testing" class="tab-pane fade">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="single-information-container meta-box-sortables ui-sortable" style="margin-left:0px;">
+                <section id="section-testing" class="postbox">
+                  <span class="hndle-toogle-button" style="width:27px;padding:8px 2px;"></span>
+                  <div class="section-header">
+                    <h2 class="hndle">
+                      <span><?php _e('Comms', 'wp-erp-rec'); ?></span>
+                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
+                      <span class="spinner" style="margin-top:0px;"></span>
+                    </h2>
+                  </div>
+                  <div class="section-content toggle-metabox-show full-width">
+                    <div id="comms_form_wrapper_test" class="not-loaded">
+                      <div class="col-lg-12 application-comms-list scrollable">
+                        <div class="panel-group" id="accordion-test" style="margin-bottom:0px;">
+                          <div class="panel panel-default panel-comms" v-for="(index, comm) in comms">
+                            <div class="panel-heading" data-toggle="collapse" data-target="#comm-collapse-{{comm.id}}-test" data-parent="#accordion-test">
+                              <span class="pull-right" style="line-height:1.2;">{{ comm.comm_date }}</span>
+                              <h5 class="panel-heading-overflow" style="margin-top:0px;"><b class="fn"><?php _e('From: ','wp-erp-rec'); ?>{{ comm.comm_author }}</b> <span>({{ comm.comm_from }})</span></h5>
+                              <h5 class="panel-heading-overflow" style="margin-top:4px;"><b class="fn"><?php _e('To: ','wp-erp-rec'); ?>{{ comm.comm_to_name }}</b> <span>({{ comm.comm_to }})</span></h5>
+                              <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                            </div>
+                            <div id="comm-collapse-{{comm.id}}-test" class="panel-collapse collapse" v-bind:class="{ in: (index===0) }">
+                              <div class="panel-body" style="max-height:300px;overflow-y:auto;">
+                                <div style="white-space:pre;" v-html="comm.comm_message"></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="margin-top:10px;">
+                      <button class="button button-primary alignright btn-sendemail"><?php _e('Send Email', 'wp-erp-rec'); ?></button>
+                      <span class="spinner"></span>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <script>
+        $(window).on('load',function(){
+          var url = document.location.toString();
+          if (url.match('#')) {
+            $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+          } 
+
+          $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash;
+            window.scrollTo(0, 0);
+          });
+        });
+      </script>
     </div>
   </div>
 </div>

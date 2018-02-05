@@ -639,6 +639,7 @@ class WeDevs_ERP_Recruitment {
     switch ( $current_screen->base ) {
       case 'recruitment_page_jobseeker_list':
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
+        wp_enqueue_style( 'bootstrap-xl', WPERP_REC_ASSETS . '/css/bootstrap-xl.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
         break;
@@ -651,6 +652,7 @@ class WeDevs_ERP_Recruitment {
         erp_get_js_template( WPERP_REC_JS_TMPL . '/sendemail-template.php', 'erp-rec-sendemail-template' );
 
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
+        wp_enqueue_style( 'bootstrap-xl', WPERP_REC_ASSETS . '/css/bootstrap-xl.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
@@ -660,6 +662,7 @@ class WeDevs_ERP_Recruitment {
       case 'recruitment_page_status_detail':
       case 'recruitment_page_status_list':
         wp_enqueue_style( 'bootstrap', WPERP_REC_ASSETS . '/css/bootstrap.css' );
+        wp_enqueue_style( 'bootstrap-xl', WPERP_REC_ASSETS . '/css/bootstrap-xl.css' );
         wp_enqueue_style( 'bootstrap-datetimepicker', WPERP_REC_ASSETS . '/css/bootstrap-datetimepicker.min.css', 'bootstrap' );
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
