@@ -366,8 +366,13 @@ class Ajax_Handler {
           'comm_uid'        => $ud['comm_uid'],
           'comm_from'       => $ud['comm_from'],
           'comm_to'         => $ud['comm_to'],
+          'comm_cc'         => $ud['comm_cc'],
           'comm_author'     => $ud['comm_author'],
           'comm_to_name'    => $ud['comm_to_name'],
+          'comm_cc_name'    => $ud['comm_cc_name'],
+          'comm_from_raw'   => $ud['comm_from_raw'],
+          'comm_to_raw'     => $ud['comm_to_raw'],
+          'comm_cc_raw'     => $ud['comm_cc_raw'],
           'comm_subject'    => $ud['comm_subject'],
           'comm_message'    => $ud['comm_message'],
           'comm_date'       => $ud['comm_date']
@@ -436,9 +441,17 @@ class Ajax_Handler {
 
     function retrieve_messages($mailbox, $email, $application_id) {
       global $wpdb;
-      $criteria = 'FROM "'.$email.'"';
-      $emails_seq = $mailbox->searchMessages($criteria);
       $current_user = wp_get_current_user();
+      $emails_seq = array();
+      
+      $emails_search = $mailbox->searchMessages('FROM "'.$email.'"');
+      if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
+      
+      $emails_search = $mailbox->searchMessages('TO "'.$email.'"');
+      if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
+      
+      $emails_search = $mailbox->searchMessages('CC "'.$email.'"');
+      if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
 
       if($emails_seq) {
         //rsort($emails_seq);
@@ -451,6 +464,11 @@ class Ajax_Handler {
           WHERE comms.comm_uid={$message['uid']} AND comms.application_id={$application_id}";
 
           if ( $wpdb->get_var( $query ) <= 0 ) {
+            $tz = get_option('timezone_string');
+            $dt = new DateTime($message['date_sent'], new DateTimeZone('UTC'));
+            $dt->setTimeZone(new DateTimeZone($tz));
+            $message['date_sent'] = $dt->format('Y-m-d H:i:s');
+
             $data = array(
               'application_id' => $application_id,
               'user_id'        => $current_user->ID,
@@ -458,11 +476,18 @@ class Ajax_Handler {
               'comm_uid'       => $message['uid'],
               'comm_from'      => $message['from'],
               'comm_to'        => $message['to'],
+              'comm_cc'        => $message['cc'],
               'comm_author'    => $message['sender'],
+              
+              'comm_from_raw'  => $message['from_raw'],
+              'comm_to_raw'    => $message['to_raw'],
+              'comm_cc_raw'    => $message['cc_raw'],
+              
               'comm_to_name'   => $message['receiver'],
+              'comm_cc_name'   => $message['cc_name'],
               'comm_subject'   => $message['subject'],
               'comm_message'   => $message['body'],
-              'comm_date'      => date("Y-m-d H:i:s", strtotime($message['date_sent']))
+              'comm_date'      => $message['date_sent']
             );
 
             $format = array(
@@ -470,6 +495,11 @@ class Ajax_Handler {
               '%d',
 
               '%d',
+              '%s',
+              '%s',
+              '%s',
+              '%s',
+              '%s',
               '%s',
               '%s',
               '%s',
@@ -1277,14 +1307,25 @@ class Ajax_Handler {
           } else {
             $from_name = $erp_email_settings['from_name'];
           }
+          
+          $cc = '';
+          $ccname = '';
+          $fromraw = '';
+          $toraw = '';
+          $ccraw = '';
 
           $data = array(
             'application_id' => $application_id,
             'user_id'        => $current_user->ID,
             'comm_from'      => $from_email,
             'comm_to'        => $to,
+            'comm_cc'        => $cc,
             'comm_author'    => $from_name,
             'comm_to_name'   => $toname,
+            'comm_cc_name'   => $ccname,
+            'comm_from_raw'  => $fromraw,
+            'comm_to_raw'    => $toraw,
+            'comm_cc_raw'    => $ccraw,
             'comm_subject'   => $subject,
             'comm_message'   => $message,
           );
@@ -1292,6 +1333,11 @@ class Ajax_Handler {
           $format = array(
             '%d',
             '%d',
+            '%s',
+            '%s',
+            '%s',
+            '%s',
+            '%s',
             '%s',
             '%s',
             '%s',

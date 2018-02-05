@@ -220,36 +220,62 @@ class Imap {
 
       $receivers = '';
       $receiversadresses = '';
-      foreach($details->to as $receiver) {
-        if(!empty($receivers)) {
-          $receivers .= ', ';
-          $receiversadresses .= ', ';
+      if(!empty($details->to)) {
+        foreach($details->to as $receiver) {
+          if(!empty($receiversadresses)) {
+            $receivers .= ', ';
+            $receiversadresses .= ', ';
+          }
+          $receivers .= $receiver->personal;
+          $receiversadresses .= $receiver->mailbox . '@' . $receiver->host;
         }
-        $receivers .= $receiver->personal;
-        $receiversadresses .= $receiver->mailbox . '@' . $receiver->host;
       }
 
       $senders = '';
       $sendersadresses = '';
-      foreach($details->from as $sender) {
-        if(!empty($senders)) {
-          $senders .= ', ';
-          $sendersadresses .= ', ';
+      if(!empty($details->from)) {
+        foreach($details->from as $sender) {
+          if(!empty($sendersadresses)) {
+            $senders .= ', ';
+            $sendersadresses .= ', ';
+          }
+          $senders .= $sender->personal;
+          $sendersadresses .= $sender->mailbox . '@' . $sender->host;
         }
-        $senders .= $sender->personal;
-        $sendersadresses .= $sender->mailbox . '@' . $sender->host;
+      }
+
+      $ccs = '';
+      $ccsadresses = '';
+      if(!empty($details->cc)) {
+        foreach($details->cc as $cc) {
+          if(!empty($ccsadresses)) {
+            $ccs .= ', ';
+            $ccsadresses .= ', ';
+          }
+          $ccs .= $cc->personal;
+          $ccsadresses .= $cc->mailbox . '@' . $cc->host;
+        }
       }
 
       // Build the message.
       $message = array(
         'raw_header' => $raw_header,
+
         'to' => $receiversadresses,
         'from' => $sendersadresses,
-        'cc' => isset($details->ccaddress) ? $details->ccaddress : '',
+        'cc' => $ccsadresses,
+        
+        'to_raw' => $details->toaddress,
+        'from_raw' => $details->fromaddress,
+        'cc_raw' => isset($details->ccaddress) ? $details->ccaddress : '',
+
         'bcc' => isset($details->bccaddress) ? $details->bccaddress : '',
         'reply_to' => isset($details->reply_toaddress) ? $details->reply_toaddress : '',
+
         'sender' => $senders,
         'receiver' => $receivers,
+        'cc_name' => $ccs,
+
         'date_sent' => $details->date,
         'subject' => $details->subject,
         'deleted' => $deleted,
@@ -472,6 +498,9 @@ class Imap {
       '=E2=80=93' => '&ndash;', // en dash.
       '=E2=80=94' => '&mdash;', // em dash.
 
+      '=E2=80=9C' => '“',
+      '=E2=80=9D' => '”',
+
       '=C2=A1' => '¡',
       '=C2=A2' => '¢',
       '=C2=A3' => '£',
@@ -567,6 +596,14 @@ class Imap {
       '=C3=BD' => 'ý',
       '=C3=BE' => 'þ',
       '=C3=BF' => 'ÿ',
+
+      '=E1' => 'á',
+      '=E9' => 'é',
+      '=ED' => 'í',
+      '=F3' => 'ó',
+      '=FA' => 'ú',
+      '=F1' => 'ñ',
+      '=A9' => '©',
     );
 
     // Loop through the encoded characters and replace any that are found.
