@@ -213,7 +213,7 @@ if ( isset($applicant_information[0]) ) {
       </div>
     </div>
     <div class="panel panel-default">
-      <div class="panel-heading" style="padding:5px 5px 0px 5px;">
+      <div class="panel-heading" id="tab-panel-heading" style="padding:5px 5px 0px 5px;">
         <ul class="nav nav-tabs nav-justified">
           <li class="active"><a data-toggle="tab" href="#tab-personal-information"><?php _e('Personal Information', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-comms"><?php _e('Comms', 'wp-erp-rec'); ?></a></li>
@@ -1018,13 +1018,14 @@ if ( isset($applicant_information[0]) ) {
       <script>
         $(window).on('load',function(){
           var url = document.location.toString();
+          var tabId = 'tab-' + url.split('#')[1];
           if (url.match('#')) {
-            $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+            $('.nav-tabs a[href="#' + tabId + '"]').tab('show');
           } 
 
           $('.nav-tabs a').on('shown.bs.tab', function (e) {
-            window.location.hash = e.target.hash;
-            window.scrollTo(0, 0);
+            var tabHash = e.target.hash;
+            window.location.hash = tabHash.substr(tabHash.indexOf("-") + 1);
           });
         });
       </script>
