@@ -22,7 +22,7 @@ class HR_Manager extends Email {
     $this->heading     = '';
 
     $this->attachments = array();
-    
+
     $this->find = [
       'email-subject' => '{subject}',
       'email-message' => '{message}'
@@ -44,7 +44,7 @@ class HR_Manager extends Email {
     array_push($this->attachments, $filename);
   }
 
-  public function trigger( $email_to, $email_subject, $email_message, $email_headers ) {
+  public function trigger( $email_to, $email_subject, $email_message, $email_headers = '' ) {
     global $current_user;
 
     if ( empty( $email_message ) ) {
@@ -52,15 +52,27 @@ class HR_Manager extends Email {
     }
 
     $this->heading = $this->get_option( 'heading', $this->heading );
-    
+
     $this->headers = $email_headers;
     $this->subject = $email_subject;
     $this->recipient = $email_to;
-    
+
     $this->replace = [
       'email-subject' => $email_subject,
-      'email-message' => $email_message
+      'email-message' => wpautop($email_message)
     ];
+
+    add_filter('erp_email_headers', function($headers) use($email_headers) {
+      if ( !empty( $email_headers ) ) {
+        foreach ( $email_headers as $value ) {
+          if (strpos($headers, $value) === false) {
+            $headers .= $value . "\r\n";
+          }
+        }
+      }
+
+      return $headers;
+    });
 
     return $this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
   }

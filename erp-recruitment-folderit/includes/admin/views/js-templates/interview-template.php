@@ -14,7 +14,7 @@
   </div>
 
   <div class="col-lg-6 form-group">
-    <label><?php _e('Interview Techs', 'wp-erp-rec'); ?></label>
+    <label for="interview_tech"><?php _e('Interview Techs', 'wp-erp-rec'); ?></label>
     <input type="text" class="form-control" name="interview_tech" id="interview_tech" value="">
   </div>
 
@@ -32,10 +32,15 @@
   'required'    => true
 )); ?>
   </div>
+  
+  <div class="col-lg-12 form-group">
+    <label for="interview_cc"><?php _e('Interview CC', 'wp-erp-rec'); ?></label>
+    <input type="text" class="form-control" name="interview_cc" id="interview_cc" value="">
+  </div>
 
   <div class="col-lg-6">
     <div class="form-group">
-      <label><?php _e('Interview Date', 'wp-erp-rec'); ?></label>
+      <label for="interview_datetime"><?php _e('Interview Date', 'wp-erp-rec'); ?></label>
       <div class='input-group date' id="interview_datetime_picker">
         <input type='text' class="form-control" id="interview_datetime" name="interview_datetime" required />
         <span class="input-group-addon">

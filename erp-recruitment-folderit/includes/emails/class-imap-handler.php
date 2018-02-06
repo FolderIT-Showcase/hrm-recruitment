@@ -178,10 +178,12 @@ class Imap {
    */
   public function getMessage($messageId) {
     $this->tickle();
+    $message = array();
 
     // Get message details.
     $details = imap_headerinfo($this->mailbox, $messageId);
     if ($details) {
+      $uid = imap_uid($this->mailbox, $messageId);
       // Get the raw headers.
       $raw_header = imap_fetchheader($this->mailbox, $messageId);
 
@@ -216,8 +218,6 @@ class Imap {
         $body = $this->decode7Bit($body);
       }
 
-      $uid = imap_uid($this->mailbox, $messageId);
-
       $receivers = '';
       $receiversadresses = '';
       if(!empty($details->to)) {
@@ -226,7 +226,9 @@ class Imap {
             $receivers .= ', ';
             $receiversadresses .= ', ';
           }
-          $receivers .= $receiver->personal;
+          if(!empty($receiver->personal)) {
+            $receivers .= $receiver->personal;
+          }
           $receiversadresses .= $receiver->mailbox . '@' . $receiver->host;
         }
       }
@@ -239,7 +241,9 @@ class Imap {
             $senders .= ', ';
             $sendersadresses .= ', ';
           }
-          $senders .= $sender->personal;
+          if(!empty($sender->personal)) {
+            $senders .= $sender->personal;
+          }
           $sendersadresses .= $sender->mailbox . '@' . $sender->host;
         }
       }
@@ -252,7 +256,9 @@ class Imap {
             $ccs .= ', ';
             $ccsadresses .= ', ';
           }
-          $ccs .= $cc->personal;
+          if(!empty($cc->personal)) {
+            $ccs .= $cc->personal;
+          }
           $ccsadresses .= $cc->mailbox . '@' . $cc->host;
         }
       }
@@ -263,10 +269,10 @@ class Imap {
 
         'to' => $receiversadresses,
         'from' => $sendersadresses,
-        'cc' => $ccsadresses,
-        
-        'to_raw' => $details->toaddress,
-        'from_raw' => $details->fromaddress,
+        'cc' => isset($ccsadresses) ? $ccsaddresses : '',
+
+        'to_raw' => isset($details->toaddress) ? $details->toaddress : '',
+        'from_raw' => isset($details->fromaddress) ? $details->fromaddress : '',
         'cc_raw' => isset($details->ccaddress) ? $details->ccaddress : '',
 
         'bcc' => isset($details->bccaddress) ? $details->bccaddress : '',
@@ -478,28 +484,25 @@ class Imap {
     // actually base64-encoded, and decode it.
     $lines = explode("\r\n", $text);
     $first_line_words = explode(' ', $lines[0]);
-    if ($first_line_words[0] == $lines[0]) {
-      $text = base64_decode($text);
+    if ($first_line_words[0] == $lines[0] || $this->is_base64($text)) {
+      $text_dummy = base64_decode($text, true);
+      
+      if(false !== $text_dummy) {
+        $text = $text_dummy;
+      }
     }
 
     // Manually convert common encoded characters into their UTF-8 equivalents.
     $characters = array(
-      '=20' => ' ', // space.
-      '=2C' => ',', // comma.
       '=E2=80=99' => "'", // single quote.
-      '=0A' => "\r\n", // line break.
-      '=0D' => "\r\n", // carriage return.
-      '=A0' => ' ', // non-breaking space.
-      '=B9' => '$sup1', // 1 superscript.
-      '=C2=A0' => ' ', // non-breaking space.
-      "=\r\n" => '', // joined line.
       '=E2=80=A6' => '&hellip;', // ellipsis.
       '=E2=80=A2' => '&bull;', // bullet.
       '=E2=80=93' => '&ndash;', // en dash.
       '=E2=80=94' => '&mdash;', // em dash.
-
       '=E2=80=9C' => '“',
       '=E2=80=9D' => '”',
+      '=E2=80=9A' => ',',
+      '=E2=80=A8' => ' ',
 
       '=C2=A1' => '¡',
       '=C2=A2' => '¢',
@@ -596,6 +599,7 @@ class Imap {
       '=C3=BD' => 'ý',
       '=C3=BE' => 'þ',
       '=C3=BF' => 'ÿ',
+      '=C2=A0' => ' ', // non-breaking space.
 
       '=E1' => 'á',
       '=E9' => 'é',
@@ -604,6 +608,15 @@ class Imap {
       '=FA' => 'ú',
       '=F1' => 'ñ',
       '=A9' => '©',
+      '=0A' => "\r\n", // line break.
+      '=0D' => "\r\n", // carriage return.
+      '=09' => "\r\n",
+      '=A0' => ' ', // non-breaking space.
+      '=B9' => '$sup1', // 1 superscript.
+      '=20' => ' ', // space.
+      '=2C' => ',', // comma.
+
+      "=\r\n" => '', // joined line.
     );
 
     // Loop through the encoded characters and replace any that are found.
@@ -866,4 +879,17 @@ class Imap {
     return false;
   }
 
+  private function is_base64($s){
+    // Check if there are valid base64 characters
+    if (!preg_match("/^([A-Za-z0-9+\/]{4})*([A-Za-z0-9+\/]{4}|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}==)$/", $s)) return false;
+
+    // Decode the string in strict mode and check the results
+    $decoded = base64_decode($s, true);
+    if(false === $decoded) return false;
+
+    // Encode the string again
+    if(base64_encode($decoded) != $s) return false;
+
+    return true;
+  }
 }

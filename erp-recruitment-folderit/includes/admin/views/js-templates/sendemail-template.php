@@ -7,6 +7,10 @@
     <label for="email_to_name"><?php _e('Addressee', 'wp-erp-rec'); ?></label>
     <input type="text" readonly value="" id="email_to_name" name="email_to_name" class="form-control">
   </div>
+  <div class="col-lg-12 from-group">
+    <label for="email_cc"><?php _e('CC: ','wp-erp-rec'); ?></label>
+    <input type="text" value="" id="email_cc" name="email_cc" class="form-control">
+  </div>
 
   <div class="col-lg-12 form-group">
     <?php

@@ -27,7 +27,7 @@ class Job_Application extends Email {
       'full-name'          => '{full_name}',
       'job-title'          => '{job_title}',
       'applicant-mobile'   => '{applicant_mobile}',
-      'applicant-email'   => '{applicant_email}',
+      'applicant-email'    => '{applicant_email}',
       'apply-date'         => '{apply_date}'
     ];
 

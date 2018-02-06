@@ -285,6 +285,7 @@ dl.dl-custom h5 {
 
 .application-comms-list .comm-subject b.fn {
   color: #888;
+  font-size: 12px;
 }
 
 .application-comment-list li .vcard .avatar,

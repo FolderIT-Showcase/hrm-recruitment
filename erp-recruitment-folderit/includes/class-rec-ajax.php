@@ -446,15 +446,15 @@ class Ajax_Handler {
       
       $emails_search = $mailbox->searchMessages('FROM "'.$email.'"');
       if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
-      
+
       $emails_search = $mailbox->searchMessages('TO "'.$email.'"');
       if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
-      
+
       $emails_search = $mailbox->searchMessages('CC "'.$email.'"');
       if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
 
       if($emails_seq) {
-        //rsort($emails_seq);
+        sort($emails_seq);
 
         foreach($emails_seq as $email_number) {
           $message = $mailbox->getMessage($email_number);
@@ -463,7 +463,9 @@ class Ajax_Handler {
           FROM {$wpdb->prefix}erp_application_comms as comms
           WHERE comms.comm_uid={$message['uid']} AND comms.application_id={$application_id}";
 
-          if ( $wpdb->get_var( $query ) <= 0 ) {
+          $email_id = $wpdb->get_var( $query );
+
+          if ( $email_id <= 0 ) {
             $tz = get_option('timezone_string');
             $dt = new DateTime($message['date_sent'], new DateTimeZone('UTC'));
             $dt->setTimeZone(new DateTimeZone($tz));
@@ -478,11 +480,11 @@ class Ajax_Handler {
               'comm_to'        => $message['to'],
               'comm_cc'        => $message['cc'],
               'comm_author'    => $message['sender'],
-              
+
               'comm_from_raw'  => $message['from_raw'],
               'comm_to_raw'    => $message['to_raw'],
               'comm_cc_raw'    => $message['cc_raw'],
-              
+
               'comm_to_name'   => $message['receiver'],
               'comm_cc_name'   => $message['cc_name'],
               'comm_subject'   => $message['subject'],
@@ -1259,6 +1261,7 @@ class Ajax_Handler {
      */
   public function send_email() {
     global $wpdb;
+    $ccraw = '';
     $this->verify_nonce( 'wp_erp_rec_send_email_nonce' );
 
     if(isset( $_POST['fdata'] )) {
@@ -1268,11 +1271,15 @@ class Ajax_Handler {
       $application_id = $params['email_aplication_id'];
       $to             = $params['email_to'];
       $toname         = $params['email_to_name'];
+      $cc             = $params['email_cc'];
+      $ccname         = $params['email_cc_name'];
       $subject        = $params['email_subject'];
       $message        = $params['email_message'];
     } else {
       $to      = isset( $_POST['to'] ) ? $_POST['to'] : '';
       $toname  = isset( $_POST['toname'] ) ? $_POST['toname'] : '';
+      $cc      = isset( $_POST['cc'] ) ? $_POST['cc'] : '';
+      $ccname  = isset( $_POST['ccname'] ) ? $_POST['ccname'] : '';
       $subject = isset( $_POST['subject'] ) ? $_POST['subject'] : '';
       $message = isset( $_POST['emessage'] ) ? $_POST['emessage'] : '';
     }
@@ -1287,9 +1294,15 @@ class Ajax_Handler {
       $this->send_error( __( 'Message cannot be empty', 'wp-erp-rec' ) );
     } else {
       $headers[] = "Content-type: text/html";
-      $email = new Emails\HR_Manager();
+      if(isset($cc) && !empty($cc)) {
+        $headers[] = "Cc: " . $cc;
+        $ccraw = $cc;
+      }
 
-      if($email->trigger( $to, $subject, $message, $headers )) {
+      $email = new Emails\HR_Manager();
+      $toraw = $toname . ' <'.$to.'>';
+
+      if($email->trigger( '"'.$toname.'" <'.$to.'>', $subject, $message, $headers )) {
         // TODO: grabar comunicaciones de manera bulkeable
         if(isset($application_id)) {
           $current_user = wp_get_current_user();
@@ -1307,12 +1320,8 @@ class Ajax_Handler {
           } else {
             $from_name = $erp_email_settings['from_name'];
           }
-          
-          $cc = '';
-          $ccname = '';
-          $fromraw = '';
-          $toraw = '';
-          $ccraw = '';
+
+          $fromraw = $from_name.' <'.$from_email.'>';
 
           $data = array(
             'application_id' => $application_id,
@@ -2228,6 +2237,8 @@ class Ajax_Handler {
     $interviewers                    = $params['interviewers'];
     $duration                        = $params['duration'];
     $interview_datetime              = $params['interview_datetime'];
+    $interview_cc                    = $params['interview_cc'];
+    $interview_cv                    = $params['interview_attach_id'];
 
     $current_date = date_create( date( 'Y-m-d' ) );
     $given_date   = date_create_from_format('d/m/Y g:i A', $interview_datetime);
@@ -2288,8 +2299,9 @@ class Ajax_Handler {
                         LEFT JOIN {$wpdb->prefix}erp_peoples as people
                         ON app.applicant_id=people.id
                         LEFT JOIN {$wpdb->prefix}erp_peoplemeta as meta
-                        ON people.id=meta.erp_people_id AND meta_key='mobile'
-                        WHERE app.id=%d";
+                        ON people.id=meta.erp_people_id AND meta_key='mobile' AND coalesce(meta_value,'') <> '' 
+                        WHERE app.id=%d
+                        LIMIT 1";
       $udata = $wpdb->get_results( $wpdb->prepare( $query, $application_id ), ARRAY_A );
 
       // send email
@@ -2309,6 +2321,10 @@ class Ajax_Handler {
       $data['interview_date'] = date( 'd/m/Y h:i A', strtotime($data['start_date_time']));
       $data['interview_duration'] = $data['duration_minutes'];
       $data['interview_description'] = $data['interview_detail'];
+      $data['interview_cc'] = $interview_cc;
+
+      // Obtener link del CV
+      $data['interview_cv'] = $interview_cv;
 
       // Obtener datos de empresa
       $company = get_option("_erp_company");
