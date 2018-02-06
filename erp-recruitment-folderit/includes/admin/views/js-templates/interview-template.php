@@ -83,6 +83,7 @@
 
 <input type="hidden" id="type_of_interview" name="type_of_interview" value="">
 <input type="hidden" id="interview_application_id" name="interview_application_id" value="">
+<input type="hidden" id="interview_attach_id" name="interview_attach_id" value="">
 <input type="hidden" id="type_of_interview_text" name="type_of_interview_text" value="">
 <input type="hidden" id="internal_type_of_interview_text" name="internal_type_of_interview_text" value="">
 

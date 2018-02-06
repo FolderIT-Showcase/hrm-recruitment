@@ -126,7 +126,7 @@ if ( isset($applicant_information[0]) ) {
                         <button class="btn btn-default btn-labeled btn-attach-cv"><span class="btn-label"><i class="fa fa-lg fa-paperclip"></i></span><?php _e('Attach CV', 'wp-erp-rec'); ?></button>
                         <?php endif;?>
                         <?php if ( isset($attach_id) && $attach_id != '' ) : ?>
-                        <button class="btn btn-default btn-labeled" href="<?php echo wp_get_attachment_url($attach_id); ?>"><span class="btn-label"><i class="fa fa-lg fa-file"></i></span><?php _e('View CV', 'wp-erp-rec'); ?></button>
+                        <button class="btn btn-default btn-labeled" id="attach-id" href="<?php echo wp_get_attachment_url($attach_id); ?>"><span class="btn-label"><i class="fa fa-lg fa-file"></i></span><?php _e('View CV', 'wp-erp-rec'); ?></button>
                         <?php endif; ?>
                         <?php
                         if ( $hire_status == 0 && $application_status != 'rejected' ) {
@@ -623,7 +623,6 @@ if ( isset($applicant_information[0]) ) {
                           <div class="panel panel-default panel-comms" v-for="(index, comm) in comms">
                             <div class="panel-heading" v-bind:class="{ collapsed: (index!==0) }" data-toggle="collapse" data-target="#comm-collapse-{{comm.id}}" data-parent="#accordion-comms">
                               <div class="row" style="position:relative;padding-left:22px;">
-                                <span class="pull-right comm-date">{{ comm.comm_date }}</span>
                                 <span class="pull-left comm-direction" v-bind:class="[ comm.comm_uid ? 'in' : 'out' ]"><i v-bind:class="[ comm.comm_uid ? 'fa-angle-double-left' : 'fa-angle-double-right' ]" class="fa fa-lg"></i></span>
 
                                 <template v-if="comm.comm_from_raw">
@@ -660,10 +659,11 @@ if ( isset($applicant_information[0]) ) {
                                     </div>
                                   </template>
                                 </template>                                
-                              </div>
+                              </div>                            
                               <div class="row">
                                 <div class="comm-subject col-lg-12">
                                   <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
+                                  <span class="pull-right comm-date" style="margin-top:4px;"><b class="fn">{{ comm.comm_date }}</b></span>
                                 </div>
                               </div>
                             </div>

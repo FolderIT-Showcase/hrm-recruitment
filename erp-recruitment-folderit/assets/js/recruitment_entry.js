@@ -577,6 +577,8 @@
             $('input:radio[name=internal_type_of_interview]').filter('[value=' + $('#default_internal_type_id').val() + ']').prop('checked', true).change();
             var now = new Date();
             $('#interview_datetime').val(now.getDate() + "/" + (now.getMonth() + 1) + "/" + now.getFullYear() + " 10:00 AM");
+            var attach_id = $('#attach-id').attr('href');
+            $('#interview_attach_id').val(attach_id);
           },
           onSubmit: function (modal) {
             modal.disableButton();
