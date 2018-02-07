@@ -35,12 +35,15 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_wp-erp-rec-manager-status', 'status_posting' );
     $this->action( 'wp_ajax_wp-erp-rec-get-comments', 'get_comments' );
     $this->action( 'wp_ajax_wp-erp-rec-get-comms', 'get_comms' );
+    $this->action( 'wp_ajax_wp-erp-rec-get-all-comms', 'get_all_comms' );
     $this->action( 'wp_ajax_wp-erp-rec-manager-comment', 'manager_comment' );
     $this->action( 'wp_ajax_recruitment_form_builder', 'recruitment_form_builder_handler' );
     $this->action( 'wp_ajax_wp-erp-rec-serial-personal-fields', 'sort_personal_fields' );
 
     // emails
-    $this->action( 'wp_ajax_wp-erp-rec-retrieve-emails', 'retrieve_imap_emails_from' );    
+    $this->action( 'wp_ajax_wp-erp-rec-remap-all-emails', 'remap_application_comms' ); 
+    $this->action( 'wp_ajax_wp-erp-rec-retrieve-emails', 'retrieve_imap_emails_from' ); 
+    $this->action( 'wp_ajax_wp-erp-rec-retrieve-all-emails', 'retrieve_imap_emails_all' );    
     $this->action( 'wp_ajax_wp-erp-rec-send-email', 'send_email' );
 
     // to-do
@@ -386,6 +389,124 @@ class Ajax_Handler {
   }
 
   /**
+     * Gets ALL comms
+     *
+     * @since  1.1.0
+     *
+     * @return void
+     */
+  public function get_all_comms() {
+    global $wpdb;
+
+    $query = "SELECT *, user.ID as uid
+      FROM {$wpdb->prefix}erp_application_comms as comm
+      LEFT JOIN {$wpdb->base_prefix}users as user
+      ON comm.user_id = user.ID
+      ORDER BY comm.comm_date DESC";
+    $udata = $wpdb->get_results( $query, ARRAY_A );
+
+    $comms_data = [ ];
+    foreach ( $udata as $ud ) {
+      $comms_data[] = array(
+        'id'              => $ud['id'],
+        'application_id'  => $ud['application_id'],
+        'user_id'         => $ud['uid'],
+        'comm_uid'        => $ud['comm_uid'],
+        'comm_from'       => $ud['comm_from'],
+        'comm_to'         => $ud['comm_to'],
+        'comm_cc'         => $ud['comm_cc'],
+        'comm_author'     => $ud['comm_author'],
+        'comm_to_name'    => $ud['comm_to_name'],
+        'comm_cc_name'    => $ud['comm_cc_name'],
+        'comm_from_raw'   => $ud['comm_from_raw'],
+        'comm_to_raw'     => $ud['comm_to_raw'],
+        'comm_cc_raw'     => $ud['comm_cc_raw'],
+        'comm_subject'    => $ud['comm_subject'],
+        'comm_message'    => $ud['comm_message'],
+        'comm_date'       => $ud['comm_date']
+      );
+    }
+
+    $this->send_success( $comms_data );
+  }
+
+
+  /**
+     * Remap application_id to comms
+     *
+     * @since  1.1.0
+     *
+     * @return void
+     */
+  public function remap_application_comms() {
+    global $wpdb;
+    $force = false;
+    
+    if ( isset( $_GET['force'] ) ) {
+      $force = $_GET['force'] === "true";
+    }
+
+    // Obtener todos los emails+application id de los candidatos
+    $query = "SELECT app.id as application_id, people.id as applicant_id, people.email as email, meta.meta_value as other_email
+      FROM {$wpdb->prefix}erp_application as app
+      LEFT JOIN {$wpdb->prefix}erp_peoples as people
+      ON app.applicant_id=people.id
+      LEFT JOIN {$wpdb->prefix}erp_peoplemeta as meta
+      ON meta.meta_id = (
+        SELECT meta_sub.meta_id
+        FROM {$wpdb->prefix}erp_peoplemeta as meta_sub
+        WHERE meta_sub.erp_people_id = people.id
+        AND coalesce(meta_sub.meta_value, '') <> ''
+        AND meta_sub.meta_key = 'other_email'
+        LIMIT 1)
+      ORDER BY people.email";
+    $udata = $wpdb->get_results( $query, ARRAY_A );
+
+    $applicants_emails = array();
+    foreach($udata as $row) {
+      $applicants_emails[intval($row['application_id'])] = $row['email'];
+    }
+
+    $query = "SELECT *
+      FROM {$wpdb->prefix}erp_application_comms as comms
+      WHERE status = 0 ";
+    if($force !== true) {
+      $query .= " AND coalesce(application_id, '') = ''";
+    }
+    $comms = $wpdb->get_results( $query, ARRAY_A );
+
+    foreach($comms as $comm) {
+      $application_id = null;
+
+      foreach(explode(',',$comm['comm_from']) as $email) {
+        $application_id = array_search($email, $applicants_emails);
+      }
+      if(empty($application_id)) {
+        foreach(explode(',',$comm['comm_to']) as $email) {
+          $application_id = array_search($email, $applicants_emails);
+        }
+      }
+      if(empty($application_id)) {
+        foreach(explode(',',$comm['comm_cc']) as $email) {
+          $application_id = array_search($email, $applicants_emails);
+        }
+      }
+
+      if(!empty($application_id)) {
+        $wpdb->update( "{$wpdb->prefix}erp_application_comms",
+                      array( 'application_id' => $application_id ),
+                      array( 'id' => $comm['id'] ),
+                      array( '%d' ),
+                      array( '%d' )
+                     );
+      }
+    }
+
+    $this->send_success(__('Emails remapped retrieved', 'wp-erp-rec'));
+  }
+
+
+  /**
      * Read all emails from specified address
      *
      * @since  1.0.9
@@ -443,7 +564,8 @@ class Ajax_Handler {
       global $wpdb;
       $current_user = wp_get_current_user();
       $emails_seq = array();
-      
+      $tz = get_option('timezone_string');
+
       $emails_search = $mailbox->searchMessages('FROM "'.$email.'"');
       if ($emails_search) { $emails_seq = array_unique(array_merge($emails_seq, $emails_search)); }
 
@@ -458,22 +580,19 @@ class Ajax_Handler {
 
         foreach($emails_seq as $email_number) {
           $message = $mailbox->getMessage($email_number);
+          $dt = new DateTime($message['date_sent'], new DateTimeZone('UTC'));
+          $dt->setTimeZone(new DateTimeZone($tz));
+          $message['date_sent'] = $dt->format('Y-m-d H:i:s');
 
           $query = "SELECT comms.id
           FROM {$wpdb->prefix}erp_application_comms as comms
-          WHERE comms.comm_uid={$message['uid']} AND comms.application_id={$application_id}";
+          WHERE comms.comm_uid={$message['uid']} AND comms.comm_date='{$message['date_sent']}'";
 
           $email_id = $wpdb->get_var( $query );
 
           if ( $email_id <= 0 ) {
-            $tz = get_option('timezone_string');
-            $dt = new DateTime($message['date_sent'], new DateTimeZone('UTC'));
-            $dt->setTimeZone(new DateTimeZone($tz));
-            $message['date_sent'] = $dt->format('Y-m-d H:i:s');
-
             $data = array(
               'application_id' => $application_id,
-              'user_id'        => $current_user->ID,
 
               'comm_uid'       => $message['uid'],
               'comm_from'      => $message['from'],
@@ -493,7 +612,6 @@ class Ajax_Handler {
             );
 
             $format = array(
-              '%d',
               '%d',
 
               '%d',
@@ -522,6 +640,154 @@ class Ajax_Handler {
 
     if(!empty($applicant_other_email)) {
       retrieve_messages($mailbox, $applicant_other_email, $application_id);
+    }
+
+    $mailbox->disconnect();
+
+    $this->send_success(__('Emails succesfully retrieved', 'wp-erp-rec'));
+  }
+
+
+  /**
+     * Read all emails
+     *
+     * @since  1.1.0
+     *
+     * @return void
+     */
+  public function retrieve_imap_emails_all() {
+    global $wpdb;
+
+    // Conexión via IMAP
+    $erp_email_settings = get_option( 'erp_settings_erp-email_imap', [] );
+
+    if (!isset($erp_email_settings['enable_imap']) || $erp_email_settings['enable_imap'] !== 'yes') {
+      $this->send_error(__('IMAP settings not enabled','wp-erp-rec'));
+    }
+
+    $mailbox = new Imap(
+      $erp_email_settings['mail_server'],
+      $erp_email_settings['username'],
+      $erp_email_settings['password'],
+      $erp_email_settings['port'],
+      (isset($erp_email_settings['authentication'])?true:false), // Protocolo SSL
+      "INBOX",
+      false, // No validar certificado
+      true); // Sólo lectura
+
+    $emails_seq = $mailbox->searchMessages('');
+
+    // Obtener todos los emails+application id de los candidatos
+    $query = "SELECT app.id as application_id, people.id as applicant_id, people.email as email, meta.meta_value as other_email
+      FROM {$wpdb->prefix}erp_application as app
+      LEFT JOIN {$wpdb->prefix}erp_peoples as people
+      ON app.applicant_id=people.id
+      LEFT JOIN {$wpdb->prefix}erp_peoplemeta as meta
+      ON meta.meta_id = (
+        SELECT meta_sub.meta_id
+        FROM {$wpdb->prefix}erp_peoplemeta as meta_sub
+        WHERE meta_sub.erp_people_id = people.id
+        AND coalesce(meta_sub.meta_value, '') <> ''
+        AND meta_sub.meta_key = 'other_email'
+        LIMIT 1)
+      WHERE app.status = 0 
+      ORDER BY people.email";
+
+    $applicants_emails = array();
+    $udata = $wpdb->get_results( $query, ARRAY_A );
+    foreach($udata as $row) {
+      //      $applicants_emails[$row['application_id']] = array(
+      //        'applicant_id' => $row['applicant_id'], 
+      //        'email' => $row['email'], 
+      //        'other_email' => $row['other_email'] 
+      //      );
+      $applicants_emails[intval($row['application_id'])] = $row['email'];
+    }
+
+    if($emails_seq) {
+      sort($emails_seq);
+      $tz = get_option('timezone_string');
+
+      foreach($emails_seq as $email_number) {
+        $message = $mailbox->getMessage($email_number);
+
+        $dt = new DateTime($message['date_sent'], new DateTimeZone('UTC'));
+        $dt->setTimeZone(new DateTimeZone($tz));
+        $message['date_sent'] = $dt->format('Y-m-d H:i:s');
+
+        $query = "SELECT comms.id
+          FROM {$wpdb->prefix}erp_application_comms as comms
+          WHERE comms.comm_uid={$message['uid']} AND comms.comm_date='{$message['date_sent']}'";
+
+        $email_id = $wpdb->get_var( $query );
+
+        if ( $email_id <= 0 ) {
+          // Revisar las direcciones del email e intentar buscar el application ID
+          $application_id = null;
+
+          foreach($message['from_array'] as $from) {
+            $application_id = array_search($from->mailbox . '@' . $from->host, $applicants_emails);
+          }
+          if(empty($application_id)) {
+            foreach($message['to_array'] as $to) {
+              $application_id = array_search($to->mailbox . '@' . $to->host, $applicants_emails);
+            }
+          }
+          if(empty($application_id)) {
+            foreach($message['cc_array'] as $cc) {
+              $application_id = array_search($cc->mailbox . '@' . $cc->host, $applicants_emails);
+            }
+          }
+
+          $data = array(
+            'comm_uid'       => $message['uid'],
+
+            'comm_from'      => $message['from'],
+            'comm_to'        => $message['to'],
+            'comm_cc'        => $message['cc'],
+            'comm_author'    => $message['sender'],
+
+            'comm_from_raw'  => $message['from_raw'],
+            'comm_to_raw'    => $message['to_raw'],
+            'comm_cc_raw'    => $message['cc_raw'],
+
+            'comm_to_name'   => $message['receiver'],
+            'comm_cc_name'   => $message['cc_name'],
+
+            'comm_subject'   => $message['subject'],
+            'comm_message'   => $message['body'],
+            'comm_date'      => $message['date_sent']
+          );
+
+          $format = array(
+            '%d',
+
+            '%s',
+            '%s',
+            '%s',
+            '%s',
+
+            '%s',
+            '%s',
+            '%s',
+
+            '%s',
+            '%s',
+
+            '%s',
+            '%s',
+            '%s'
+          );
+
+          if(!empty($application_id)) {
+            $data['application_id'] = $application_id;
+            $format[] = '%d';
+          }
+
+          $wpdb->insert( $wpdb->prefix . 'erp_application_comms', $data, $format );
+          $comm_id = $wpdb->insert_id;
+        }
+      }
     }
 
     $mailbox->disconnect();

@@ -415,6 +415,271 @@ if (jQuery('#section-comms').length > 0) {
   });
 }
 
+if (jQuery('#comms-dashboard').length > 0) {
+
+  var commsviewmodel = new Vue({
+    el: "#comms-dashboard",
+
+    data: {
+      comms: [],
+      loading: false,
+      success_notice_class: 'success_notice',
+      error_notice_class: 'error_notice',
+      isError: false,
+      isVisible: false,
+      response_message: ''
+    },
+
+    ready: function () {
+      this.getAllComms();
+    },
+
+    methods: {
+      getComms: function () {
+        var that = this;
+        that.loading = true;
+        jQuery.get(ajaxurl, {
+          action: 'wp-erp-rec-get-comms',
+          application_id: jQuery('#application_id').val()
+        }, function (response) {
+          that.loading = false;
+          if (response.success === true) {
+            commsviewmodel.comms = [];
+            var collapseIds = [];
+            jQuery.each(response.data, function (k, v) {
+              commsviewmodel.comms.push(v);
+            });
+            Vue.nextTick(function() {
+              that.paginator("accordion-comms", {pagerSelector:'#pager-comms',childSelector:'.panel',showPrevNext:true,hidePageNumbers:false,perPage:10});
+            });
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      retrieveEmails: function() {
+        var that = this;
+        that.loading = true;
+        jQuery.post(ajaxurl, {
+          action: 'wp-erp-rec-retrieve-emails',
+          application_id: jQuery('#application_id').val()
+        }, function (response) {
+          that.loading = false;
+          if (response.success === true) {
+            commsviewmodel.getComms();
+            alertify.success(response.data);
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      getAllComms: function() {
+        var that = this;
+        that.loading = true;
+        jQuery.get(ajaxurl, {
+          action: 'wp-erp-rec-get-all-comms'
+        }, function (response) {
+          that.loading = false;
+          if (response.success === true) {
+            commsviewmodel.comms = [];
+            var collapseIds = [];
+            jQuery.each(response.data, function (k, v) {
+              commsviewmodel.comms.push(v);
+            });
+            Vue.nextTick(function() {
+              that.paginator("accordion-comms", {pagerSelector:'#pager-comms',childSelector:'.panel',showPrevNext:true,hidePageNumbers:false,perPage:10});
+            });
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      retrieveAllEmails: function() {
+        var that = this;
+        that.loading = true;
+        jQuery.post(ajaxurl, {
+          action: 'wp-erp-rec-retrieve-all-emails'
+        }, function (response) {
+          that.loading = false;
+          if (response.success === true) {
+            commsviewmodel.getAllComms();
+            alertify.success(response.data);
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      remapApplications: function() {
+        var that = this;
+        that.loading = true;
+        jQuery.post(ajaxurl, {
+          action: 'wp-erp-rec-remap-all-emails'
+        }, function (response) {
+          that.loading = false;
+          if (response.success === true) {
+            commsviewmodel.getAllComms();
+            alertify.success(response.data);
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
+          that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      paginator: function(id, opts) {
+        var $this = $("#" + id),
+            defaults = {
+              perPage: 7,
+              showPrevNext: false,
+              numbersPerPage: 1,
+              hidePageNumbers: false
+            },
+            settings = $.extend(defaults, opts);
+
+        var listElement = $this;
+        var perPage = settings.perPage; 
+        var children = listElement.children();
+        var pager = $('.pagination');
+
+        if (typeof settings.childSelector!="undefined") {
+          children = listElement.find(settings.childSelector);
+        }
+
+        if (typeof settings.pagerSelector!="undefined") {
+          pager = $(settings.pagerSelector);
+        }
+
+        //Limpiar children del pager
+        pager.empty();
+
+        var numItems = children.size();
+        var numPages = Math.ceil(numItems/perPage);
+
+        var curr = 0;
+        pager.data("curr",curr);
+
+        if (settings.showPrevNext){
+          $('<li><a href="#" class="prev_link">«</a></li>').appendTo(pager);
+        }
+
+        while(numPages > curr && (settings.hidePageNumbers==false)){
+          var node = '<li><a href="#" class="page_link">'+(curr+1)+'</a></li>';
+          if(curr == 0) {
+            node = '<li class="active"><a href="#" class="page_link">'+(curr+1)+'</a></li>'
+          }
+          $(node).appendTo(pager);
+          curr++;
+        }
+
+        if (settings.numbersPerPage>1) {
+          $('.page_link').hide();
+          $('.page_link').slice(pager.data("curr"), settings.numbersPerPage).show();
+        }
+
+        if (settings.showPrevNext){
+          $('<li><a href="#" class="next_link">»</a></li>').appendTo(pager);
+        }
+
+        pager.find('.page_link:first').addClass('active');
+//        pager.find('.prev_link').hide();
+//        if (numPages<=1) {
+//          pager.find('.next_link').hide();
+//        }
+//        pager.children().eq(0).addClass("active");
+
+        children.hide();
+        children.slice(0, perPage).show();
+
+        pager.find('li .page_link').click(function(){
+          var clickedPage = $(this).html().valueOf()-1;
+          goTo(clickedPage,perPage);
+          return false;
+        });
+        pager.find('li .prev_link').click(function(){
+          previous();
+          return false;
+        });
+        pager.find('li .next_link').click(function(){
+          next();
+          return false;
+        });
+
+        function previous(){
+          var goToPage = parseInt(pager.data("curr")) - 1;
+          goTo(goToPage);
+        }
+
+        function next(){
+          goToPage = parseInt(pager.data("curr")) + 1;
+          goTo(goToPage);
+        }
+
+        function goTo(page){
+          var startAt = page * perPage,
+              endOn = startAt + perPage;
+          
+//          console.log("curr: "+curr);
+//          console.log("page: "+page);
+//          console.log("numPages: "+numPages);
+          
+          if(page < 0 || page >= numPages) {
+            return;
+          }
+
+          children.css('display','none').slice(startAt, endOn).show();
+
+          if (page>=1) {
+//            pager.find('.prev_link').show();
+          }
+          else {
+//            pager.find('.prev_link').hide();
+          }
+
+          if (page<(numPages-1)) {
+//            pager.find('.next_link').show();
+          }
+          else {
+//            pager.find('.next_link').hide();
+          }
+
+          pager.data("curr",page);
+
+          if (settings.numbersPerPage>1) {
+            $('.page_link').hide();
+            $('.page_link').slice(page, settings.numbersPerPage+page).show();
+          }
+
+          pager.children().removeClass("active");
+          pager.children().eq(page+1).addClass("active");
+
+        }
+      }
+    }
+  });
+}
 
 if (jQuery('#section-testing').length > 0) {
   var testingviewmodel = new Vue({

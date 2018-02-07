@@ -400,6 +400,9 @@ class WeDevs_ERP_Recruitment {
 
     add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Candidates', 'wp-erp-rec' ), __( 'Candidates', 'wp-erp-rec' ),
                      $capability, 'jobseeker_list', array( $this, 'candidate_page' ) );
+    
+    add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Comms Dashboard', 'wp-erp-rec' ), __( 'Comms Dashboard', 'wp-erp-rec' ),
+                     $capability, 'comms_dashboard', array( $this, 'comms_dashboard_page' ) );
 
     add_submenu_page( 'edit.php?post_type=erp_hr_recruitment', __( 'Calendar', 'wp-erp-rec' ), __( 'Calendar', 'wp-erp-rec' ),
                      $capability, 'todo-calendar', array( $this, 'todo_calendar_page' ) );
@@ -473,11 +476,11 @@ class WeDevs_ERP_Recruitment {
     global $submenu;
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][1] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][1] );
-    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][5] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][6] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][7] );
-    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][9] );
+    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][8] );
     unset( $submenu['edit.php?post_type=erp_hr_recruitment'][10] );
+    unset( $submenu['edit.php?post_type=erp_hr_recruitment'][11] );
     //unset( $submenu['edit.php?post_type=erp_hr_questionnaire'] );
   }
 
@@ -600,6 +603,15 @@ class WeDevs_ERP_Recruitment {
   public function terms_list_page() {
     require_once WPERP_REC_VIEWS . '/terms-list.php';
   }
+  
+  /*
+     * Lista de tags (terms)
+     * @since 1.1.0
+     * @return void
+     */
+  public function comms_dashboard_page() {
+    require_once WPERP_REC_VIEWS . '/comms-dashboard.php';
+  }
 
   /*
      * Include term detail page
@@ -657,7 +669,7 @@ class WeDevs_ERP_Recruitment {
         wp_enqueue_style( 'erp-recruitment-style', WPERP_REC_ASSETS . '/css/stylesheet.css');
 
         break;
-      case 'recruitment_page_term_detail':
+      case 'recruitment_page_comms_dashboard':
       case 'recruitment_page_terms_list':
       case 'recruitment_page_status_detail':
       case 'recruitment_page_status_list':

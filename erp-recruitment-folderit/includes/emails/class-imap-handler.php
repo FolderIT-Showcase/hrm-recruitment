@@ -274,6 +274,10 @@ class Imap {
         'to_raw' => isset($details->toaddress) ? $details->toaddress : '',
         'from_raw' => isset($details->fromaddress) ? $details->fromaddress : '',
         'cc_raw' => isset($details->ccaddress) ? $details->ccaddress : '',
+        
+        'to_array' => isset($details->to) ? $details->to : array(),
+        'from_array' => isset($details->from) ? $details->from : array(),
+        'cc_array' => isset($details->cc) ? $details->cc : array(),
 
         'bcc' => isset($details->bccaddress) ? $details->bccaddress : '',
         'reply_to' => isset($details->reply_toaddress) ? $details->reply_toaddress : '',
