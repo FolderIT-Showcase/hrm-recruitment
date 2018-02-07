@@ -213,7 +213,7 @@ if ( isset($applicant_information[0]) ) {
       </div>
     </div>
     <div class="panel panel-default">
-      <div class="panel-heading" id="tab-panel-heading" style="padding:5px 5px 0px 5px;">
+      <div class="panel-heading" id="tab-panel-heading" style="padding:5px 5px 0px 5px;display:none;">
         <ul class="nav nav-tabs nav-justified">
           <li class="active"><a data-toggle="tab" href="#tab-personal-information"><?php _e('Personal Information', 'wp-erp-rec'); ?></a></li>
           <li><a data-toggle="tab" href="#tab-comms"><?php _e('Comms', 'wp-erp-rec'); ?></a></li>
@@ -612,7 +612,7 @@ if ( isset($applicant_information[0]) ) {
                   <div class="section-header">
                     <h2 class="hndle">
                       <span><?php _e('Comms', 'wp-erp-rec'); ?></span>
-                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;" :disabled="loading === true"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
+                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;" :disabled="loading === true"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
                       <span class="spinner" style="margin-top:0px;"></span>
                     </h2>
                   </div>
@@ -663,7 +663,7 @@ if ( isset($applicant_information[0]) ) {
                               <div class="row">
                                 <div class="comm-subject col-lg-12">
                                   <h6 class="panel-heading-overflow" style="margin-top:4px;margin-bottom:0px;"><b class="fn">{{ comm.comm_subject }}</b></h6>
-                                  <span class="pull-right comm-date" style="margin-top:4px;"><b class="fn">{{ comm.comm_date }}</b></span>
+                                  <span class="pull-right comm-date" style="margin-top:4px;"><b class="fn">{{ comm.comm_date | formatDate }}</b></span>
                                 </div>
                               </div>
                             </div>
@@ -980,7 +980,7 @@ if ( isset($applicant_information[0]) ) {
                   <div class="section-header">
                     <h2 class="hndle">
                       <span><?php _e('Comms', 'wp-erp-rec'); ?></span>
-                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;margin-bottom:0px !important;"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
+                      <button class="btn btn-default btn-labeled btn-sm alignright" v-on:click="retrieveEmails" style="margin-top:-5px;"><span class="btn-label" style="padding:3px 11px;font-size:14px;"><i class="fa fa-refresh"></i></span><?php _e('Retrieve Emails', 'wp-erp-rec'); ?></button>                      
                       <span class="spinner" style="margin-top:0px;"></span>
                     </h2>
                   </div>
@@ -1030,5 +1030,10 @@ if ( isset($applicant_information[0]) ) {
         });
       </script>
     </div>
+    <script>
+      $(window).on('load', function() {
+        $("#tab-panel-heading").show();
+      });
+    </script>
   </div>
 </div>

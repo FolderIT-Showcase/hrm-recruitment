@@ -258,6 +258,8 @@ class WeDevs_ERP_Recruitment {
          * All scripts goes here
          */
     //wp_enqueue_script('erp-recruitment-vuejs-script', WPERP_REC_ASSETS . '/js/vue.min.js', [], false, true);
+    wp_enqueue_script( 'moment-js', WPERP_REC_ASSETS . '/js/moment.min.js', array( 'jquery' ), false, true );
+    wp_enqueue_script( 'alertify-lib', WPERP_REC_ASSETS . '/js/alertify.min.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'erp-vuejs' );
     wp_enqueue_script( 'erp-recruitment-barrating-script', WPERP_REC_ASSETS . '/js/jquery.barrating.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'erp-recruitment-app-script', WPERP_REC_ASSETS . '/js/app.js', array( 'jquery' ), false, true );
@@ -268,10 +270,8 @@ class WeDevs_ERP_Recruitment {
     wp_enqueue_script( 'erp-timepicker' );
     wp_enqueue_script( 'erp-fullcalendar' );
     wp_enqueue_script( 'bootstrap-js', WPERP_REC_ASSETS . '/js/bootstrap.min.js', array( 'jquery' ), false, true );
-    wp_enqueue_script( 'moment-js', WPERP_REC_ASSETS . '/js/moment.min.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'bootstrap-datetimepicker-js', WPERP_REC_ASSETS . '/js/bootstrap-datetimepicker.min.js', array( 'jquery', 'bootstrap-js', 'moment-js' ), false, true );
     wp_enqueue_script( 'multi-step-form-script', WPERP_REC_ASSETS . '/js/openingFormToWizard.js', array( 'jquery' ), false, true );
-    wp_enqueue_script( 'alertify-lib', WPERP_REC_ASSETS . '/js/alertify.min.js', array( 'jquery' ), false, true );
     wp_enqueue_script( 'erp-popup-bootstrap', WPERP_REC_ASSETS . '/js/jquery-popup-bootstrap.js', array( 'jquery' ), false, true );
 
     $localize_scripts = [

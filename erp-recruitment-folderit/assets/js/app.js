@@ -1,3 +1,113 @@
+// Global settings
+moment.locale('es', {
+  months : ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+  monthsShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+  monthsMin: ['En','Fe','Ma','Ab','My','Ju','Jl','Ag','Se','No','Di'],
+  weekdays : ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+  weekdaysShort : ['Dom.','Lun.','Mar.','Mié.','Jue.','Vie.','Sáb.'],
+  weekdaysMin : ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+  longDateFormat : {
+    LT : 'H:mm',
+    LTS : 'H:mm:ss',
+    L : 'DD/MM/YYYY',
+    LL : 'D [de] MMMM [de] YYYY',
+    LLL : 'D [de] MMMM [de] YYYY H:mm',
+    LLLL : 'dddd, D [de] MMMM [de] YYYY – H:mm'
+  },
+  calendar : {
+    sameDay : function () {
+      return '[hoy a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+    },
+    nextDay : function () {
+      return '[mañana a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+    },
+    nextWeek : function () {
+      return 'dddd [a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+    },
+    lastDay : function () {
+      return '[ayer a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+    },
+    lastWeek : function () {
+      return '[el] dddd [pasado a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+    },
+    sameElse : 'L'
+  },
+  relativeTime : {
+    future : 'en %s',
+    past : 'hace %s',
+    s : 'unos segundos',
+    ss : '%d segundos',
+    m : 'un minuto',
+    mm : '%d minutos',
+    h : 'una hora',
+    hh : '%d horas',
+    d : 'un día',
+    dd : '%d días',
+    M : 'un mes',
+    MM : '%d meses',
+    y : 'un año',
+    yy : '%d años'
+  },
+  dayOfMonthOrdinalParse : /\d{1,2}º/,
+  ordinal : '%dº',
+  week : {
+    dow : 1, // Monday is the first day of the week.
+    doy : 4  // The week that contains Jan 4th is the first week of the year.
+  }
+});
+
+alertify.defaults = {
+  // dialogs defaults
+  autoReset:true,
+  basic:false,
+  closable:true,
+  closableByDimmer:true,
+  frameless:false,
+  maintainFocus:true, // <== global default not per instance, applies to all dialogs
+  maximizable:true,
+  modal:true,
+  movable:true,
+  moveBounded:false,
+  overflow:true,
+  padding: true,
+  pinnable:true,
+  pinned:true,
+  preventBodyShift:false, // <== global default not per instance, applies to all dialogs
+  resizable:true,
+  startMaximized:false,
+  transition:'slide',
+
+  // notifier defaults
+  notifier:{
+    // auto-dismiss wait time (in seconds)  
+    delay:5,
+    // default position
+    position:'top-right',
+    // adds a close button to notifier messages
+    closeButton: false
+  },
+
+  // language resources 
+  glossary:{
+    // dialogs default title
+    title:'AlertifyJS',
+    // ok button text
+    ok: 'OK',
+    // cancel button text
+    cancel: 'Cancel'            
+  },
+
+  // theme settings
+  theme:{
+    // class name attached to prompt dialog input textbox.
+    input:'ajs-input',
+    // class name attached to ok button
+    ok:'ajs-ok',
+    // class name attached to cancel button 
+    cancel:'ajs-cancel'
+  }
+};
+
 Vue.directive('barrating', function (value) {
   var select = jQuery(this.el);
   select.barrating({
@@ -5,6 +115,12 @@ Vue.directive('barrating', function (value) {
     readonly: true,
     initialRating: value
   });
+});
+
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return moment(String(value)).locale('es').format('LLLL');
+  }
 });
 
 if (jQuery('#rating_status_form_wrapper').length > 0) {

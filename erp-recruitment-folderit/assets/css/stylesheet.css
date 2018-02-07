@@ -116,10 +116,20 @@ dl.dl-custom h5 {
   border-radius: 3px 0 0 3px;
 }
 
+.btn-group-sm .btn-label,
+.btn-labeled.btn-sm .btn-label {
+  left: -10px;
+}
+
 .btn-labeled {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   margin-bottom: 10px !important;
+}
+
+.btn-group-sm .btn-labeled,
+.btn-labeled.btn-sm {
+  margin-bottom: 0px !important;
 }
 
 /*applicant detail page*/
