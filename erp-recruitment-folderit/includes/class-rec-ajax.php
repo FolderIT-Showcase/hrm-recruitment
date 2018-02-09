@@ -45,6 +45,7 @@ class Ajax_Handler {
     $this->action( 'wp_ajax_wp-erp-rec-retrieve-emails', 'retrieve_imap_emails_from' ); 
     $this->action( 'wp_ajax_wp-erp-rec-retrieve-all-emails', 'retrieve_imap_emails_all' );    
     $this->action( 'wp_ajax_wp-erp-rec-send-email', 'send_email' );
+    $this->action( 'wp_ajax_wp-erp-rec-get-last-email-retrieve-date', 'last_email_retrieve_date');
 
     // to-do
     $this->action( 'wp_ajax_erp-rec-get-todo', 'get_todo' );
@@ -441,7 +442,7 @@ class Ajax_Handler {
   public function remap_application_comms() {
     global $wpdb;
     $force = false;
-    
+
     if ( isset( $_GET['force'] ) ) {
       $force = $_GET['force'] === "true";
     }
@@ -675,7 +676,22 @@ class Ajax_Handler {
       false, // No validar certificado
       true); // Sólo lectura
 
-    $emails_seq = $mailbox->searchMessages('');
+    $tz = get_option('timezone_string');
+    $dt = new DateTime("now", new DateTimeZone('UTC'));
+    $dt->setTimeZone(new DateTimeZone($tz));
+    $date_retrieve = $dt->format('Y-m-d H:i:s');
+    
+    $last_date_retrieve = get_option('erp_settings_rec-email_last_retrieve', '');
+    $dt = new DateTime($last_date_retrieve);
+    $dt->modify('-24 hours');;
+    $last_date_retrieve = $dt->format('Y-m-d');
+
+    $search_query = '';
+    if(!empty($last_date_retrieve)) {
+      $search_query = 'SINCE "'.$last_date_retrieve.'"';
+    }
+
+    $emails_seq = $mailbox->searchMessages($search_query);
 
     // Obtener todos los emails+application id de los candidatos
     $query = "SELECT app.id as application_id, people.id as applicant_id, people.email as email, meta.meta_value as other_email
@@ -791,6 +807,9 @@ class Ajax_Handler {
     }
 
     $mailbox->disconnect();
+
+    // Actualizar última fecha de obtención de emails
+    update_option( 'erp_settings_rec-email_last_retrieve', $date_retrieve );
 
     $this->send_success(__('Emails succesfully retrieved', 'wp-erp-rec'));
   }
@@ -1629,6 +1648,10 @@ class Ajax_Handler {
         $this->send_error( __( 'An error occured when sending email', 'wp-erp-rec' ) );
       }
     }
+  }
+  
+  public function last_email_retrieve_date() {
+    $this->send_success(get_option('erp_settings_rec-email_last_retrieve', 'N/A'));
   }
 
   /**

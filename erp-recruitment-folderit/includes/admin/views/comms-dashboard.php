@@ -34,6 +34,7 @@ $rows = $wpdb->get_results("SELECT id,name,slug FROM {$term_table_name} ORDER BY
     <div class="panel-body" style="padding-top:0px;">
       <div class="row">
         <div class="col-md-12 text-center">
+          <h5 class="pull-left" style="position:absolute;left:20px;bottom:0px;"><?php _e("Last Update:","wp-erp-rec");?> {{last_update | formatDate}}</h5>
           <ul id="pager-comms" class="pagination pagination-lg"></ul>
           <h5 class="pull-right" style="position:absolute;right:20px;bottom:0px;">{{comms.length}} <?php _e("Comms","wp-erp-rec");?></h5>
         </div>

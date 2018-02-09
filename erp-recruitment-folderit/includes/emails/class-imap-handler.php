@@ -604,6 +604,7 @@ class Imap {
       '=C3=BE' => 'þ',
       '=C3=BF' => 'ÿ',
       '=C2=A0' => ' ', // non-breaking space.
+      '=C3=AD' => 'í',
 
       '=E1' => 'á',
       '=E9' => 'é',

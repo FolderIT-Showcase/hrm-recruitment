@@ -1,61 +1,3 @@
-// Global settings
-moment.locale('es', {
-  months : ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
-  monthsShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-  monthsMin: ['En','Fe','Ma','Ab','My','Ju','Jl','Ag','Se','No','Di'],
-  weekdays : ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
-  weekdaysShort : ['Dom.','Lun.','Mar.','Mié.','Jue.','Vie.','Sáb.'],
-  weekdaysMin : ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
-  longDateFormat : {
-    LT : 'H:mm',
-    LTS : 'H:mm:ss',
-    L : 'DD/MM/YYYY',
-    LL : 'D [de] MMMM [de] YYYY',
-    LLL : 'D [de] MMMM [de] YYYY H:mm',
-    LLLL : 'dddd, D [de] MMMM [de] YYYY – H:mm'
-  },
-  calendar : {
-    sameDay : function () {
-      return '[hoy a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
-    },
-    nextDay : function () {
-      return '[mañana a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
-    },
-    nextWeek : function () {
-      return 'dddd [a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
-    },
-    lastDay : function () {
-      return '[ayer a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
-    },
-    lastWeek : function () {
-      return '[el] dddd [pasado a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
-    },
-    sameElse : 'L'
-  },
-  relativeTime : {
-    future : 'en %s',
-    past : 'hace %s',
-    s : 'unos segundos',
-    ss : '%d segundos',
-    m : 'un minuto',
-    mm : '%d minutos',
-    h : 'una hora',
-    hh : '%d horas',
-    d : 'un día',
-    dd : '%d días',
-    M : 'un mes',
-    MM : '%d meses',
-    y : 'un año',
-    yy : '%d años'
-  },
-  dayOfMonthOrdinalParse : /\d{1,2}º/,
-  ordinal : '%dº',
-  week : {
-    dow : 1, // Monday is the first day of the week.
-    doy : 4  // The week that contains Jan 4th is the first week of the year.
-  }
-});
-
 alertify.defaults = {
   // dialogs defaults
   autoReset:true,
@@ -118,8 +60,66 @@ Vue.directive('barrating', function (value) {
 });
 
 Vue.filter('formatDate', function(value) {
+  // Global settings
+  moment.locale('es-AR', {
+    months : ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+    monthsShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+    monthsMin: ['En','Fe','Ma','Ab','My','Ju','Jl','Ag','Se','No','Di'],
+    weekdays : ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'],
+    weekdaysShort : ['Dom.','Lun.','Mar.','Mié.','Jue.','Vie.','Sáb.'],
+    weekdaysMin : ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+    longDateFormat : {
+      LT : 'H:mm',
+      LTS : 'H:mm:ss',
+      L : 'DD/MM/YYYY',
+      LL : 'D [de] MMMM [de] YYYY',
+      LLL : 'D [de] MMMM [de] YYYY H:mm',
+      LLLL : 'dddd, D [de] MMMM [de] YYYY – H:mm'
+    },
+    calendar : {
+      sameDay : function () {
+        return '[hoy a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+      },
+      nextDay : function () {
+        return '[mañana a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+      },
+      nextWeek : function () {
+        return 'dddd [a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+      },
+      lastDay : function () {
+        return '[ayer a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+      },
+      lastWeek : function () {
+        return '[el] dddd [pasado a la' + ((this.hours() !== 1) ? 's' : '') + '] LT';
+      },
+      sameElse : 'L'
+    },
+    relativeTime : {
+      future : 'en %s',
+      past : 'hace %s',
+      s : 'unos segundos',
+      ss : '%d segundos',
+      m : 'un minuto',
+      mm : '%d minutos',
+      h : 'una hora',
+      hh : '%d horas',
+      d : 'un día',
+      dd : '%d días',
+      M : 'un mes',
+      MM : '%d meses',
+      y : 'un año',
+      yy : '%d años'
+    },
+    dayOfMonthOrdinalParse : /\d{1,2}º/,
+    ordinal : '%dº',
+    week : {
+      dow : 1, // Monday is the first day of the week.
+      doy : 4  // The week that contains Jan 4th is the first week of the year.
+    }
+  });
+
   if (value) {
-    return moment(String(value)).locale('es').format('LLLL');
+    return moment(String(value)).locale('es-AR').format('LLLL');
   }
 });
 
@@ -422,6 +422,7 @@ if (jQuery('#comms-dashboard').length > 0) {
 
     data: {
       comms: [],
+      last_update: undefined,
       loading: false,
       success_notice_class: 'success_notice',
       error_notice_class: 'error_notice',
@@ -499,6 +500,7 @@ if (jQuery('#comms-dashboard').length > 0) {
             Vue.nextTick(function() {
               that.paginator("accordion-comms", {pagerSelector:'#pager-comms',childSelector:'.panel',showPrevNext:true,hidePageNumbers:false,perPage:10});
             });
+            that.getLastRetrieveDate();
           } else {
             alertify.error(response.data);
           }
@@ -544,6 +546,21 @@ if (jQuery('#comms-dashboard').length > 0) {
           }
         }).fail(function(xhr, status, error) {
           that.loading = false;
+          alertify.error(xhr.responseText);
+        }).always(function() {
+        });
+      },
+
+      getLastRetrieveDate: function() {
+        jQuery.get(ajaxurl, {
+          action: 'wp-erp-rec-get-last-email-retrieve-date'
+        }, function (response) {
+          if (response.success === true) {
+            commsviewmodel.last_update = response.data;
+          } else {
+            alertify.error(response.data);
+          }
+        }).fail(function(xhr, status, error) {
           alertify.error(xhr.responseText);
         }).always(function() {
         });
@@ -604,11 +621,11 @@ if (jQuery('#comms-dashboard').length > 0) {
         }
 
         pager.find('.page_link:first').addClass('active');
-//        pager.find('.prev_link').hide();
-//        if (numPages<=1) {
-//          pager.find('.next_link').hide();
-//        }
-//        pager.children().eq(0).addClass("active");
+        //        pager.find('.prev_link').hide();
+        //        if (numPages<=1) {
+        //          pager.find('.next_link').hide();
+        //        }
+        //        pager.children().eq(0).addClass("active");
 
         children.hide();
         children.slice(0, perPage).show();
@@ -640,11 +657,11 @@ if (jQuery('#comms-dashboard').length > 0) {
         function goTo(page){
           var startAt = page * perPage,
               endOn = startAt + perPage;
-          
-//          console.log("curr: "+curr);
-//          console.log("page: "+page);
-//          console.log("numPages: "+numPages);
-          
+
+          //          console.log("curr: "+curr);
+          //          console.log("page: "+page);
+          //          console.log("numPages: "+numPages);
+
           if(page < 0 || page >= numPages) {
             return;
           }
@@ -652,17 +669,17 @@ if (jQuery('#comms-dashboard').length > 0) {
           children.css('display','none').slice(startAt, endOn).show();
 
           if (page>=1) {
-//            pager.find('.prev_link').show();
+            //            pager.find('.prev_link').show();
           }
           else {
-//            pager.find('.prev_link').hide();
+            //            pager.find('.prev_link').hide();
           }
 
           if (page<(numPages-1)) {
-//            pager.find('.next_link').show();
+            //            pager.find('.next_link').show();
           }
           else {
-//            pager.find('.next_link').hide();
+            //            pager.find('.next_link').hide();
           }
 
           pager.data("curr",page);
